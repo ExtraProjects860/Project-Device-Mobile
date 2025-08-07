@@ -1,0 +1,10 @@
+Frontend:
+    - baixar tudo, npm i
+    - dar start no expo, npx expo start
+    - outros comandos se encontram no package.json em scripts
+
+Backend:
+    - precisa do docker instalado, se for windows o WSL vai instalar junto
+    - precisa rodar o comando docker compose up -d --build
+    - depois que gerar da um docker ps -a , se tiver rodando na porta 8000 tá tudo ok
+    - como ta em dev qualquer alteração feita no código reflete no container
