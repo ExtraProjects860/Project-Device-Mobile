@@ -1,0 +1,10 @@
+services:
+  api-go:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./:/app
+    restart: always
+    ports:
+      - 8000:3000
