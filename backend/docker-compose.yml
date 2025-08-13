@@ -2,7 +2,7 @@ services:
   api-go:
     build:
       context: .
-      dockerfile: Dockerfile.dev
+      dockerfile: dockerfile/golang/Dockerfile.dev
     volumes:
       - ./:/app
     restart: always
