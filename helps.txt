@@ -8,3 +8,5 @@ Backend:
     - precisa rodar o comando docker compose up -d --build
     - depois que gerar da um docker ps -a , se tiver rodando na porta 8000 tá tudo ok
     - como ta em dev qualquer alteração feita no código reflete no container
+    - caso precise entrar dentro do container para usar algum comando do makefile
+    apenas use docker exec -it nome_do_container bash, para sair é só usar exit
