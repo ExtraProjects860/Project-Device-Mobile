@@ -17,7 +17,7 @@ WORKDIR /app
 
 COPY --from=builder /app/apiserver .
 
-EXPOSE 3000
+EXPOSE 5050
 
 RUN adduser -D nonroot
 

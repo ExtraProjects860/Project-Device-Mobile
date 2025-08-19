@@ -2,9 +2,9 @@ services:
   api-go:
     build:
       context: .
-      dockerfile: dockerfile/golang/Dockerfile.dev
+      dockerfile: docker/golang/Dockerfile.dev
     volumes:
       - ./:/app
     restart: always
     ports:
-      - 8000:3000
+      - 5050:5050
