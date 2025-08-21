@@ -1,5 +1,6 @@
 services:
   api-go:
+    container_name: api-go-mobile
     build:
       context: .
       dockerfile: docker/golang/Dockerfile.dev
@@ -8,3 +9,18 @@ services:
     restart: always
     ports:
       - 5050:5050
+  db:
+      image: postgres
+      container_name: pg-db-mobile
+      restart: always
+      environment:
+        POSTGRES_USER: admin
+        POSTGRES_PASSWORD: 1234
+        POSTGRES_DB: DB_Project_Device_Mobile
+      ports:
+        - "8085:8000"
+      volumes:
+        - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:
