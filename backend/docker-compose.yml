@@ -18,9 +18,10 @@ services:
         POSTGRES_PASSWORD: 1234
         POSTGRES_DB: DB_Project_Device_Mobile
       ports:
-        - "8085:8000"
+        - "8085:5432"
       volumes:
         - pgdata:/var/lib/postgresql/data
+        - ./test/docker/init.sql:/docker-entrypoint-initdb.d/init.sql
 
 volumes:
   pgdata:
