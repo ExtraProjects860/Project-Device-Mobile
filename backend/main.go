@@ -1,23 +1,9 @@
 package main
 
-import (
-	"net/http"
-
-	"github.com/gin-gonic/gin"
-	swaggerfiles "github.com/swaggo/files"
-	ginSwagger "github.com/swaggo/gin-swagger"
-)
+import "github.com/ExtraProjects860/Project-Device-Mobile/routes"
 
 func main() {
-	r := gin.Default()
+	router := routes.InitializeRouter()
 
-	r.GET("/ping", func(ctx *gin.Context) {
-		ctx.JSON(http.StatusOK, gin.H{
-			"message": "pong!!!",
-		})
-	})
-
-	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
-
-	r.Run(":5050")
+	router.Run(":5050")
 }
