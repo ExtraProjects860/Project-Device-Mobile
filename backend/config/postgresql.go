@@ -3,14 +3,13 @@ package config
 import (
 	"fmt"
 	"log"
-	"os"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
 func InitializePostgreSQL() (*gorm.DB, error) {
-	urlDB := os.Getenv("POSTGRESQL_URL")
+	urlDB := env.POSTGRESQL_URL
 
 	db, err := gorm.Open(postgres.Open(urlDB), &gorm.Config{})
 
