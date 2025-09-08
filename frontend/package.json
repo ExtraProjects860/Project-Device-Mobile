@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@expo/metro-runtime": "~5.0.4",
-    "expo": "~53.0.20",
+    "expo": "~53.0.22",
     "expo-status-bar": "~2.2.3",
     "nativewind": "^4.1.23",
     "prettier-plugin-tailwindcss": "^0.5.14",
