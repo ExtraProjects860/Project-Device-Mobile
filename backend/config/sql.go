@@ -8,7 +8,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func InitializePostgreSQL() (*gorm.DB, error) {
+func InitializeDbSQL() (*gorm.DB, error) {
 	urlDB := env.POSTGRESQL_URL
 
 	db, err := gorm.Open(postgres.Open(urlDB), &gorm.Config{})

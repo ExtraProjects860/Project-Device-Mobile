@@ -1,9 +1,9 @@
 package main
 
-import "github.com/ExtraProjects860/Project-Device-Mobile/routes"
+import "github.com/ExtraProjects860/Project-Device-Mobile/router"
 
 func main() {
-	router := routes.InitializeRouter()
+	router := router.InitializeRouter()
 
 	router.Run(":5050")
 }

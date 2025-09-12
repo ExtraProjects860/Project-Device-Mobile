@@ -4,7 +4,7 @@ import (
 	"testing"
 )
 
-func TestConectionPostgreSQL(t *testing.T) {
+func TestConnectionSQL(t *testing.T) {
 	if err := Init(); err != nil {
 		t.Fatalf("ExpectedFailed to initialize database connection: %v", err)
 	}

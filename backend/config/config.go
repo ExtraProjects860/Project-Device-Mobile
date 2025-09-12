@@ -26,7 +26,7 @@ func Init() error {
 		log.Fatalf("Failed to loading enviroment variables, error: %v", err)
 	}
 
-	db, err = InitializePostgreSQL()
+	db, err = InitializeDbSQL()
 	if err != nil {
 		log.Fatalf("Failed to connection to DataBase, error: %v", err)
 	}
