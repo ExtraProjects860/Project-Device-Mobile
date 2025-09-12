@@ -6,7 +6,7 @@ RUN apk add --no-cache git bash make
 
 ENV PATH="/go/bin:/usr/local/go/bin:${PATH}"
 
-RUN go install github.com/air-verse/air@latest && go install github.com/swaggo/swag/cmd/swag@latest
+RUN go install github.com/air-verse/air@latest && go install github.com/swaggo/swag/cmd/swag@latest && go install -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@latest
 
 COPY go.mod go.sum ./
 
