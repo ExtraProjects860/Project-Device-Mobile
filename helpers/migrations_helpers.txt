@@ -1,0 +1,13 @@
+Para utilizar migrations
+
+- sobe uma nova migration
+migrate create -ext sql (tipo) -dir migrations (diretório da pasta) -seq create_users_table (nome da migration/arquivo)
+
+gera um arquivo pra dropar algo e outro pra subir
+coloque as configs de subir no up, exemplo criar tabela
+
+- rodar migration
+migrate -path ./migrations -database "postgres://user:pass@localhost:5432/mydb?sslmode=disable" up
+
+- rollback pra voltar 
+migrate -path ./migrations -database "postgres://user:pass@localhost:5432/mydb?sslmode=disable" down 1

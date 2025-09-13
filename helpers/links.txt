@@ -1,0 +1,10 @@
+Frontend:
+framework css: https://www.nativewind.dev/docs/getting-started/installation
+react native: https://reactnative.dev/docs/environment-setup
+expo: https://docs.expo.dev/more/expo-cli/
+https://blog.expo.dev/the-new-expo-cli-f4250d8e3421
+
+Backend:
+fiber: https://gofiber.io/
+air: https://github.com/air-verse/air
+docker-hub-go: https://hub.docker.com/_/golang

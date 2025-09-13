@@ -1,0 +1,38 @@
+services:
+  api-go:
+    container_name: api-go-mobile
+    build:
+      context: .
+      dockerfile: docker/golang/Dockerfile.dev
+    volumes:
+      - ./api:/app
+    restart: always
+    ports:
+      - 5050:5050
+      
+  microservices-python: 
+    container_name: backend-microservices-python
+    build: 
+      context: .
+      dockerfile: docker/python/Dockerfile.dev
+    volumes:
+      - ./microservices:/app
+    restart: always
+    ports:
+      - 8054:8054
+
+  db:
+      image: postgres
+      container_name: pg-db-mobile
+      restart: always
+      environment:
+        POSTGRES_USER: admin
+        POSTGRES_PASSWORD: 1234
+        POSTGRES_DB: DB_Project_Device_Mobile
+      ports:
+        - 8085:5432
+      volumes:
+        - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:
