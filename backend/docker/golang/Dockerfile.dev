@@ -2,7 +2,7 @@ FROM golang:1.25-alpine
 
 WORKDIR /app
 
-RUN apk add --no-cache git bash make gcc musl-dev libc-dev postgresql-dev
+RUN apk add --no-cache git bash make gcc musl-dev libc-dev
 
 ENV PATH="/go/bin:/usr/local/go/bin:${PATH}"
 
