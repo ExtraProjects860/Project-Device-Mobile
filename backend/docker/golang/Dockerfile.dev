@@ -1,17 +1,19 @@
-FROM golang:1.24-alpine AS dev
+FROM golang:1.25-alpine
 
 WORKDIR /app
 
-RUN apk add --no-cache git bash make gcc musl-dev
+RUN apk add --no-cache git bash make gcc musl-dev libc-dev postgresql-dev
 
 ENV PATH="/go/bin:/usr/local/go/bin:${PATH}"
 
-RUN go install github.com/air-verse/air@latest && go install github.com/swaggo/swag/cmd/swag@latest && go install -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@latest
+RUN go install github.com/air-verse/air@latest && \
+    go install github.com/swaggo/swag/cmd/swag@latest && \
+    go install github.com/golang-migrate/migrate/v4/cmd/migrate@latest
 
 COPY api/go.mod api/go.sum ./
 
-COPY api/ .
-
 RUN go mod download
+
+COPY api/ .
 
 CMD ["air"]
