@@ -6,7 +6,14 @@ Frontend:
 Backend:
     - precisa do docker instalado, se for windows o WSL vai instalar junto
     - precisa rodar o comando docker compose up -d --build
-    - depois que gerar da um docker ps -a , se tiver rodando na porta 8000 tá tudo ok
+    - depois que gerar da um docker ps -a , se tiver rodando na porta 5050 tá tudo ok
     - como ta em dev qualquer alteração feita no código reflete no container
     - caso precise entrar dentro do container para usar algum comando do makefile
-    apenas use docker exec -it nome_do_container bash, para sair é só usar exit
+    - apenas use docker exec -it nome_do_container bash, para sair é só usar exit
+    (
+        Para entrar no ambiente do python é aconselhável baixar a extensão dev containers
+        Depois disso, ir em container, botão direito e atachar no visual studio, após isso é só ir em folder
+        Colocar no diretório da aplicação, baixe o python extension pack e o ruff, daí já pode usar
+    )
+
+-> Em caso de dar erro ao usar o compose novamente, apague o .venv (pasta microservices) e o tmp (api)
