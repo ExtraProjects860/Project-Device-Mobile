@@ -5,20 +5,21 @@ services:
       context: .
       dockerfile: docker/golang/Dockerfile.dev
     volumes:
-      - ./api/:/app
+      - ./api:/app
     restart: always
     ports:
       - 5050:5050
       
   microservices-python: 
-      build: 
-        context: .
-        dockerfile: docker/python/Dockerfile.dev
-      volumes:
-        - ./microservices/:/app
-      restart: always
-      ports:
-       - 8054:8054
+    container_name: backend-microservices-python
+    build: 
+      context: .
+      dockerfile: docker/python/Dockerfile.dev
+    volumes:
+      - ./microservices:/app
+    restart: always
+    ports:
+      - 8054:8054
 
   db:
       image: postgres
