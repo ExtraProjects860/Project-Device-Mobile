@@ -17,3 +17,4 @@ Backend:
     )
 
 -> Em caso de dar erro ao usar o compose novamente, apague o .venv (pasta microservices) e o tmp (api)
+-> Em caso de erro de cache docker builder prune
