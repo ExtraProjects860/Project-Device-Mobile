@@ -8,8 +8,6 @@ import (
 	"gorm.io/gorm"
 )
 
-
-
 var loggerSQL = GetLogger("sql")
 
 func formatterUriDb(format string, env EnvVariables) string {
@@ -23,7 +21,7 @@ func formatterUriDb(format string, env EnvVariables) string {
 	)
 }
 
-func migrateDatabase() error {
+func migrateDatabase(db *gorm.DB) error {
 	err := db.AutoMigrate(
 		&model.TypeUser{},
 		&model.User{},
@@ -47,7 +45,7 @@ func InitializeDbSQL() (*gorm.DB, error) {
 		return nil, err
 	}
 
-	err = migrateDatabase()
+	err = migrateDatabase(db)
 	if err != nil {
 		loggerSQL.Errorf("AutoMigrate error: %v", err)
 		return nil, err
