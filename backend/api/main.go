@@ -1,9 +1,23 @@
 package main
 
-import "github.com/ExtraProjects860/Project-Device-Mobile/router"
+import (
+
+	"github.com/ExtraProjects860/Project-Device-Mobile/config"
+	"github.com/ExtraProjects860/Project-Device-Mobile/router"
+)
+
+var (
+	logger *config.Logger
+)
 
 func main() {
-	router := router.InitializeRouter()
+	logger = config.GetLogger("main")
 
-	router.Run(":5050")
+	err := config.Init()
+	if err != nil {
+		logger.Errorf("config initialization error: %v", err)
+		panic(err)
+	}
+
+	router.InitializeRouter()
 }

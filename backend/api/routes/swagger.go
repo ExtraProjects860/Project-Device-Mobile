@@ -1,4 +1,4 @@
-package router
+package routes
 
 import (
 	"github.com/gin-gonic/gin"
@@ -6,6 +6,6 @@ import (
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
-func initSwaggerRoute(r *gin.Engine) {
+func InitSwaggerRoute(r *gin.Engine) {
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 }

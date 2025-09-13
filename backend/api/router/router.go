@@ -1,13 +1,27 @@
 package router
 
-import "github.com/gin-gonic/gin"
+import (
+	"fmt"
 
-func InitializeRouter() (router *gin.Engine) {
-	router = gin.Default()
+	"github.com/ExtraProjects860/Project-Device-Mobile/config"
+	"github.com/ExtraProjects860/Project-Device-Mobile/routes"
+	"github.com/gin-gonic/gin"
+)
 
-	initPingRoute(router)
-	initMainRoutes(router)
-	initSwaggerRoute(router)
+func configureRouter(router *gin.Engine) {
+	router.ForwardedByClientIP = true
+	router.SetTrustedProxies([]string{})
+}
 
-	return
+func InitializeRouter()  {
+	router := gin.Default()
+
+	configureRouter(router)
+
+	routes.InitHealthCheckRoutes(router)
+	routes.InitMainRoutes(router)
+	routes.InitSwaggerRoute(router)
+
+	port := config.GetEnv().API.Port
+	router.Run(fmt.Sprintf(":%v", port))
 }

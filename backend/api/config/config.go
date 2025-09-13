@@ -1,14 +1,14 @@
 package config
 
 import (
-	"log"
+	"fmt"
 
 	"gorm.io/gorm"
 )
 
 var (
-	db *gorm.DB
-	env EnvVariables
+	db     *gorm.DB
+	env    EnvVariables
 )
 
 func GetDB() *gorm.DB {
@@ -19,16 +19,21 @@ func GetEnv() EnvVariables {
 	return env
 }
 
+func GetLogger(prefix string) *Logger {
+	return NewLogger(prefix)
+}
+
 func Init() error {
 	var err error
+
 	env, err = InitilizeEnvVariables()
 	if err != nil {
-		log.Fatalf("Failed to loading enviroment variables, error: %v", err)
+		return fmt.Errorf("error initializing env variables: %v", err)
 	}
 
 	db, err = InitializeDbSQL()
 	if err != nil {
-		log.Fatalf("Failed to connection to DataBase, error: %v", err)
+		return fmt.Errorf("failed to connection to DataBase, error: %v", err)
 	}
 
 	return nil
