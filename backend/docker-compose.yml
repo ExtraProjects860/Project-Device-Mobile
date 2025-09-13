@@ -5,10 +5,19 @@ services:
       context: .
       dockerfile: docker/golang/Dockerfile.dev
     volumes:
-      - ./:/app
+      - ./api/:/app
     restart: always
     ports:
       - 5050:5050
+  microservices-python: 
+      build: 
+        context: .
+        dockerfile: docker/python/Dockerfile.dev
+      volumes:
+        - ./microservices/:/app
+      restart: always
+      ports:
+       - 8054:8054
   db:
       image: postgres
       container_name: pg-db-mobile
@@ -18,10 +27,9 @@ services:
         POSTGRES_PASSWORD: 1234
         POSTGRES_DB: DB_Project_Device_Mobile
       ports:
-        - "8085:5432"
+        - 8085:5432
       volumes:
         - pgdata:/var/lib/postgresql/data
-        - ./docker/postgresql/init.sql:/docker-entrypoint-initdb.d/init.sql
 
 volumes:
   pgdata:
