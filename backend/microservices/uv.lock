@@ -196,7 +196,7 @@ dev = [
 requires-dist = [
     { name = "aiosmtplib" },
     { name = "fastapi" },
-    { name = "jinja2", specifier = ">=3.1.6" },
+    { name = "jinja2" },
     { name = "pyright", marker = "extra == 'dev'" },
     { name = "pytest" },
     { name = "pytest", marker = "extra == 'dev'" },

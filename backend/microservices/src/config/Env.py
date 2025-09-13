@@ -9,8 +9,8 @@ dotenv.load_dotenv()
 
 @dataclass(frozen=True)
 class Env:
-    EMAIL_USERNAME: str | None = os.getenv("EMAIL_USERNAME")
-    EMAIL_PASSWORD: str | None = os.getenv("EMAIL_PASSWORD")
+    EMAIL_USERNAME: str = os.getenv("EMAIL_USERNAME", "")
+    EMAIL_PASSWORD: str = os.getenv("EMAIL_PASSWORD", "")
 
     def __iter__(self) -> Generator[str]:
         for field in fields(class_or_instance=self):

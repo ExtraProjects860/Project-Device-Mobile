@@ -9,6 +9,9 @@ class File(abc.ABC):
     def __init__(self, path: pathlib.Path) -> None:
         self.__path: pathlib.Path = path
         self.__encoding: str = "utf-8"
+        
+    def file_exists(self):
+        return self.__path.exists()
 
     @abc.abstractmethod
     async def read(self) -> str:
@@ -30,5 +33,8 @@ class FileHTML(File):
 
     @typing.override
     async def read(self) -> str:
+        if not self.file_exists:
+            return ""
+        
         async with aiofiles.open(file=self.path, encoding=self.encoding) as file:
             return await file.read()
