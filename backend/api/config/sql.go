@@ -3,9 +3,12 @@ package config
 import (
 	"fmt"
 
+	"github.com/ExtraProjects860/Project-Device-Mobile/model"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
+
+
 
 var loggerSQL = GetLogger("sql")
 
@@ -20,6 +23,21 @@ func formatterUriDb(format string, env EnvVariables) string {
 	)
 }
 
+func migrateDatabase() error {
+	err := db.AutoMigrate(
+		&model.TypeUser{},
+		&model.User{},
+		&model.TokenPassword{},
+		&model.WishList{},
+		&model.Product{},
+		&model.Promotion{},
+	)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 func InitializeDbSQL() (*gorm.DB, error) {
 	urlDB := formatterUriDb("%s://%s:%s@%s/%s?sslmode=disable", GetEnv())
 
@@ -29,8 +47,13 @@ func InitializeDbSQL() (*gorm.DB, error) {
 		return nil, err
 	}
 
-	fmt.Println("The connection is successfully estabilize!")
+	err = migrateDatabase()
+	if err != nil {
+		loggerSQL.Errorf("AutoMigrate error: %v", err)
+		return nil, err
+	}
 
+	fmt.Println("The connection is successfully estabilize!")
 	return db, nil
 }
 
