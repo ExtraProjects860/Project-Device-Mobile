@@ -1,28 +1,33 @@
 import asyncio
-from fastapi import APIRouter, status
-from schemas.Schemas import EmailSchema, send_success, send_err
-from config.Env import Env
-from config.EmailProviders import GmailProvider
-from services.TLSTransport import TLSTransport
-from services.GmailSend import GmailSend 
-from services.EmailTransport import EmailTransport
 
+from fastapi import APIRouter, Depends, HTTPException, status
+
+from config.Paths import STATIC_DIR
+from managers.File import FileHTML
+from routers.dependencies_email import get_gmail_send
+from schemas.Schemas import EmailSchema, Message
+from services.EmailSend import EmailSend
 
 router: APIRouter = APIRouter(prefix="/email", tags=["email"])
 
 
-@router.post("/")
-async def read_root(email_data: EmailSchema):
+@router.post("/", response_model=Message)
+async def send_email_to(
+    email_data: EmailSchema, gmail_send: EmailSend = Depends(get_gmail_send)
+):
     try:
-        transport: EmailTransport = TLSTransport(GmailProvider.HOSTNAME, GmailProvider.PORT)
-        
-        if Env.EMAIL_USERNAME == "" or Env.EMAIL_PASSWORD == "":
-            return send_err(status.HTTP_500_INTERNAL_SERVER_ERROR, "Failed to send email!")
-        
-        gmail_send: GmailSend = GmailSend(Env.EMAIL_USERNAME, Env.EMAIL_PASSWORD, email_data.subject, transport)
+        html: str = await FileHTML(
+            STATIC_DIR / f"{email_data.template_name}.html"
+        ).read()
+        html = gmail_send.formatter_variables(html, email_data.data)
+
         asyncio.create_task(
-            gmail_send.send_email(email_data.send_to, email_data.template_name, email_data.data))
-        return send_success("Email send success!")
+            coro=gmail_send.send_email(email_data.send_to, email_data.subject, html)
+        )
+        return Message(message=f"Email {email_data.send_to} send success!")
+    except FileNotFoundError as e:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
     except Exception as e:
-        print(f"Failed to send email, error: {e}")
-        return send_err(status.HTTP_500_INTERNAL_SERVER_ERROR, f"Failed to send email, error: {e}")
+        return HTTPException(
+            status.HTTP_500_INTERNAL_SERVER_ERROR, f"Failed to send email, error: {e}"
+        )

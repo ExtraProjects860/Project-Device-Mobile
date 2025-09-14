@@ -9,7 +9,7 @@ class File(abc.ABC):
     def __init__(self, path: pathlib.Path) -> None:
         self.__path: pathlib.Path = path
         self.__encoding: str = "utf-8"
-        
+
     def file_exists(self):
         return self.__path.exists()
 
@@ -33,8 +33,8 @@ class FileHTML(File):
 
     @typing.override
     async def read(self) -> str:
-        if not self.file_exists:
-            return ""
-        
+        if not self.file_exists():
+            raise FileNotFoundError("Template html not found or invalid name")
+
         async with aiofiles.open(file=self.path, encoding=self.encoding) as file:
             return await file.read()
