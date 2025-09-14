@@ -11,6 +11,7 @@ dotenv.load_dotenv()
 class Env:
     EMAIL_USERNAME: str = os.getenv("EMAIL_USERNAME", "")
     EMAIL_PASSWORD: str = os.getenv("EMAIL_PASSWORD", "")
+    API_PORT: int = int(os.getenv("API_PORT", "8054"))
 
     def __iter__(self) -> Generator[str]:
         for field in fields(class_or_instance=self):
