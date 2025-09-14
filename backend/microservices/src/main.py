@@ -1,13 +1,9 @@
 from fastapi import FastAPI
 
+from routers import email, health_check
+
 app = FastAPI()
+base_path = "/api/v1"
 
-
-@app.get("/")
-def read_root():
-    return {"Hello": "World"}
-
-
-@app.get("/items/{item_id}")
-def read_item(item_id: int, q: str | None = None):
-    return {"item_id": item_id, "q": q}
+app.include_router(router=email.router, prefix=base_path)
+app.include_router(router=health_check.router, prefix=base_path)

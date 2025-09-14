@@ -8,7 +8,10 @@ dependencies = [
     "python-dotenv",
     "fastapi",
     "uvicorn",
-    "pytest"
+    "pytest",
+    "aiosmtplib",
+    "jinja2",
+    "aiofiles",
 ]
 
 
