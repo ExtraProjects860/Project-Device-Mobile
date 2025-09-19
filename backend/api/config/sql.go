@@ -10,7 +10,7 @@ import (
 
 var loggerSQL = GetLogger("sql")
 
-func formatterUriDb(format string, env EnvVariables) string {
+func formatterUriDb(format string, env *EnvVariables) string {
 	return fmt.Sprintf(
 		format,
 		env.DB.Type,
@@ -30,9 +30,11 @@ func migrateDatabase(db *gorm.DB) error {
 		&model.Product{},
 		&model.Promotion{},
 	)
+
 	if err != nil {
 		return err
 	}
+	
 	return nil
 }
 
