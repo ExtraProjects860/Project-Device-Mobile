@@ -25,12 +25,12 @@ type EnvVariables struct {
 	API APIConfig
 }
 
-func InitilizeEnvVariables() (EnvVariables, error) {
+func InitilizeEnvVariables() (*EnvVariables, error) {
 	if err := godotenv.Load(); err != nil {
 		log.Fatal("Error loading .env file")
 	}
 
-	env := EnvVariables{
+	env := &EnvVariables{
 		DB: DBConfig{
 			Type:     os.Getenv("DB_TYPE"),
 			Username: os.Getenv("DB_USERNAME"),
