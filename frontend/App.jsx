@@ -1,21 +1,21 @@
-import { StyleSheet, Text, View } from 'react-native';
-import "./global.css"
+import { SafeAreaProvider } from "react-native-safe-area-context";
+import { View } from "react-native";
+import { NativeRouter, Routes, Route } from "react-router-native";
+import HomeScreen from "./src/screens/HomeScreen";
+import SobreScreen from "./src/screens/SobreScreen";
+import "./global.css";
 
 export default function App() {
   return (
-    <View className="flex-1 items-center justify-center bg-white">
-      <Text className="text-xl font-bold text-blue-500">
-        Welcome to Nativewind!
-      </Text>
-    </View>
+    <SafeAreaProvider>
+      <View className="flex-1">
+        <NativeRouter>
+          <Routes>
+            <Route path="/" element={<HomeScreen />} />
+            <Route path="/sobre" element={<SobreScreen />} />
+          </Routes>
+        </NativeRouter>
+      </View>
+    </SafeAreaProvider>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
