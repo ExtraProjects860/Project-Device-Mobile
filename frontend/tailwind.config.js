@@ -9,10 +9,10 @@
   theme: {
     extend: {
       colors: {
-        magenta: "#E91D62",
-        teal: "#087975",
-        white: "#ffffff",
-        black: "#000000",
+        'magenta': "#E91D62",
+        'teal': "#087975",
+        'white': "#ffffff",
+        'black': "#000000",
       },
     },
   },
