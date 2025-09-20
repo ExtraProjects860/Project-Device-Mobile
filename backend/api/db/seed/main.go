@@ -1,4 +1,4 @@
-package seed
+package main
 
 import (
 	"fmt"
@@ -12,10 +12,16 @@ var (
 	db *gorm.DB
 )
 
-func InitializeHandler() {
+func initializeSeed() {
 	if err := config.Init(); err != nil {
 		panic(fmt.Errorf("failed to init config: %v", err))
 	}
-	logger = config.GetLogger("seed")
+	logger = config.GetLogger("migrate")
 	db = config.GetDB()
+}
+
+func main() {
+	initializeSeed()
+	resetDB()
+	seeds()
 }

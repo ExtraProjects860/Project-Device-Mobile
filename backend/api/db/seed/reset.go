@@ -1,24 +1,16 @@
-package seed
+package main
 
 import "github.com/ExtraProjects860/Project-Device-Mobile/model"
 
-func ResetDB() {
+func resetDB() {
 	logger.Info("Dropping all tables...")
 	db.Migrator().DropTable(
-		&model.User{},
-		&model.TypeUser{},
-		&model.WishList{},
-		&model.Product{},
-		&model.Promotion{},
+		model.AllModelsSlice()...,
 	)
 
 	logger.Info("Recreating tables...")
 	db.AutoMigrate(
-		&model.User{},
-		&model.TypeUser{},
-		&model.WishList{},
-		&model.Product{},
-		&model.Promotion{},
+		model.AllModelsSlice()...,
 	)
 
 	logger.Info("Database reset completed.")

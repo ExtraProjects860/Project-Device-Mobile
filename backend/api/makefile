@@ -13,7 +13,9 @@ test:
 docs:
 	@swag init
 seeder:
-	@go run ./cmd/seed/main.go
+	@go run ./db/seed
+migrate:
+	@go run ./db/migrate
 clean:
 	@rm -f $$(APP_NAME)
 	@rm -rf ./docs
