@@ -76,7 +76,7 @@ func seedEnterprise(quantity int) {
 	logger.Infof("Seeding table '%s'...", modelName)
 	for i := 0; i < quantity; i++ {
 		enterprise := model.Enterprise{
-			Name: faker.MinecraftMobNeutral(),
+			Name: faker.AppName(),
 		}
 
 		db.Create(&enterprise)
