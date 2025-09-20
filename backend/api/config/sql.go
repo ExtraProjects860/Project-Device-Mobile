@@ -8,7 +8,7 @@ import (
 	"gorm.io/gorm"
 )
 
-var loggerSQL = GetLogger("sql")
+var loggerSQL *Logger = GetLogger("sql")
 
 func formatterUriDb(format string, env *EnvVariables) string {
 	return fmt.Sprintf(

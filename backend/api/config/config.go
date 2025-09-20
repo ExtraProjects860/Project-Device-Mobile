@@ -24,8 +24,6 @@ func Init() error {
 		return fmt.Errorf("failed to connection to DataBase, error: %v", err)
 	}
 
-	Seeds()
-
 	return nil
 }
 
