@@ -10,6 +10,7 @@ import (
 type User struct {
 	gorm.Model
 	TypeUserID     uint   `gorm:"not null"`
+	EnterpriseID   uint   `gorm:"not null"`
 	Name           string `gorm:"not null"`
 	Email          string `gorm:"uniqueIndex;not null"`
 	Password       string `gorm:"not null"`
@@ -18,8 +19,14 @@ type User struct {
 	PhotoUrl       *string
 
 	TypeUser      TypeUser      `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	Enterprise    Enterprise    `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 	TokenPassword TokenPassword `gorm:"foreignKey:UserID;references:ID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 	WishLists     []WishList    `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+}
+
+type Enterprise struct {
+	gorm.Model
+	Name string `gorm:"uniqueIndex;not null"`
 }
 
 type TokenPassword struct {
@@ -52,20 +59,22 @@ func (WishList) TableName() string {
 
 type Product struct {
 	gorm.Model
-	Name        string  `gorm:"uniqueIndex;not null"`
-	Description string  `gorm:"not null"`
-	Value       float64 `gorm:"type:decimal(10,2);not null"`
-	Quantity    int     `gorm:"not null"`
-	PhotoUrl    *string
-	IsAvaible   bool `gorm:"default:true;not null"`
-
-	Promotions []Promotion `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	Name               string   `gorm:"uniqueIndex;not null"`
+	Description        string   `gorm:"not null"`
+	Value              float64  `gorm:"type:decimal(10,2);not null"`
+	Quantity           int      `gorm:"not null"`
+	IsPromotionAvaible bool     `gorm:";not null"`
+	Discount           *float64 `gorm:"type:decimal(10,2)"`
+	PhotoUrl           *string
+	IsAvaible          bool `gorm:"default:true;not null"`
 }
 
-type Promotion struct {
-	gorm.Model
-	ProductID uint    `gorm:"uniqueIndex;not null"`
-	Product   Product `gorm:"not null"`
-	Discount  *float64
-	IsAvaible bool `gorm:"default:true;not null"`
+func AllModelsSlice() []any {
+	return []any{
+		&User{},
+		&TokenPassword{},
+		&TypeUser{},
+		&WishList{},
+		&Product{},
+	}
 }
