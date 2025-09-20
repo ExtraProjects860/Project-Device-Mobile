@@ -1,5 +1,5 @@
 import { View, Image } from "react-native";
-const footer = require("../assets/images/footer.png");
+import footer from "../../assets/images/footer.png";
 
 export default function Background({children, className = ""}) {
   return (
