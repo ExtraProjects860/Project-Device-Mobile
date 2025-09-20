@@ -1,4 +1,4 @@
-import { View, StyleSheet, Image, TouchableOpacity, StatusBar } from "react-native";
+import { View, Image, TouchableOpacity, StatusBar } from "react-native";
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const logo = require('../assets/images/logo.png');
