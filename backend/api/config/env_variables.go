@@ -16,6 +16,8 @@ type DBConfig struct {
 }
 
 type APIConfig struct {
+	JwtKey       string
+	RefreshKey   string
 	Port         string
 	EmailService string
 }
@@ -39,6 +41,8 @@ func InitilizeEnvVariables() (*EnvVariables, error) {
 			Name:     os.Getenv("DB_NAME"),
 		},
 		API: APIConfig{
+			JwtKey:       os.Getenv("JWT_KEY"),
+			RefreshKey:   os.Getenv("REFRESH_KEY"),
 			Port:         os.Getenv("API_PORT"),
 			EmailService: os.Getenv("EMAIL_SERVICE"),
 		},

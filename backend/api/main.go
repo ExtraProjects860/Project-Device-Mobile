@@ -6,6 +6,11 @@ import (
 	"github.com/ExtraProjects860/Project-Device-Mobile/router"
 )
 
+// @securityDefinitions.apikey BearerAuth
+// @in header
+// @name Authorization
+// @description Type "Bearer" followed by a space and JWT token.
+
 var (
 	logger *config.Logger
 )
