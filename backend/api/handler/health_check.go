@@ -8,10 +8,25 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// @BasePath /api/v1
+
+// @Summary      API status check
+// @Description  Returns a simple message to confirm API is running
+// @Tags         health
+// @Produce      json
+// @Success      200 {object} map[string]string
+// @Router       /health/api [get]
 func Api(ctx *gin.Context) {
 	sendStatus(ctx, "Api is ok")
 }
 
+// @Summary      Database status check
+// @Description  Tests connection to the database and returns status
+// @Tags         health
+// @Produce      json
+// @Success      200 {object} map[string]string
+// @Failure      500 {object} map[string]string
+// @Router       /health/database [get]
 func Database(ctx *gin.Context) {
 	if err := config.TestConnectionSQL(); err != nil {
 		logger.Errorf("database connection test failed: %v", err)
@@ -26,6 +41,13 @@ func Database(ctx *gin.Context) {
 	sendStatus(ctx, "Database connected")
 }
 
+// @Summary      Email service check
+// @Description  Calls external email service to verify availability
+// @Tags         health
+// @Produce      json
+// @Success      200 {object} map[string]string
+// @Failure      500 {object} map[string]string
+// @Router       /health/email [get]
 func EmailService(ctx *gin.Context) {
 	url := config.GetEnv().API.EmailService
 

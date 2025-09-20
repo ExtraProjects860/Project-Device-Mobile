@@ -6,6 +6,7 @@ import (
 	"gorm.io/gorm"
 )
 
+// TODO preciso adicionar um campo ou tabela para colocar empresa relacionado ao usuário
 type User struct {
 	gorm.Model
 	TypeUserID     uint   `gorm:"not null"`
