@@ -1,7 +1,7 @@
 import { View, Image } from "react-native";
 const footer = require("../assets/images/footer.png");
 
-export default function background({children, className = ""}) {
+export default function Background({children, className = ""}) {
   return (
     <View className="flex-1 bg-teal -z-10">
       {children}
