@@ -10,7 +10,7 @@ import "github.com/gin-gonic/gin"
 // @Produce      json
 // @Success      200 {object} map[string]string
 // @Router       /wishlist [post]
-func AddProductWishList(ctx *gin.Context) {
+func AddProductWishListHandler(ctx *gin.Context) {
 	sendSuccess(ctx, "Add Product in Wish List!")
 }
 
@@ -20,7 +20,7 @@ func AddProductWishList(ctx *gin.Context) {
 // @Produce      json
 // @Success      200 {object} map[string]string
 // @Router       /wishlist/{id} [delete]
-func DeleteProductWishList(ctx *gin.Context) {
+func DeleteProductWishListHandler(ctx *gin.Context) {
 	sendSuccess(ctx, "Delete Product in Wish List!")
 }
 
@@ -30,6 +30,6 @@ func DeleteProductWishList(ctx *gin.Context) {
 // @Produce      json
 // @Success      200 {array} map[string]string
 // @Router       /wishlist [get]
-func GetItensWishList(ctx *gin.Context) {
+func GetItensWishListHandler(ctx *gin.Context) {
 	sendSuccess(ctx, "Get Itens in Wish List!")
 }

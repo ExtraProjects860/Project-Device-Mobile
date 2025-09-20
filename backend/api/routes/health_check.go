@@ -10,10 +10,10 @@ import (
 func InitHealthCheckRoutes(r *gin.Engine) {
 	health := r.Group(fmt.Sprintf("%v/health", basePath))
 	{
-		health.GET("/api", handler.Api)
+		health.GET("/api", handler.ApiHandler)
 
-		health.GET("/database", handler.Database)
+		health.GET("/database", handler.DatabaseHandler)
 
-		health.GET("/emailservice", handler.EmailService)
+		health.GET("/emailservice", handler.EmailServiceHandler)
 	}
 }

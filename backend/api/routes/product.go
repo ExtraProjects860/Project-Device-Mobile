@@ -7,7 +7,7 @@ import (
 
 func RegisterProductRoutes(rg *gin.RouterGroup) {
 	productGroup := rg.Group("/products")
-	productGroup.GET("/", handler.GetProducts)
-	productGroup.POST("/", handler.CreateProduct)
-	productGroup.PATCH("/{id}", handler.UpdateProduct)
+	productGroup.GET("/", handler.GetProductsHandler)
+	productGroup.POST("/", handler.CreateProductHandler)
+	productGroup.PATCH("/{id}", handler.UpdateProductHandler)
 }

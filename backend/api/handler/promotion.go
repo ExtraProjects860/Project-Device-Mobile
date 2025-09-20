@@ -10,7 +10,7 @@ import "github.com/gin-gonic/gin"
 // @Produce      json
 // @Success      200 {object} map[string]string
 // @Router       /promotions [post]
-func CreatePromotion(ctx *gin.Context) {
+func CreatePromotionHandler(ctx *gin.Context) {
 	sendSuccess(ctx, "Add Promotion Product!")
 }
 
@@ -20,7 +20,7 @@ func CreatePromotion(ctx *gin.Context) {
 // @Produce      json
 // @Success      200 {object} map[string]string
 // @Router       /promotions/{id} [patch]
-func UpdatePromotion(ctx *gin.Context) {
+func UpdatePromotionHandler(ctx *gin.Context) {
 	sendSuccess(ctx, "Update Promotion Product!")
 }
 
@@ -31,6 +31,6 @@ func UpdatePromotion(ctx *gin.Context) {
 // @Success      200 {array} map[string]string
 // @Failure      500 {object} map[string]string
 // @Router       /promotions [get]
-func GetPromotions(ctx *gin.Context) {
+func GetPromotionsHandler(ctx *gin.Context) {
 	sendSuccess(ctx, "Get Promotions Products!")
 }

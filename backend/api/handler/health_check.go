@@ -16,7 +16,7 @@ import (
 // @Produce      json
 // @Success      200 {object} map[string]string
 // @Router       /health/api [get]
-func Api(ctx *gin.Context) {
+func ApiHandler(ctx *gin.Context) {
 	sendStatus(ctx, "Api is ok")
 }
 
@@ -27,7 +27,7 @@ func Api(ctx *gin.Context) {
 // @Success      200 {object} map[string]string
 // @Failure      500 {object} map[string]string
 // @Router       /health/database [get]
-func Database(ctx *gin.Context) {
+func DatabaseHandler(ctx *gin.Context) {
 	if err := config.TestConnectionSQL(); err != nil {
 		logger.Errorf("database connection test failed: %v", err)
 		sendErr(
@@ -48,8 +48,8 @@ func Database(ctx *gin.Context) {
 // @Success      200 {object} map[string]string
 // @Failure      500 {object} map[string]string
 // @Router       /health/email [get]
-func EmailService(ctx *gin.Context) {
-	url := config.GetEnv().API.EmailService
+func EmailServiceHandler(ctx *gin.Context) {
+	url := env.API.EmailService
 
 	resp, err := http.Get(url)
 	if err != nil {

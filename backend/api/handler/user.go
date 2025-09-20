@@ -10,7 +10,7 @@ import "github.com/gin-gonic/gin"
 // @Produce      json
 // @Success      200 {object} map[string]string
 // @Router       /users [post]
-func CreateUser(ctx *gin.Context) {
+func CreateUserHandler(ctx *gin.Context) {
 	sendSuccess(ctx, "Create User!")
 }
 
@@ -20,7 +20,7 @@ func CreateUser(ctx *gin.Context) {
 // @Produce      json
 // @Success      200 {object} map[string]string
 // @Router       /users/{id} [get]
-func GetInfoUser(ctx *gin.Context) {
+func GetInfoUserHandler(ctx *gin.Context) {
 	sendSuccess(ctx, "Get Info User!")
 }
 
@@ -28,9 +28,10 @@ func GetInfoUser(ctx *gin.Context) {
 // @Description  Returns a list of all users
 // @Tags         users
 // @Produce      json
+// @Security     BearerAuth
 // @Success      200 {array} map[string]string
 // @Router       /users [get]
-func GetUsers(ctx *gin.Context) {
+func GetUsersHandler(ctx *gin.Context) {
 	sendSuccess(ctx, "Get Users!")
 }
 
@@ -40,6 +41,6 @@ func GetUsers(ctx *gin.Context) {
 // @Produce      json
 // @Success      200 {object} map[string]string
 // @Router       /users/{id} [patch]
-func UpdateUser(ctx *gin.Context) {
+func UpdateUserHandler(ctx *gin.Context) {
 	sendSuccess(ctx, "Updated User!")
 }

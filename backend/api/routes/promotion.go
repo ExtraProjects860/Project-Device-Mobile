@@ -7,7 +7,7 @@ import (
 
 func RegisterPromotionRoutes(rg *gin.RouterGroup) {
 	promotionGroup := rg.Group("/promotions")
-	promotionGroup.GET("/", handler.GetPromotions)
-	promotionGroup.POST("/", handler.CreatePromotion)
-	promotionGroup.PATCH("/{id}", handler.UpdatePromotion)
+	promotionGroup.GET("/", handler.GetPromotionsHandler)
+	promotionGroup.POST("/", handler.CreatePromotionHandler)
+	promotionGroup.PATCH("/{id}", handler.UpdatePromotionHandler)
 }
