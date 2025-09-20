@@ -1,10 +1,13 @@
-package config
+package seed
 
 import (
+	"fmt"
 	"math/rand/v2"
 	"time"
 
+	"github.com/ExtraProjects860/Project-Device-Mobile/config"
 	"github.com/ExtraProjects860/Project-Device-Mobile/model"
+	"github.com/ExtraProjects860/Project-Device-Mobile/utils"
 	"github.com/brianvoe/gofakeit/v7"
 )
 
@@ -25,21 +28,29 @@ func verifyStartSeed(m any) bool {
 func seedUser(quantity int) {
 	modelName := "User"
 	if verifyStartSeed(&model.User{}) {
-		loggerSQL.Infof("Table '%s' already has data. Skipping seed.", modelName)
+		logger.Infof("Table '%s' already has data. Skipping seed.", modelName)
 		return
 	}
 
-	loggerSQL.Infof("Seeding table '%s' with %d records...", modelName, quantity)
+	logger.Infof("Seeding table '%s' with %d records...", modelName, quantity)
 	var typeUsers []model.TypeUser
 	db.Find(&typeUsers)
+
+	const password string = "123456"
 
 	for i := 0; i < quantity; i++ {
 		tu := typeUsers[rng.IntN(len(typeUsers))]
 
+		hashedPassword, err := utils.GenerateHashPassword(password)
+		if err != nil {
+			logger.Errorf("Error generate hash password. %v", err)
+			panic(fmt.Sprintf("failed to hash password: %v", err))
+		}
+
 		user := model.User{
 			Name:           faker.Name(),
 			Email:          faker.Email(),
-			Password:       "123456",                 // TODO essa senha dps vai ser substituída pela função hash
+			Password:       hashedPassword,                 // TODO essa senha dps vai ser substituída pela função hash
 			Cpf:            faker.Regex("[0-9]{11}"), // TODO pode gerar cpfs inválidos
 			RegisterNumber: uint(faker.Number(1000, 9999)),
 			TypeUserID:     tu.ID,
@@ -48,31 +59,31 @@ func seedUser(quantity int) {
 		db.Create(&user)
 	}
 
-	loggerSQL.Infof("Seeding for table '%s' completed.", modelName)
+	logger.Infof("Seeding for table '%s' completed.", modelName)
 }
 
 func seedTypeUser() {
 	modelName := "TypeUser"
 	if verifyStartSeed(&model.TypeUser{}) {
-		loggerSQL.Infof("Table '%s' already has data. Skipping seed.", modelName)
+		logger.Infof("Table '%s' already has data. Skipping seed.", modelName)
 		return
 	}
 
-	loggerSQL.Infof("Seeding table '%s'...", modelName)
+	logger.Infof("Seeding table '%s'...", modelName)
 	types := []model.TypeUser{
-		{Name: SuperAdmin.String()},
-		{Name: Admin.String()},
-		{Name: User.String()},
+		{Name: config.SuperAdmin.String()},
+		{Name: config.Admin.String()},
+		{Name: config.User.String()},
 	}
 
 	db.Create(&types)
-	loggerSQL.Infof("Seeding for table '%s' completed.", modelName)
+	logger.Infof("Seeding for table '%s' completed.", modelName)
 }
 
 func seedWishList() {
 	modelName := "WishList"
 	if verifyStartSeed(&model.WishList{}) {
-		loggerSQL.Infof("Table '%s' already has data. Skipping seed.", modelName)
+		logger.Infof("Table '%s' already has data. Skipping seed.", modelName)
 		return
 	}
 
@@ -82,11 +93,11 @@ func seedWishList() {
 	db.Find(&products)
 
 	if len(users) == 0 || len(products) == 0 {
-		loggerSQL.Warningf("Cannot seed '%s'. Users or Products table is empty.", modelName)
+		logger.Warningf("Cannot seed '%s'. Users or Products table is empty.", modelName)
 		return
 	}
 
-	loggerSQL.Infof("Seeding table '%s'...", modelName)
+	logger.Infof("Seeding table '%s'...", modelName)
 	for i := 0; i < 10; i++ {
 		u := users[rand.IntN(len(users))]
 		p := products[rand.IntN(len(products))]
@@ -99,17 +110,17 @@ func seedWishList() {
 		db.Create(&w)
 	}
 
-	loggerSQL.Infof("Seeding for table '%s' completed.", modelName)
+	logger.Infof("Seeding for table '%s' completed.", modelName)
 }
 
 func seedProduct(quantity int) {
 	modelName := "Product"
 	if verifyStartSeed(&model.Product{}) {
-		loggerSQL.Infof("Table '%s' already has data. Skipping seed.", modelName)
+		logger.Infof("Table '%s' already has data. Skipping seed.", modelName)
 		return
 	}
 
-	loggerSQL.Infof("Seeding table '%s' with %d records...", modelName, quantity)
+	logger.Infof("Seeding table '%s' with %d records...", modelName, quantity)
 	for i := 0; i < quantity; i++ {
 		product := model.Product{
 			Name:        faker.ProductName(),
@@ -120,13 +131,13 @@ func seedProduct(quantity int) {
 		db.Create(&product)
 	}
 
-	loggerSQL.Infof("Seeding for table '%s' completed.", modelName)
+	logger.Infof("Seeding for table '%s' completed.", modelName)
 }
 
 func seedPromotion() {
 	modelName := "Promotion"
 	if verifyStartSeed(&model.Promotion{}) {
-		loggerSQL.Infof("Table '%s' already has data. Skipping seed.", modelName)
+		logger.Infof("Table '%s' already has data. Skipping seed.", modelName)
 		return
 	}
 
@@ -134,11 +145,11 @@ func seedPromotion() {
 	db.Find(&products)
 
 	if len(products) == 0 {
-		loggerSQL.Warningf("Cannot seed '%s'. Products table is empty.", modelName)
+		logger.Warningf("Cannot seed '%s'. Products table is empty.", modelName)
 		return
 	}
 
-	loggerSQL.Infof("Seeding table '%s'...", modelName)
+	logger.Infof("Seeding table '%s'...", modelName)
 	for i := 0; i < 5; i++ {
 		p := products[rng.IntN(len(products))]
 		discount := faker.Price(5, 50) / 100
@@ -149,7 +160,7 @@ func seedPromotion() {
 		db.Create(&promotion)
 	}
 
-	loggerSQL.Infof("Seeding for table '%s' completed.", modelName)
+	logger.Infof("Seeding for table '%s' completed.", modelName)
 }
 
 func Seeds() {
@@ -158,4 +169,6 @@ func Seeds() {
 	seedProduct(30)
 	seedWishList()
 	seedPromotion()
+
+	logger.Info("Seed completed.")
 }

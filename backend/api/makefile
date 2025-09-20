@@ -12,6 +12,8 @@ test:
 	@go test ./ ...
 docs:
 	@swag init
+seeder:
+	@go run ./cmd/seed/main.go
 clean:
 	@rm -f $$(APP_NAME)
 	@rm -rf ./docs
