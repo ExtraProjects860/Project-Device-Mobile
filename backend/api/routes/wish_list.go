@@ -8,8 +8,8 @@ import (
 func RegisterWishListRoutes(rg *gin.RouterGroup) {
 	wishListGroup := rg.Group("/wish-list")
 	wishListGroup.GET("/", handler.GetItensWishListHandler)
-	wishListGroup.POST("/", handler.AddProductWishListHandler)
+	wishListGroup.POST("/", handler.AddInWishListHandler)
 	
 	// TODO revisar um método melhor pra essa rota
-	wishListGroup.PATCH("/{id}", handler.DeleteProductWishListHandler)
+	wishListGroup.PATCH("/{id}", handler.UpdateProductHandler)
 }

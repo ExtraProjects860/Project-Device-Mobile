@@ -13,7 +13,6 @@ func InitMainRoutes(r *gin.Engine) {
 	api := r.Group(basePath)
 	RegisterUserRoutes(api)
 	RegisterProductRoutes(api)
-	RegisterPromotionRoutes(api)
 	RegisterAuthRoutes(api)
 	RegisterWishListRoutes(api)
 }
