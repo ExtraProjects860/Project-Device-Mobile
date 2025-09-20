@@ -33,15 +33,15 @@ func seedUser(quantity int) {
 	}
 
 	logger.Infof("Seeding table '%s' with %d records...", modelName, quantity)
-	var typeUsers []model.TypeUser
+	var role []model.Role
 	var enterprise []model.Enterprise
-	db.Find(&typeUsers)
+	db.Find(&role)
 	db.Find(&enterprise)
 
 	const password string = "123456"
 
 	for i := 0; i < quantity; i++ {
-		tu := typeUsers[rng.IntN(len(typeUsers))]
+		re := role[rng.IntN(len(role))]
 		en := enterprise[rng.IntN(len(enterprise))]
 
 		hashedPassword, err := utils.GenerateHashPassword(password)
@@ -56,7 +56,7 @@ func seedUser(quantity int) {
 			Password:       hashedPassword,           // TODO essa senha dps vai ser substituída pela função hash
 			Cpf:            faker.Regex("[0-9]{11}"), // TODO pode gerar cpfs inválidos
 			RegisterNumber: uint(faker.Number(1000, 9999)),
-			TypeUserID:     tu.ID,
+			RoleID:     re.ID,
 			EnterpriseID:   en.ID,
 		}
 
@@ -85,21 +85,21 @@ func seedEnterprise(quantity int) {
 	logger.Infof("Seeding for table '%s' completed.", modelName)
 }
 
-func seedTypeUser() {
-	modelName := "TypeUser"
-	if verifyStartSeed(&model.TypeUser{}) {
+func seedRole() {
+	modelName := "RoleUser"
+	if verifyStartSeed(&model.Role{}) {
 		logger.Infof("Table '%s' already has data. Skipping seed.", modelName)
 		return
 	}
 
 	logger.Infof("Seeding table '%s'...", modelName)
-	types := []model.TypeUser{
+	roles := []model.Role{
 		{Name: config.SuperAdmin.String()},
 		{Name: config.Admin.String()},
 		{Name: config.User.String()},
 	}
 
-	db.Create(&types)
+	db.Create(&roles)
 	logger.Infof("Seeding for table '%s' completed.", modelName)
 }
 
@@ -162,7 +162,7 @@ func seedProduct(quantity int) {
 }
 
 func seeds() {
-	seedTypeUser()
+	seedRole()
 	seedEnterprise(10)
 	seedUser(30)
 	seedProduct(30)

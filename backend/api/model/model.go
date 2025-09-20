@@ -9,8 +9,8 @@ import (
 // TODO preciso adicionar um campo ou tabela para colocar empresa relacionado ao usuário
 type User struct {
 	gorm.Model
-	TypeUserID     uint   `gorm:"not null"`
-	EnterpriseID   uint   `gorm:"not null"`
+	RoleID         uint   `gorm:"not null"`
+	EnterpriseID   *uint   
 	Name           string `gorm:"not null"`
 	Email          string `gorm:"uniqueIndex;not null"`
 	Password       string `gorm:"not null"`
@@ -18,7 +18,7 @@ type User struct {
 	RegisterNumber uint   `gorm:"not null"`
 	PhotoUrl       *string
 
-	TypeUser      TypeUser      `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	Role          Role          `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 	Enterprise    Enterprise    `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 	TokenPassword TokenPassword `gorm:"foreignKey:UserID;references:ID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 	WishLists     []WishList    `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
@@ -37,7 +37,7 @@ type TokenPassword struct {
 	User   *User
 }
 
-type TypeUser struct {
+type Role struct {
 	gorm.Model
 	Name  string `gorm:"unique;not null"`
 	Users []User `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
@@ -73,7 +73,7 @@ func AllModelsSlice() []any {
 	return []any{
 		&User{},
 		&TokenPassword{},
-		&TypeUser{},
+		&Role{},
 		&WishList{},
 		&Product{},
 	}
