@@ -56,8 +56,8 @@ func seedUser(quantity int) {
 			Password:       hashedPassword,           // TODO essa senha dps vai ser substituída pela função hash
 			Cpf:            faker.Regex("[0-9]{11}"), // TODO pode gerar cpfs inválidos
 			RegisterNumber: uint(faker.Number(1000, 9999)),
-			RoleID:     re.ID,
-			EnterpriseID:   en.ID,
+			RoleID:         re.ID,
+			EnterpriseID:   &en.ID,
 		}
 
 		db.Create(&user)
@@ -148,11 +148,11 @@ func seedProduct(quantity int) {
 		discount := faker.Price(5, 50) / 100
 
 		product := model.Product{
-			Name:        faker.ProductName(),
-			Description: faker.Sentence(10),
-			Value:       faker.Price(50, 5000), // preço entre 50 e 5000
-			Quantity:    faker.Number(1, 100),
-			Discount:    &discount,
+			Name:               faker.ProductName(),
+			Description:        faker.Sentence(10),
+			Value:              faker.Price(50, 5000), // preço entre 50 e 5000
+			Quantity:           faker.Number(1, 100),
+			Discount:           &discount,
 			IsPromotionAvaible: rng.IntN(2) == 1,
 		}
 		db.Create(&product)
