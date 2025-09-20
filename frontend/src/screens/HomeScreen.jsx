@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Text, View } from "react-native";
-import Header from "../components/Header"; 
+import Header from "../components/Header";
 import Background from "../components/ui/Background";
 import Menu from "../components/Menu";
 

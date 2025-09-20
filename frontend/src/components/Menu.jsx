@@ -1,5 +1,6 @@
-import React, { useState } from "react";
-import { View, Text, TouchableOpacity, Image, Switch, Modal } from "react-native";
+import React, { useState,useEffect} from "react";
+import { View, Text, TouchableOpacity, Image, Switch, Modal,Dimensions,Pressable} from "react-native";
+import Animated, { useSharedValue, useAnimatedStyle, withTiming, Easing } from "react-native-reanimated";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import logo from "../assets/images/logo.png"; 
 
@@ -11,14 +12,44 @@ import logo from "../assets/images/logo.png";
 export default function Menu({ visible, onClose }) {
   const [isThemeDark, setIsThemeDark] = useState(false);
   const toggleTheme = () => setIsThemeDark(previousState => !previousState);
+const { width: screenWidth } = Dimensions.get("window");
+const translateX = useSharedValue(screenWidth);
+const animatedMenuStyle = useAnimatedStyle(() => {
+    return {
+      transform: [{ translateX: translateX.value }],
+    };
+  });
+
+useEffect(() => {
+    if (visible) {
+      // Anima para a posição 0 (visível)
+      translateX.value = withTiming(0, {
+        duration: 300,
+        easing: Easing.out(Easing.ease),
+      });
+    } else {
+      // Anima de volta para fora da tela
+      translateX.value = withTiming(screenWidth, {
+        duration: 300,
+        easing: Easing.in(Easing.ease),
+      });
+    }
+  }, [visible]);
 
   return (
     <Modal
-      animationType="slide"
-      transparent={false}
+      animationType="fade"
+      transparent={true}
       visible={visible}
       onRequestClose={onClose}
     >
+    <Pressable onPress={onClose} className="flex-1 bg-black/50">
+    <Animated.View
+              onStartShouldSetResponder={() => true}
+              style={[animatedMenuStyle]}
+              className="absolute top-0 bottom-0 right-0 h-full w-5/6" 
+            >
+
         {/* Header */}
       <View className="flex-1 bg-magenta p-6">
         <View className="flex-row items-center justify-between mb-10">
@@ -77,6 +108,9 @@ export default function Menu({ visible, onClose }) {
           <Text className="text-white text-center text-xs">© Direitos Reservados</Text>
         </View>
       </View>
+      
+      </Animated.View>
+      </Pressable>
     </Modal>
   );
 }
