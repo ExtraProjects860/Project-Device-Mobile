@@ -18,6 +18,9 @@ const docTemplate = `{
         "/auth/login": {
             "post": {
                 "description": "Authenticates user and returns access token",
+                "consumes": [
+                    "application/json"
+                ],
                 "produces": [
                     "application/json"
                 ],
@@ -25,6 +28,17 @@ const docTemplate = `{
                     "auth"
                 ],
                 "summary": "User Login",
+                "parameters": [
+                    {
+                        "description": "Request body",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/handler.LoginRequest"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -50,6 +64,9 @@ const docTemplate = `{
         "/auth/logout": {
             "post": {
                 "description": "Logs out the user and invalidates token",
+                "consumes": [
+                    "application/json"
+                ],
                 "produces": [
                     "application/json"
                 ],
@@ -82,6 +99,9 @@ const docTemplate = `{
         "/auth/refresh-token": {
             "post": {
                 "description": "Refreshes the authentication token",
+                "consumes": [
+                    "application/json"
+                ],
                 "produces": [
                     "application/json"
                 ],
@@ -114,6 +134,9 @@ const docTemplate = `{
         "/auth/request-token": {
             "post": {
                 "description": "Requests a reset token for user password",
+                "consumes": [
+                    "application/json"
+                ],
                 "produces": [
                     "application/json"
                 ],
@@ -137,6 +160,9 @@ const docTemplate = `{
         "/auth/reset-password": {
             "post": {
                 "description": "Resets user password using the token",
+                "consumes": [
+                    "application/json"
+                ],
                 "produces": [
                     "application/json"
                 ],
@@ -395,6 +421,11 @@ const docTemplate = `{
         },
         "/users": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Returns a list of all users",
                 "produces": [
                     "application/json"
@@ -553,6 +584,27 @@ const docTemplate = `{
                     }
                 }
             }
+        }
+    },
+    "definitions": {
+        "handler.LoginRequest": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            }
+        }
+    },
+    "securityDefinitions": {
+        "BearerAuth": {
+            "description": "Type \"Bearer\" followed by a space and JWT token.",
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
         }
     }
 }`

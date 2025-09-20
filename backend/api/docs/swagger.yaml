@@ -1,9 +1,26 @@
+definitions:
+  handler.LoginRequest:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    type: object
 info:
   contact: {}
 paths:
   /auth/login:
     post:
+      consumes:
+      - application/json
       description: Authenticates user and returns access token
+      parameters:
+      - description: Request body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/handler.LoginRequest'
       produces:
       - application/json
       responses:
@@ -24,6 +41,8 @@ paths:
       - auth
   /auth/logout:
     post:
+      consumes:
+      - application/json
       description: Logs out the user and invalidates token
       produces:
       - application/json
@@ -45,6 +64,8 @@ paths:
       - auth
   /auth/refresh-token:
     post:
+      consumes:
+      - application/json
       description: Refreshes the authentication token
       produces:
       - application/json
@@ -66,6 +87,8 @@ paths:
       - auth
   /auth/request-token:
     post:
+      consumes:
+      - application/json
       description: Requests a reset token for user password
       produces:
       - application/json
@@ -81,6 +104,8 @@ paths:
       - auth
   /auth/reset-password:
     post:
+      consumes:
+      - application/json
       description: Resets user password using the token
       produces:
       - application/json
@@ -263,6 +288,8 @@ paths:
                 type: string
               type: object
             type: array
+      security:
+      - BearerAuth: []
       summary: Get Users
       tags:
       - users
@@ -355,4 +382,10 @@ paths:
       summary: Delete Product from Wish List
       tags:
       - wishlist
+securityDefinitions:
+  BearerAuth:
+    description: Type "Bearer" followed by a space and JWT token.
+    in: header
+    name: Authorization
+    type: apiKey
 swagger: "2.0"
