@@ -1,9 +1,51 @@
 definitions:
+  handler.ErrResponse:
+    properties:
+      error:
+        type: string
+    type: object
   handler.LoginRequest:
     properties:
       email:
         type: string
       password:
+        type: string
+    type: object
+  schemas.EnterpriseResponse:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
+  schemas.RoleResponse:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
+  schemas.UserResponse:
+    properties:
+      cpf:
+        type: string
+      created_at:
+        type: string
+      email:
+        type: string
+      enterprise:
+        $ref: '#/definitions/schemas.EnterpriseResponse'
+      id:
+        type: integer
+      name:
+        type: string
+      photo_url:
+        type: string
+      register_number:
+        type: integer
+      role:
+        $ref: '#/definitions/schemas.RoleResponse'
+      updated_at:
         type: string
     type: object
 info:
@@ -176,6 +218,41 @@ paths:
       summary: Email service check
       tags:
       - health
+  /product:
+    patch:
+      description: Updates an existing product
+      parameters:
+      - description: Product ID
+        in: query
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Update Product
+      tags:
+      - products
+    post:
+      description: Creates a new product
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Create Product
+      tags:
+      - products
   /products:
     get:
       description: Returns all products
@@ -193,60 +270,15 @@ paths:
       summary: Get Products
       tags:
       - products
-    post:
-      description: Creates a new product
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            additionalProperties:
-              type: string
-            type: object
-      summary: Create Product
-      tags:
-      - products
-  /products/{id}:
-    patch:
-      description: Updates an existing product
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            additionalProperties:
-              type: string
-            type: object
-      summary: Update Product
-      tags:
-      - products
-  /promotions:
+  /user:
     get:
-      description: Returns all product promotions
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            items:
-              additionalProperties:
-                type: string
-              type: object
-            type: array
-        "500":
-          description: Internal Server Error
-          schema:
-            additionalProperties:
-              type: string
-            type: object
-      summary: Get Promotions
-      tags:
-      - promotions
-    post:
-      description: Creates a new product promotion
+      description: Returns information about a specific user
+      parameters:
+      - description: User ID
+        in: query
+        name: id
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -256,12 +288,17 @@ paths:
             additionalProperties:
               type: string
             type: object
-      summary: Create Promotion
+      summary: Get User Info
       tags:
-      - promotions
-  /promotions/{id}:
+      - users
     patch:
-      description: Updates an existing product promotion
+      description: Updates an existing user
+      parameters:
+      - description: User ID
+        in: query
+        name: id
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -271,26 +308,7 @@ paths:
             additionalProperties:
               type: string
             type: object
-      summary: Update Promotion
-      tags:
-      - promotions
-  /users:
-    get:
-      description: Returns a list of all users
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            items:
-              additionalProperties:
-                type: string
-              type: object
-            type: array
-      security:
-      - BearerAuth: []
-      summary: Get Users
+      summary: Update User
       tags:
       - users
     post:
@@ -307,33 +325,27 @@ paths:
       summary: Create User
       tags:
       - users
-  /users/{id}:
+  /users:
     get:
-      description: Returns information about a specific user
+      description: Returns a list of all users
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            additionalProperties:
-              type: string
-            type: object
-      summary: Get User Info
-      tags:
-      - users
-    patch:
-      description: Updates an existing user
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
+            items:
+              $ref: '#/definitions/schemas.UserResponse'
+            type: array
+        "400":
+          description: Bad Request
           schema:
-            additionalProperties:
-              type: string
-            type: object
-      summary: Update User
+            $ref: '#/definitions/handler.ErrResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.ErrResponse'
+      summary: Get Users
       tags:
       - users
   /wishlist:
@@ -353,6 +365,26 @@ paths:
       summary: Get Wish List Items
       tags:
       - wishlist
+    patch:
+      description: Update a product from the user wish list
+      parameters:
+      - description: WishList ID
+        in: query
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Update Product from Wish List
+      tags:
+      - wishlist
     post:
       description: Adds a product to the user wish list
       produces:
@@ -365,21 +397,6 @@ paths:
               type: string
             type: object
       summary: Add Product to Wish List
-      tags:
-      - wishlist
-  /wishlist/{id}:
-    delete:
-      description: Removes a product from the user wish list
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            additionalProperties:
-              type: string
-            type: object
-      summary: Delete Product from Wish List
       tags:
       - wishlist
 securityDefinitions:
