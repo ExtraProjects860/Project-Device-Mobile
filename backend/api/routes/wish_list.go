@@ -6,10 +6,11 @@ import (
 )
 
 func RegisterWishListRoutes(rg *gin.RouterGroup) {
-	wishListGroup := rg.Group("/wish-list")
-	wishListGroup.GET("/", handler.GetItensWishListHandler)
-	wishListGroup.POST("/", handler.AddInWishListHandler)
-	
-	// TODO revisar um método melhor pra essa rota
-	wishListGroup.PATCH("/{id}", handler.UpdateProductHandler)
+	{
+		rg.GET("/wishlists", handler.GetItensWishListHandler)
+
+		rg.POST("/wishlist", handler.AddInWishListHandler)
+
+		rg.PATCH("/wishlist", handler.UpdateProductHandler)
+	}
 }

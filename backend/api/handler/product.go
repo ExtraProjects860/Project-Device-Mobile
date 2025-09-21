@@ -9,7 +9,7 @@ import "github.com/gin-gonic/gin"
 // @Tags         products
 // @Produce      json
 // @Success      200 {object} map[string]string
-// @Router       /products [post]
+// @Router       /product [post]
 func CreateProductHandler(ctx *gin.Context) {
 	sendSuccess(ctx, "Add Promotion Product!")
 }
@@ -17,9 +17,10 @@ func CreateProductHandler(ctx *gin.Context) {
 // @Summary      Update Product
 // @Description  Updates an existing product
 // @Tags         products
+// @Param 		 id query string true "Product ID"
 // @Produce      json
 // @Success      200 {object} map[string]string
-// @Router       /products/{id} [patch]
+// @Router       /product [patch]
 func UpdateProductHandler(ctx *gin.Context) {
 	sendSuccess(ctx, "Update Promotion Product!")
 }

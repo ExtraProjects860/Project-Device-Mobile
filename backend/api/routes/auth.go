@@ -7,9 +7,15 @@ import (
 
 func RegisterAuthRoutes(rg *gin.RouterGroup) {
 	authGroup := rg.Group("/auth")
-	authGroup.POST("/request", handler.RequestTokenHandler)
-	authGroup.POST("/reset", handler.ResetPasswordHandler)
-	authGroup.POST("/login", handler.LoginHandler)
-	authGroup.POST("/refresh-token", handler.RefreshTokenHandler)
-	authGroup.POST("/logout", handler.LogoutHandler)
+	{
+		authGroup.POST("/request", handler.RequestTokenHandler)
+
+		authGroup.POST("/reset", handler.ResetPasswordHandler)
+
+		authGroup.POST("/login", handler.LoginHandler)
+
+		authGroup.POST("/refresh-token", handler.RefreshTokenHandler)
+
+		authGroup.POST("/logout", handler.LogoutHandler)
+	}
 }

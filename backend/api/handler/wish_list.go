@@ -14,12 +14,13 @@ func AddInWishListHandler(ctx *gin.Context) {
 	sendSuccess(ctx, "Add Product in Wish List!")
 }
 
-// @Summary      Delete Product from Wish List
-// @Description  Removes a product from the user wish list
+// @Summary      Update Product from Wish List
+// @Description  Update a product from the user wish list
 // @Tags         wishlist
+// @Param 		 id query string true "WishList ID"
 // @Produce      json
 // @Success      200 {object} map[string]string
-// @Router       /wishlist/{id} [delete]
+// @Router       /wishlist [patch]
 func UpdateWishListHandler(ctx *gin.Context) {
 	sendSuccess(ctx, "Delete Product in Wish List!")
 }

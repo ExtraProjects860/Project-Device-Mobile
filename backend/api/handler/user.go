@@ -1,6 +1,11 @@
 package handler
 
-import "github.com/gin-gonic/gin"
+import (
+	"net/http"
+
+	"github.com/ExtraProjects860/Project-Device-Mobile/repository"
+	"github.com/gin-gonic/gin"
+)
 
 // @BasePath /api/v1
 
@@ -9,7 +14,7 @@ import "github.com/gin-gonic/gin"
 // @Tags         users
 // @Produce      json
 // @Success      200 {object} map[string]string
-// @Router       /users [post]
+// @Router       /user [post]
 func CreateUserHandler(ctx *gin.Context) {
 	sendSuccess(ctx, "Create User!")
 }
@@ -17,10 +22,18 @@ func CreateUserHandler(ctx *gin.Context) {
 // @Summary      Get User Info
 // @Description  Returns information about a specific user
 // @Tags         users
+// @Param 		 id query string true "User ID"
 // @Produce      json
 // @Success      200 {object} map[string]string
-// @Router       /users/{id} [get]
+// @Router       /user [get]
 func GetInfoUserHandler(ctx *gin.Context) {
+	err := getIdQuery(ctx)
+	if err != nil {
+		logger.Error(err.Error())
+		sendErr(ctx, http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
 	sendSuccess(ctx, "Get Info User!")
 }
 
@@ -28,19 +41,35 @@ func GetInfoUserHandler(ctx *gin.Context) {
 // @Description  Returns a list of all users
 // @Tags         users
 // @Produce      json
-// @Security     BearerAuth
-// @Success      200 {array} map[string]string
+// @Success      200 {array} schemas.UserResponse
+// @Failure      400 {object} ErrResponse
+// @Failure      500 {object} ErrResponse
 // @Router       /users [get]
 func GetUsersHandler(ctx *gin.Context) {
-	sendSuccess(ctx, "Get Users!")
+	repo := repository.NewPostgresUserRepository()
+	users, err := repo.GetUsers(ctx)
+	if err != nil {
+		logger.Error(err.Error())
+		sendErr(ctx, http.StatusInternalServerError, gin.H{"error": "Error to get users in database"})
+		return
+	}
+	sendSuccess(ctx, users)
 }
 
 // @Summary      Update User
 // @Description  Updates an existing user
 // @Tags         users
+// @Param 		 id query string true "User ID"
 // @Produce      json
 // @Success      200 {object} map[string]string
-// @Router       /users/{id} [patch]
+// @Router       /user [patch]
 func UpdateUserHandler(ctx *gin.Context) {
+	err := getIdQuery(ctx)
+	if err != nil {
+		logger.Error(err.Error())
+		sendErr(ctx, http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
 	sendSuccess(ctx, "Updated User!")
 }
