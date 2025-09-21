@@ -1,7 +1,6 @@
 package main
 
 import (
-
 	"github.com/ExtraProjects860/Project-Device-Mobile/config"
 	"github.com/ExtraProjects860/Project-Device-Mobile/router"
 )

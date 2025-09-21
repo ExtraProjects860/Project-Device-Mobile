@@ -1,16 +1,16 @@
 package main
 
-import "github.com/ExtraProjects860/Project-Device-Mobile/model"
+import "github.com/ExtraProjects860/Project-Device-Mobile/schemas"
 
 func resetDB() {
 	logger.Info("Dropping all tables...")
 	db.Migrator().DropTable(
-		model.AllModelsSlice()...,
+		schemas.AllModelsSlice()...,
 	)
 
 	logger.Info("Recreating tables...")
 	db.AutoMigrate(
-		model.AllModelsSlice()...,
+		schemas.AllModelsSlice()...,
 	)
 
 	logger.Info("Database reset completed.")

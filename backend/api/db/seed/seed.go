@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/ExtraProjects860/Project-Device-Mobile/config"
-	"github.com/ExtraProjects860/Project-Device-Mobile/model"
+	"github.com/ExtraProjects860/Project-Device-Mobile/schemas"
 	"github.com/ExtraProjects860/Project-Device-Mobile/utils"
 	"github.com/brianvoe/gofakeit/v7"
 )
@@ -27,14 +27,14 @@ func verifyStartSeed(m any) bool {
 
 func seedUser(quantity int) {
 	modelName := "User"
-	if verifyStartSeed(&model.User{}) {
+	if verifyStartSeed(&schemas.User{}) {
 		logger.Infof("Table '%s' already has data. Skipping seed.", modelName)
 		return
 	}
 
 	logger.Infof("Seeding table '%s' with %d records...", modelName, quantity)
-	var role []model.Role
-	var enterprise []model.Enterprise
+	var role []schemas.Role
+	var enterprise []schemas.Enterprise
 	db.Find(&role)
 	db.Find(&enterprise)
 
@@ -50,7 +50,7 @@ func seedUser(quantity int) {
 			panic(fmt.Sprintf("failed to hash password: %v", err))
 		}
 
-		user := model.User{
+		user := schemas.User{
 			Name:           faker.Name(),
 			Email:          faker.Email(),
 			Password:       hashedPassword,           // TODO essa senha dps vai ser substituída pela função hash
@@ -68,14 +68,14 @@ func seedUser(quantity int) {
 
 func seedEnterprise(quantity int) {
 	modelName := "Enterprise"
-	if verifyStartSeed(&model.Enterprise{}) {
+	if verifyStartSeed(&schemas.Enterprise{}) {
 		logger.Infof("Table '%s' already has data. Skipping seed.", modelName)
 		return
 	}
 
 	logger.Infof("Seeding table '%s'...", modelName)
 	for i := 0; i < quantity; i++ {
-		enterprise := model.Enterprise{
+		enterprise := schemas.Enterprise{
 			Name: faker.AppName(),
 		}
 
@@ -87,13 +87,13 @@ func seedEnterprise(quantity int) {
 
 func seedRole() {
 	modelName := "RoleUser"
-	if verifyStartSeed(&model.Role{}) {
+	if verifyStartSeed(&schemas.Role{}) {
 		logger.Infof("Table '%s' already has data. Skipping seed.", modelName)
 		return
 	}
 
 	logger.Infof("Seeding table '%s'...", modelName)
-	roles := []model.Role{
+	roles := []schemas.Role{
 		{Name: config.SuperAdmin.String()},
 		{Name: config.Admin.String()},
 		{Name: config.User.String()},
@@ -105,13 +105,13 @@ func seedRole() {
 
 func seedWishList() {
 	modelName := "WishList"
-	if verifyStartSeed(&model.WishList{}) {
+	if verifyStartSeed(&schemas.WishList{}) {
 		logger.Infof("Table '%s' already has data. Skipping seed.", modelName)
 		return
 	}
 
-	var users []model.User
-	var products []model.Product
+	var users []schemas.User
+	var products []schemas.Product
 	db.Find(&users)
 	db.Find(&products)
 
@@ -125,7 +125,7 @@ func seedWishList() {
 		u := users[rand.IntN(len(users))]
 		p := products[rand.IntN(len(products))]
 
-		w := model.WishList{
+		w := schemas.WishList{
 			UserID:    u.ID,
 			ProductID: p.ID,
 		}
@@ -138,7 +138,7 @@ func seedWishList() {
 
 func seedProduct(quantity int) {
 	modelName := "Product"
-	if verifyStartSeed(&model.Product{}) {
+	if verifyStartSeed(&schemas.Product{}) {
 		logger.Infof("Table '%s' already has data. Skipping seed.", modelName)
 		return
 	}
@@ -147,7 +147,7 @@ func seedProduct(quantity int) {
 	for i := 0; i < quantity; i++ {
 		discount := faker.Price(5, 50) / 100
 
-		product := model.Product{
+		product := schemas.Product{
 			Name:               faker.ProductName(),
 			Description:        faker.Sentence(10),
 			Value:              faker.Price(50, 5000), // preço entre 50 e 5000

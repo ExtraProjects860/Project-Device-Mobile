@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/ExtraProjects860/Project-Device-Mobile/model"
+	"github.com/ExtraProjects860/Project-Device-Mobile/schemas"
 	"gorm.io/gorm"
 )
 
@@ -9,7 +9,7 @@ func migrateDatabase(db *gorm.DB) error {
 	var err error
 
 	err = db.Migrator().DropTable(
-		model.AllModelsSlice()...,
+		schemas.AllModelsSlice()...,
 	)
 
 	if err != nil {
@@ -17,7 +17,7 @@ func migrateDatabase(db *gorm.DB) error {
 	}
 
 	err = db.AutoMigrate(
-		model.AllModelsSlice()...,
+		schemas.AllModelsSlice()...,
 	)
 
 	if err != nil {
