@@ -6,8 +6,6 @@ import (
 	"gorm.io/gorm"
 )
 
-// ----------- MODELS (Banco) -----------
-
 type User struct {
 	gorm.Model
 	RoleID         uint `gorm:"not null"`
@@ -67,57 +65,6 @@ type Product struct {
 	Discount           *float64 `gorm:"type:decimal(10,2)"`
 	PhotoUrl           *string
 	IsAvaible          bool `gorm:"default:true;not null"`
-}
-
-// ----------- RESPONSES (API) -----------
-
-type UserResponse struct {
-	ID             uint      `json:"id"`
-	Name           string    `json:"name"`
-	Email          string    `json:"email"`
-	Cpf            string    `json:"cpf"`
-	RegisterNumber uint      `json:"register_number"`
-	PhotoUrl       *string   `json:"photo_url,omitempty"`
-	CreatedAt      time.Time `json:"created_at"`
-	UpdatedAt      time.Time `json:"updated_at"`
-
-	Role       RoleResponse        `json:"role"`
-	Enterprise *EnterpriseResponse `json:"enterprise,omitempty"`
-}
-
-type EnterpriseResponse struct {
-	ID   uint   `json:"id"`
-	Name string `json:"name"`
-}
-
-type TokenPasswordResponse struct {
-	ID     uint       `json:"id"`
-	Code   *string    `json:"code,omitempty"`
-	TimeUp *time.Time `json:"time_up,omitempty"`
-}
-
-type RoleResponse struct {
-	ID   uint   `json:"id"`
-	Name string `json:"name"`
-}
-
-type WishListResponse struct {
-	ID       uint              `json:"id"`
-	Products []ProductResponse `json:"products"`
-}
-
-type ProductResponse struct {
-	ID                 uint      `json:"id"`
-	Name               string    `json:"name"`
-	Description        string    `json:"description"`
-	Value              float64   `json:"value"`
-	Quantity           int       `json:"quantity"`
-	IsPromotionAvaible bool      `json:"is_promotion_avaible"`
-	Discount           *float64  `json:"discount,omitempty"`
-	PhotoUrl           *string   `json:"photo_url,omitempty"`
-	IsAvaible          bool      `json:"is_avaible"`
-	CreatedAt          time.Time `json:"created_at"`
-	UpdatedAt          time.Time `json:"updated_at"`
 }
 
 func AllModelsSlice() []any {

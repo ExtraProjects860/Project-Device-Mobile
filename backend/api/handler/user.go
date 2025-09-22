@@ -41,7 +41,7 @@ func GetInfoUserHandler(ctx *gin.Context) {
 // @Description  Returns a list of all users
 // @Tags         users
 // @Produce      json
-// @Success      200 {array} schemas.UserResponse
+// @Success      200 {array}  repository.UserDTO
 // @Failure      400 {object} ErrResponse
 // @Failure      500 {object} ErrResponse
 // @Router       /users [get]
