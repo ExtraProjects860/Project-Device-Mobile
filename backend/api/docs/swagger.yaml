@@ -11,21 +11,7 @@ definitions:
       password:
         type: string
     type: object
-  schemas.EnterpriseResponse:
-    properties:
-      id:
-        type: integer
-      name:
-        type: string
-    type: object
-  schemas.RoleResponse:
-    properties:
-      id:
-        type: integer
-      name:
-        type: string
-    type: object
-  schemas.UserResponse:
+  repository.UserDTO:
     properties:
       cpf:
         type: string
@@ -34,7 +20,7 @@ definitions:
       email:
         type: string
       enterprise:
-        $ref: '#/definitions/schemas.EnterpriseResponse'
+        type: string
       id:
         type: integer
       name:
@@ -44,7 +30,7 @@ definitions:
       register_number:
         type: integer
       role:
-        $ref: '#/definitions/schemas.RoleResponse'
+        type: string
       updated_at:
         type: string
     type: object
@@ -335,7 +321,7 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/schemas.UserResponse'
+              $ref: '#/definitions/repository.UserDTO'
             type: array
         "400":
           description: Bad Request
