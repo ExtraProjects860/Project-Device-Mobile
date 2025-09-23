@@ -68,7 +68,7 @@ export default function Menu({ visible, onClose }) {
             <View className="flex-row items-center justify-between mb-10 rounded-xl">
               <Image source={logo} className="w-24 h-24" resizeMode="contain" />
               <TouchableOpacity onPress={onClose} className="p-2 bg-white rounded-xl">
-                <Icon name="arrow-left" size={50} color="#E91D62"/>
+                <Icon name="arrow-left" size={40} color="#E91D62"/>
               </TouchableOpacity>
             </View>
 
