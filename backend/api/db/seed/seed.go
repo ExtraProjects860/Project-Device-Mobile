@@ -11,8 +11,6 @@ import (
 	"github.com/brianvoe/gofakeit/v7"
 )
 
-// TODO colocar concorrência, porém pra cada função separadamente
-
 var (
 	source                 = rand.NewPCG(uint64(time.Now().UnixNano()), rand.Uint64())
 	rng    *rand.Rand      = rand.New(source)
@@ -38,29 +36,29 @@ func seedUser(quantity int) {
 	db.Find(&role)
 	db.Find(&enterprise)
 
-	const password string = "123456"
+	hashedPassword, err := utils.GenerateHashPassword("123456")
+	if err != nil {
+		logger.Errorf("Error generate hash password. %v", err)
+		panic(fmt.Sprintf("failed to hash password: %v", err))
+	}
 
-	for i := 0; i < quantity; i++ {
+	for range quantity {
 		re := role[rng.IntN(len(role))]
 		en := enterprise[rng.IntN(len(enterprise))]
-
-		hashedPassword, err := utils.GenerateHashPassword(password)
-		if err != nil {
-			logger.Errorf("Error generate hash password. %v", err)
-			panic(fmt.Sprintf("failed to hash password: %v", err))
-		}
 
 		user := schemas.User{
 			Name:           faker.Name(),
 			Email:          faker.Email(),
-			Password:       hashedPassword,           // TODO essa senha dps vai ser substituída pela função hash
+			Password:       hashedPassword,
 			Cpf:            faker.Regex("[0-9]{11}"), // TODO pode gerar cpfs inválidos
 			RegisterNumber: uint(faker.Number(1000, 9999)),
 			RoleID:         re.ID,
 			EnterpriseID:   &en.ID,
 		}
 
-		db.Create(&user)
+		if err := db.CreateInBatches(&user, 5).Error; err != nil {
+			logger.Errorf("Error creating %v: %v", modelName, err)
+		}
 	}
 
 	logger.Infof("Seeding for table '%s' completed.", modelName)
@@ -74,12 +72,14 @@ func seedEnterprise(quantity int) {
 	}
 
 	logger.Infof("Seeding table '%s'...", modelName)
-	for i := 0; i < quantity; i++ {
+	for range quantity {
 		enterprise := schemas.Enterprise{
 			Name: faker.AppName(),
 		}
 
-		db.Create(&enterprise)
+		if err := db.CreateInBatches(&enterprise, 3).Error; err != nil {
+			logger.Errorf("Error creating %v: %v", modelName, err)
+		}
 	}
 
 	logger.Infof("Seeding for table '%s' completed.", modelName)
@@ -99,7 +99,9 @@ func seedRole() {
 		{Name: config.User.String()},
 	}
 
-	db.Create(&roles)
+	if err := db.Create(&roles).Error; err != nil {
+		logger.Errorf("Error creating %v: %v", modelName, err)
+	}
 	logger.Infof("Seeding for table '%s' completed.", modelName)
 }
 
@@ -121,16 +123,18 @@ func seedWishList() {
 	}
 
 	logger.Infof("Seeding table '%s'...", modelName)
-	for i := 0; i < 10; i++ {
+	for range 10 {
 		u := users[rand.IntN(len(users))]
 		p := products[rand.IntN(len(products))]
 
-		w := schemas.WishList{
+		wishList := schemas.WishList{
 			UserID:    u.ID,
 			ProductID: p.ID,
 		}
 
-		db.Create(&w)
+		if err := db.CreateInBatches(&wishList, 5).Error; err != nil {
+			logger.Errorf("Error creating %v: %v", modelName, err)
+		}
 	}
 
 	logger.Infof("Seeding for table '%s' completed.", modelName)
@@ -144,7 +148,7 @@ func seedProduct(quantity int) {
 	}
 
 	logger.Infof("Seeding table '%s' with %d records...", modelName, quantity)
-	for i := 0; i < quantity; i++ {
+	for range quantity {
 		discount := faker.Price(5, 50) / 100
 
 		product := schemas.Product{
@@ -155,7 +159,10 @@ func seedProduct(quantity int) {
 			Discount:           &discount,
 			IsPromotionAvaible: rng.IntN(2) == 1,
 		}
-		db.Create(&product)
+
+		if err := db.CreateInBatches(&product, 5).Error; err != nil {
+			logger.Errorf("Error creating %v: %v", modelName, err)
+		}
 	}
 
 	logger.Infof("Seeding for table '%s' completed.", modelName)
