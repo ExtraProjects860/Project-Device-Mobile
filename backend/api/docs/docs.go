@@ -448,7 +448,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/schemas.UserResponse"
+                                "$ref": "#/definitions/repository.UserDTO"
                             }
                         }
                     },
@@ -565,29 +565,7 @@ const docTemplate = `{
                 }
             }
         },
-        "schemas.EnterpriseResponse": {
-            "type": "object",
-            "properties": {
-                "id": {
-                    "type": "integer"
-                },
-                "name": {
-                    "type": "string"
-                }
-            }
-        },
-        "schemas.RoleResponse": {
-            "type": "object",
-            "properties": {
-                "id": {
-                    "type": "integer"
-                },
-                "name": {
-                    "type": "string"
-                }
-            }
-        },
-        "schemas.UserResponse": {
+        "repository.UserDTO": {
             "type": "object",
             "properties": {
                 "cpf": {
@@ -600,7 +578,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "enterprise": {
-                    "$ref": "#/definitions/schemas.EnterpriseResponse"
+                    "type": "string"
                 },
                 "id": {
                     "type": "integer"
@@ -615,7 +593,7 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "role": {
-                    "$ref": "#/definitions/schemas.RoleResponse"
+                    "type": "string"
                 },
                 "updated_at": {
                     "type": "string"
