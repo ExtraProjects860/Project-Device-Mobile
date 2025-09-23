@@ -74,7 +74,7 @@ export default function Menu({ visible, onClose }) {
       {/* Sidebar */}
       <Animated.View
         style={animatedMenuStyle}
-        className="absolute top-0 bottom-0 right-0 h-full w-5/6 bg-magenta p-6 z-50"
+        className="absolute top-0 bottom-0 right-0 h-full w-5/6 bg-magenta p-6 z-50 pt-10"
       >
         {/* Header */}
         <View className="flex-row items-center justify-between mb-10 rounded-xl">

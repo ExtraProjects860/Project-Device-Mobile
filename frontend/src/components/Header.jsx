@@ -11,7 +11,7 @@ import logo from "../assets/images/logo.png"
 
 export default function Header({ onMenuPress }) {
   return (
-    <View className="flex-row items-center justify-between bg-magenta px-4 pt-2 py-2 shadow-md">
+    <View className="flex-row items-center justify-between bg-magenta px-4 py-2 shadow-md pt-10">
       <Image source={logo} className="w-24 h-24" resizeMode="contain" />
       <TouchableOpacity onPress={onMenuPress} className="p-[5px]">
         <Icon name="menu" size={40} color="white" />
