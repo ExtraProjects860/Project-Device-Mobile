@@ -1,4 +1,4 @@
-import { View, Image, TouchableOpacity, StatusBar } from "react-native";
+import { View, Image, TouchableOpacity } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import logo from "../assets/images/logo.png"
 
@@ -11,7 +11,7 @@ import logo from "../assets/images/logo.png"
 export default function Header({ onMenuPress }) {
   return (
     <View className="flex-row items-center justify-between bg-magenta px-4 pt-5 py-2 shadow-md">
-      <StatusBar barStyle={"light-content"} backgroundColor={'#E91D62'} />
+
       <Image source={logo} className="w-24 h-24" resizeMode="contain" />
       <TouchableOpacity onPress={onMenuPress} className="p-[5px]">
         <Icon name="menu" size={50} color="white" />
