@@ -1,3 +1,4 @@
+import React from "react";
 import { View, Image, TouchableOpacity } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import logo from "../assets/images/logo.png"
@@ -10,11 +11,10 @@ import logo from "../assets/images/logo.png"
 
 export default function Header({ onMenuPress }) {
   return (
-    <View className="flex-row items-center justify-between bg-magenta px-4 pt-5 py-2 shadow-md">
-
+    <View className="flex-row items-center justify-between bg-magenta px-4 pt-2 py-2 shadow-md">
       <Image source={logo} className="w-24 h-24" resizeMode="contain" />
       <TouchableOpacity onPress={onMenuPress} className="p-[5px]">
-        <Icon name="menu" size={50} color="white" />
+        <Icon name="menu" size={40} color="white" />
       </TouchableOpacity>
     </View>
   );
