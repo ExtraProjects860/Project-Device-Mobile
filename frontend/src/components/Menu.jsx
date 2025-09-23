@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -15,6 +15,7 @@ import Animated, {
 } from "react-native-reanimated";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { useNavigateTo } from "../hooks/useNavigateTo";
+import PasswordChange from "../components/PasswordChange";
 
 /**
  * @param {object} props
@@ -23,8 +24,13 @@ import { useNavigateTo } from "../hooks/useNavigateTo";
  */
 export default function Menu({ visible, onClose }) {
   const goTo = useNavigateTo();
+  {
+    /* Fazer lógica pra verificar usuário adm */
+  }
+  const isAdmin = true;
 
   const [isThemeDark, setIsThemeDark] = useState(false);
+  const [isPasswordModalVisible, setPasswordModalVisible] = useState(false);
   const toggleTheme = () => setIsThemeDark((previousState) => !previousState);
 
   const { width: screenWidth } = Dimensions.get("window");
@@ -38,14 +44,12 @@ export default function Menu({ visible, onClose }) {
 
   useEffect(() => {
     if (!visible) {
-      // Anima de volta para fora da tela
       translateX.value = withTiming(screenWidth, {
         duration: 200,
         easing: Easing.in(Easing.ease),
       });
       return;
     }
-    // Anima para a posição 0 (visível)
     translateX.value = withTiming(0, {
       duration: 200,
       easing: Easing.out(Easing.ease),
@@ -54,9 +58,17 @@ export default function Menu({ visible, onClose }) {
 
   return (
     <>
-      {/* Overlay */}
+      {/* Modal de Alteração de Senha */}
+      <PasswordChange
+        visible={isPasswordModalVisible}
+        onClose={() => setPasswordModalVisible(false)}
+      />
+
       {visible && (
-        <Pressable onPress={onClose} className="absolute inset-0 bg-black/50 z-50" />
+        <Pressable
+          onPress={onClose}
+          className="absolute inset-0 bg-black/40 z-50"
+        />
       )}
 
       {/* Sidebar */}
@@ -92,13 +104,16 @@ export default function Menu({ visible, onClose }) {
               </Text>
             </View>
             <Switch
-              trackColor={{ false: "gray", true: "#b0fffcff" }}
-              thumbColor={isThemeDark ? "teal" : "#f4f3f4"}
+              trackColor={isThemeDark ? "teal" : "gray"}
+              thumbColor={isThemeDark ? "teal" : "white"}
               onValueChange={toggleTheme}
               value={isThemeDark}
             />
           </View>
-          <TouchableOpacity className="flex-row items-center bg-white rounded-full p-3">
+          <TouchableOpacity
+            onPress={() => setPasswordModalVisible(true)}
+            className="flex-row items-center bg-white rounded-full p-3"
+          >
             <Icon name="lock" size={24} color="teal" />
             <Text className="ml-2 text-teal font-semibold text-base">
               Senha
@@ -117,7 +132,7 @@ export default function Menu({ visible, onClose }) {
         <View className="h-px bg-white my-4" />
         <View className="mb-6">
           <TouchableOpacity
-            onPress={() => goTo("/productssss")}
+            onPress={() => goTo("/products")}
             className="flex-row items-center bg-white rounded-full p-3 mb-3"
           >
             <Icon name="shopping" size={24} color="teal" />
@@ -125,7 +140,10 @@ export default function Menu({ visible, onClose }) {
               Produtos
             </Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => goTo("/wishlist")} className="flex-row items-center bg-white rounded-full p-3">
+          <TouchableOpacity
+            onPress={() => goTo("/wishlist")}
+            className="flex-row items-center bg-white rounded-full p-3"
+          >
             <Icon name="bookmark" size={24} color="teal" />
             <Text className="ml-2 text-teal font-semibold text-base">
               Lista de Desejos
@@ -137,7 +155,10 @@ export default function Menu({ visible, onClose }) {
         <Text className="text-white font-bold text-xl mb-0">Outros</Text>
         <View className="h-px bg-white my-4" />
         <View>
-          <TouchableOpacity onPress={() => goTo("/notices")} className="flex-row items-center bg-white rounded-full p-3">
+          <TouchableOpacity
+            onPress={() => goTo("/notices")}
+            className="flex-row items-center bg-white rounded-full p-3"
+          >
             <Icon name="web" size={24} color="teal" />
             <Text className="ml-2 text-teal font-semibold text-base">
               Notícias
@@ -145,10 +166,40 @@ export default function Menu({ visible, onClose }) {
           </TouchableOpacity>
         </View>
 
+        {/* Seção do Administrador */}
+        {isAdmin && (
+          <>
+            <Text className="text-white font-bold text-xl mb-0 mt-2">
+              Admin
+            </Text>
+            <View className="h-px bg-white my-4" />
+            <View className="mb-6">
+              <TouchableOpacity
+                onPress={() => goTo("/users")}
+                className="flex-row items-center bg-white rounded-full p-3 mb-3"
+              >
+                <Icon name="account-group" size={24} color="teal" />
+                <Text className="ml-2 text-teal font-semibold text-base">
+                  Gerenciar Usuários
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => goTo("/products")}
+                className="flex-row items-center bg-white rounded-full p-3"
+              >
+                <Icon name="basket-outline" size={24} color="teal" />
+                <Text className="ml-2 text-teal font-semibold text-base">
+                  Gerenciar Produtos
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </>
+        )}
+
         {/* Footer */}
         <View className="absolute bottom-5 left-6 right-6 pt-2">
           <View className="h-px bg-white my-4" />
-          <View className="flex-1 items-center">
+          <View className="flex-1">
             <Text className="text-white text-right text-s">
               0.0.0.1v - Design
             </Text>
