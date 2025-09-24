@@ -4,9 +4,9 @@ import footer from "../../assets/images/footer.png";
 
 export default function Background({ children, className = "" }) {
   return (
-    <View className="flex-1 bg-teal -z-10">
+    <View className={`flex-1 bg-primary dark:bg-dark-primary -z-10 ${className}`}>
       {children}
-      <StatusBar barStyle={"light-content"} translucent={true} backgroundColor={"#E91D62"} />
+      <StatusBar barStyle={"light-content"} translucent={true} className='bg-secundary dark:bg-dark-secundary' />
       <View className="absolute bottom-0 w-full h-[400px] -z-10">
         <Image source={footer} className="w-full h-full" resizeMode="stretch" />
       </View>
