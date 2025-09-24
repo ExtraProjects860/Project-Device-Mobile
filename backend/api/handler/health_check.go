@@ -66,6 +66,6 @@ func EmailServiceHandler(ctx *gin.Context) {
 		return
 	}
 
-	sendStatus(ctx, "email service called successfully")
+	sendStatus(ctx, "Email service called successfully")
 }
 
