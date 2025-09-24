@@ -39,7 +39,6 @@ func TestConnectionSQL() error {
 		loggerSQL.Errorf("Expected valid sql.DB got error! Error: %v", err)
 		return err
 	}
-	defer db.Close()
 
 	if err := db.Ping(); err != nil {
 		loggerSQL.Errorf("Expected to ping database successfully, got %v", err)
