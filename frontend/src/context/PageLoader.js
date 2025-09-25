@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useLoading } from "../hooks/useLoading";
-import Loading from "../components/Loading";
+import Loading from "../components/ui/Loading";
 
 export default function PageLoader({ fetchData, children }) {
   const { isLoading, withLoading } = useLoading();
