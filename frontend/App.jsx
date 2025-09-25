@@ -1,8 +1,7 @@
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { View } from "react-native";
 import { NativeRouter, Routes, Route } from "react-router-native";
-
-import { ThemeProvider, useTheme } from "./src/context/ThemeContext";
+import { ThemeProvider, useTheme } from "./src/context/ThemeContext.js";
 import HomeScreen from "./src/screens/HomeScreen";
 import ProductsScreen from "./src/screens/ProductsScreen";
 import NotFoundScreen from "./src/screens/404";

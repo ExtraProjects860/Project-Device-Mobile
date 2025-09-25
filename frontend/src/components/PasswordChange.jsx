@@ -25,13 +25,13 @@ export default function PasswordChangeModal({ visible, onClose }) {
       onRequestClose={onClose}
     >
       <View className="flex-1 justify-center items-center bg-black/40 px-5">
-        <View className="bg-white w-full p-6 rounded-2xl">
+        <View className="bg-light-card w-full p-6 rounded-2xl">
           {/* Header */}
           <View className="flex-row justify-between items-center mb-6">
             <View className="w-8" />
-            <Text className="text-xl font-bold text-black">Troca de Senha</Text>
+            <Text className="text-xl font-bold text-light-text-primary">Troca de Senha</Text>
             <Pressable onPress={onClose} className="p-1">
-              <Icon name="close" size={24} color="#333" />
+              <Icon name="close" size={24} />
             </Pressable>
           </View>
 
@@ -39,12 +39,12 @@ export default function PasswordChangeModal({ visible, onClose }) {
           <View className="mb-4">
             <View className="flex-row items-center mb-2">
               <Icon name="lock-outline" size={24} color="gray" />
-              <Text className="ml-2 text-gray-700 text-xl font-semibold">
+              <Text className="ml-2 text-gray-strong text-xl font-semibold">
                 Nova Senha:
               </Text>
             </View>
             <TextInput
-              className="bg-gray-200 rounded-full p-4 text-base"
+              className="bg-gray-soft rounded-full p-4 text-base"
               placeholder="********"
               secureTextEntry
               value={newPassword}
@@ -56,12 +56,12 @@ export default function PasswordChangeModal({ visible, onClose }) {
           <View className="mb-6">
             <View className="flex-row items-center mb-2">
               <Icon name="lock-outline" size={24} color="gray" />
-              <Text className="ml-2 text-gray-700 text-xl font-semibold">
+              <Text className="ml-2 text-gray-strong text-xl font-semibold">
                 Confirmar Senha:
               </Text>
             </View>
             <TextInput
-              className="bg-gray-200 rounded-full p-4 text-base"
+              className="bg-gray-soft rounded-full p-4 text-base"
               placeholder="********"
               secureTextEntry
               value={confirmPassword}
@@ -72,10 +72,10 @@ export default function PasswordChangeModal({ visible, onClose }) {
           {/* Salvar */}
           <TouchableOpacity
             onPress={handlePasswordChange}
-            className="bg-teal p-3 rounded-full flex-row justify-center items-center"
+            className="bg-light-primary p-3 rounded-full flex-row justify-center items-center"
           >
             <Icon name="check-bold" size={20} color="white" />
-            <Text className="text-white text-center font-bold text-base ml-2">
+            <Text className="text-light-text-inverted text-center font-bold text-base ml-2">
               Salvar
             </Text>
           </TouchableOpacity>

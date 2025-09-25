@@ -5,7 +5,7 @@ import { NavBar } from "../components/Navbar";
 import avatar from "../assets/images/avatar.png";
 import Barcode from "@kichiyaki/react-native-barcode-generator";
 import Icon from "react-native-vector-icons/FontAwesome";
-import PageLoader from "../components/PageLoader";
+import PageLoader from "../context/PageLoader.js";
 
 export default function HomeScreen() {
   const fetchHomeData = useCallback(async (setData) => {

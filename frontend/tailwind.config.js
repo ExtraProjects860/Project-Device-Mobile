@@ -10,13 +10,17 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        primary: "#087975",
-        secundary: "#E91D62",
-        card: "#ffffff",
-        "text-primary": "#1e293b",
-        "text-secondary": "#475569",
-        "text-inverted": "#ffffff",
+        "gray-strong": "#374151",
+        "gray-soft": "#e5e7eb",
 
+        light: {
+          primary: "#087975",
+          secundary: "#E91D62",
+          card: "#ffffff",
+          "text-primary": "#1e293b",
+          "text-secondary": "#475569",
+          "text-inverted": "#ffffff",
+        },
         dark: {
           primary: "#0f172a",
           secundary: "#E95",

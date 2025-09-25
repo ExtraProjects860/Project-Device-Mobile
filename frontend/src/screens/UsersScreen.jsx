@@ -3,8 +3,7 @@ import { useCallback } from "react";
 import { View, Text } from "react-native";
 import Background from "../components/ui/Background";
 import { NavBar } from "../components/Navbar";
-import { useNavigateTo } from "../hooks/useNavigateTo.js";
-import PageLoader from "../components/PageLoader";
+import PageLoader from "../context/PageLoader.js";
 
 export default function UsersScreen() {
   const fetchUsers = useCallback(async (setData) => {

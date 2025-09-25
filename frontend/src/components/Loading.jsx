@@ -15,9 +15,9 @@ export default function Loading() {
   }, []);
 
   return (
-    <View className="flex-1 bg-teal items-center justify-center">
+    <View className="flex-1 bg-light-primary dark:bg-dark-primary items-center justify-center">
       <ActivityIndicator size="large" color="#E91D62" />
-      <Text className="text-white text-xl">Carregando{dots}</Text>
+      <Text className="text-light-text-inverted dark:text-dark-text-primary text-xl">Carregando{dots}</Text>
     </View>
   );
 }
