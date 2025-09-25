@@ -8,20 +8,8 @@ import (
 
 var (
 	db     *gorm.DB
-	env    EnvVariables
+	env    *EnvVariables
 )
-
-func GetDB() *gorm.DB {
-	return db
-}
-
-func GetEnv() EnvVariables {
-	return env
-}
-
-func GetLogger(prefix string) *Logger {
-	return NewLogger(prefix)
-}
 
 func Init() error {
 	var err error
@@ -37,4 +25,16 @@ func Init() error {
 	}
 
 	return nil
+}
+
+func GetDB() *gorm.DB {
+	return db
+}
+
+func GetEnv() *EnvVariables {
+	return env
+}
+
+func GetLogger(prefix string) *Logger {
+	return NewLogger(prefix)
 }

@@ -23,6 +23,6 @@ func sendStatus(ctx *gin.Context, msg string) {
 	ctx.JSON(http.StatusOK, gin.H{"status": msg})
 }
 
-type ErrReponse struct {
-	Message string `json:"message"`
+type ErrResponse struct {
+	Error string `json:"error"`
 }

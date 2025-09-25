@@ -29,19 +29,19 @@ func NewLogger(prefix string) *Logger {
 
 // Create Non-Formatted Logs
 func (l *Logger) Debug(v ...interface{}) {
-	l.debug.Println(v)
+	l.debug.Println(v...)
 }
 
 func (l *Logger) Info(v ...interface{}) {
-	l.info.Println(v)
+	l.info.Println(v...)
 } 
 
 func (l *Logger) Warning(v ...interface{}) {
-	l.warning.Println(v)
+	l.warning.Println(v...)
 } 
 
 func (l *Logger) Error(v ...interface{}) {
-	l.err.Println(v)
+	l.err.Println(v...)
 }
 
 // Create Formatted Logs

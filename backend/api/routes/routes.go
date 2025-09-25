@@ -1,11 +1,21 @@
 package routes
 
 import (
+	docs "github.com/ExtraProjects860/Project-Device-Mobile/docs"
+	"github.com/ExtraProjects860/Project-Device-Mobile/handler"
 	"github.com/gin-gonic/gin"
 )
 
-func InitMainRoutes(r *gin.Engine) {
-	const basePath string = "/api/v1"
+const basePath string = "/api/v1"
 
-	r.Group(basePath)
+func InitMainRoutes(r *gin.Engine) {
+	docs.SwaggerInfo.BasePath = basePath
+
+	handler.InitializeHandler()
+
+	api := r.Group(basePath)
+	RegisterUserRoutes(api)
+	RegisterProductRoutes(api)
+	RegisterAuthRoutes(api)
+	RegisterWishListRoutes(api)
 }

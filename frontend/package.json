@@ -9,21 +9,31 @@
     "web": "expo start --web"
   },
   "dependencies": {
-    "@expo/metro-runtime": "~5.0.4",
-    "expo": "~53.0.22",
-    "expo-status-bar": "~2.2.3",
+    "@eslint/js": "^9.36.0",
+    "@expo/metro-runtime": "^6.1.2",
+    "@kichiyaki/react-native-barcode-generator": "^0.6.7",
+    "axios": "^1.12.2",
+    "eslint": "^9.36.0",
+    "expo": "^54.0.9",
+    "expo-status-bar": "^3.0.8",
     "nativewind": "^4.1.23",
     "prettier-plugin-tailwindcss": "^0.5.14",
     "react": "19.0.0",
     "react-dom": "19.0.0",
     "react-native": "0.79.5",
-    "react-native-reanimated": "~3.17.4",
-    "react-native-safe-area-context": "^5.4.0",
+    "react-native-reanimated": "^4.1.0",
+    "react-native-safe-area-context": "^5.6.1",
+    "react-native-svg": "^15.13.0",
+    "react-native-vector-icons": "^10.3.0",
     "react-native-web": "^0.20.0",
+    "react-router-native": "^6.30.0",
     "tailwindcss": "^3.4.17"
   },
   "devDependencies": {
-    "@babel/core": "^7.20.0"
+    "@babel/core": "^7.20.0",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "eslint-plugin-react-native": "^5.0.0"
   },
   "private": true
 }
