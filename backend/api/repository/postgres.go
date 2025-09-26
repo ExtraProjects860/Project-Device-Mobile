@@ -2,11 +2,11 @@ package repository
 
 import "gorm.io/gorm"
 
-type PostgresUserRepository struct {
+type PostgresRepository struct {
 	db *gorm.DB
 }
 
-func NewPostgresUserRepository() *PostgresUserRepository {
+func NewPostgresUserRepository() *PostgresRepository {
 	InitializeRepository()
-	return &PostgresUserRepository{db: db}
+	return &PostgresRepository{db: db}
 }

@@ -1,6 +1,11 @@
 package repository
 
-import "time"
+import (
+	"context"
+	"time"
+
+	"github.com/ExtraProjects860/Project-Device-Mobile/schemas"
+)
 
 type ProductPostgres interface {
 	CreateProduct()
@@ -20,4 +25,32 @@ type ProductDTO struct {
 	IsAvaible          bool      `json:"is_avaible"`
 	CreatedAt          time.Time `json:"created_at"`
 	UpdatedAt          time.Time `json:"updated_at"`
+}
+
+func makeProductDTO(product schemas.Product) *ProductDTO {
+	return &ProductDTO{
+		ID: product.ID,
+		Name: product.Name,
+		Description: product.Description,
+		Value: product.Value,
+		Quantity: product.Quantity,
+		IsPromotionAvaible: product.IsPromotionAvaible,
+		Discount: product.Discount,
+		PhotoUrl: product.PhotoUrl,
+		IsAvaible: product.IsAvaible,
+		CreatedAt: product.CreatedAt,
+		UpdatedAt: product.UpdatedAt,
+	}
+}
+
+func (r *PostgresRepository) CreateProduct(ctx context.Context, product schemas.Product) {
+	return
+}
+
+func (r *PostgresRepository) GetProducts(ctx context.Context, itemsPerPage uint, currentPage uint) {
+	return
+}
+
+func (r *PostgresRepository) UpdateProducts(ctx context.Context, id uint) {
+	return
 }

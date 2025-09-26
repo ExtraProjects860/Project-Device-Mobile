@@ -50,7 +50,7 @@ func makeUserOutput(user schemas.User) *UserDTO {
 
 // TODO colocar mensagens nos logs aqui depois
 
-func (r *PostgresUserRepository) CreateUser(ctx context.Context, user schemas.User) error {
+func (r *PostgresRepository) CreateUser(ctx context.Context, user schemas.User) error {
 	return r.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
 		if err := tx.Create(&user).Error; err != nil {
 			logger.Errorf("%v", err)
@@ -60,7 +60,7 @@ func (r *PostgresUserRepository) CreateUser(ctx context.Context, user schemas.Us
 	})
 }
 
-func (r *PostgresUserRepository) GetInfoUser(ctx context.Context, id uint) (*UserDTO, error) {
+func (r *PostgresRepository) GetInfoUser(ctx context.Context, id uint) (*UserDTO, error) {
 	var user schemas.User
 	err := r.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
 		if err := tx.
@@ -77,10 +77,14 @@ func (r *PostgresUserRepository) GetInfoUser(ctx context.Context, id uint) (*Use
 	return makeUserOutput(user), err
 }
 
-func (r *PostgresUserRepository) GetUsers(ctx context.Context) ([]UserDTO, error) {
+func (r *PostgresRepository) GetUsers(ctx context.Context, itemsPerPage uint, currentPage uint) (PaginationDTO, error) {
+	paginationOffset, totalPages := pagination(&schemas.User{}, itemsPerPage, currentPage)
+
 	var users []schemas.User
 	err := r.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
 		if err := tx.
+			Limit(int(itemsPerPage)).
+			Offset(int(paginationOffset)).
 			Preload("Role").
 			Preload("Enterprise").
 			Find(&users).Error; err != nil {
@@ -96,10 +100,10 @@ func (r *PostgresUserRepository) GetUsers(ctx context.Context) ([]UserDTO, error
 		usersDTO = append(usersDTO, *makeUserOutput(user))
 	}
 
-	return usersDTO, err
+	return PaginationDTO{Data: usersDTO, CurrentPage: currentPage, TotalPages: totalPages}, err
 }
 
-func (r *PostgresUserRepository) UpdateUser(ctx context.Context, id uint, user schemas.User) (schemas.User, error) {
+func (r *PostgresRepository) UpdateUser(ctx context.Context, id uint, user schemas.User) (schemas.User, error) {
 	err := r.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
 		if err := tx.Model(&schemas.User{}).Where("id = ?", id).Updates(user).Error; err != nil {
 			logger.Errorf("%v", err)
