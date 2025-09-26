@@ -442,6 +442,22 @@ const docTemplate = `{
                     "users"
                 ],
                 "summary": "Get Users",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Pagination Items",
+                        "name": "itemsPerPage",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Pagination Current Page",
+                        "name": "currentPage",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",

@@ -45,6 +45,7 @@ func seedUser(quantity int) {
 	for range quantity {
 		re := role[rng.IntN(len(role))]
 		en := enterprise[rng.IntN(len(enterprise))]
+		url := fmt.Sprintf("https://picsum.photos/%d/%d?random=%s", 300, 300, faker.Username())
 
 		user := schemas.User{
 			Name:           faker.Name(),
@@ -52,6 +53,7 @@ func seedUser(quantity int) {
 			Password:       hashedPassword,
 			Cpf:            faker.Regex("[0-9]{11}"), // TODO pode gerar cpfs inválidos
 			RegisterNumber: uint(faker.Number(1000, 9999)),
+			PhotoUrl:       &url,
 			RoleID:         re.ID,
 			EnterpriseID:   &en.ID,
 		}
@@ -149,6 +151,7 @@ func seedProduct(quantity int) {
 
 	logger.Infof("Seeding table '%s' with %d records...", modelName, quantity)
 	for range quantity {
+		url := fmt.Sprintf("https://picsum.photos/%d/%d?random=%s", 300, 300, faker.Username())
 		discount := faker.Price(5, 50) / 100
 
 		product := schemas.Product{
@@ -157,6 +160,7 @@ func seedProduct(quantity int) {
 			Value:              faker.Price(50, 5000), // preço entre 50 e 5000
 			Quantity:           faker.Number(1, 100),
 			Discount:           &discount,
+			PhotoUrl:           &url,
 			IsPromotionAvaible: rng.IntN(2) == 1,
 		}
 

@@ -314,6 +314,17 @@ paths:
   /users:
     get:
       description: Returns a list of all users
+      parameters:
+      - description: Pagination Items
+        in: query
+        name: itemsPerPage
+        required: true
+        type: string
+      - description: Pagination Current Page
+        in: query
+        name: currentPage
+        required: true
+        type: string
       produces:
       - application/json
       responses:
