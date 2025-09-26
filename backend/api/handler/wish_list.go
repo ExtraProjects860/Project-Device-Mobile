@@ -1,6 +1,9 @@
 package handler
 
-import "github.com/gin-gonic/gin"
+import (
+	"github.com/ExtraProjects860/Project-Device-Mobile/repository"
+	"github.com/gin-gonic/gin"
+)
 
 // @BasePath /api/v1
 
@@ -10,7 +13,7 @@ import "github.com/gin-gonic/gin"
 // @Produce      json
 // @Success      200 {object} map[string]string
 // @Router       /wishlist [post]
-func AddInWishListHandler(ctx *gin.Context) {
+func AddInWishListHandler(ctx *gin.Context, repo repository.WishListRepository) {
 	sendSuccess(ctx, "Add Product in Wish List!")
 }
 
@@ -21,7 +24,7 @@ func AddInWishListHandler(ctx *gin.Context) {
 // @Produce      json
 // @Success      200 {object} map[string]string
 // @Router       /wishlist [patch]
-func UpdateWishListHandler(ctx *gin.Context) {
+func UpdateWishListHandler(ctx *gin.Context, repo repository.WishListRepository) {
 	sendSuccess(ctx, "Delete Product in Wish List!")
 }
 
@@ -31,6 +34,6 @@ func UpdateWishListHandler(ctx *gin.Context) {
 // @Produce      json
 // @Success      200 {array} map[string]string
 // @Router       /wishlist [get]
-func GetItensWishListHandler(ctx *gin.Context) {
+func GetItensWishListHandler(ctx *gin.Context, repo repository.WishListRepository) {
 	sendSuccess(ctx, "Get Itens in Wish List!")
 }

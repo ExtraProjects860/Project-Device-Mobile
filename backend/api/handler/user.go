@@ -15,7 +15,7 @@ import (
 // @Produce      json
 // @Success      200 {object} map[string]string
 // @Router       /user [post]
-func CreateUserHandler(ctx *gin.Context) {
+func CreateUserHandler(ctx *gin.Context, repo repository.UserRepository) {
 	sendSuccess(ctx, "Create User!")
 }
 
@@ -26,7 +26,7 @@ func CreateUserHandler(ctx *gin.Context) {
 // @Produce      json
 // @Success      200 {object} map[string]string
 // @Router       /user [get]
-func GetInfoUserHandler(ctx *gin.Context) {
+func GetInfoUserHandler(ctx *gin.Context, repo repository.UserRepository) {
 	sendSuccess(ctx, "Get Info User!")
 }
 
@@ -34,11 +34,13 @@ func GetInfoUserHandler(ctx *gin.Context) {
 // @Description  Returns a list of all users
 // @Tags         users
 // @Produce      json
+// @Param        itemsPerPage query string true "Pagination Items"
+// @Param        currentPage query string true "Pagination Current Page"
 // @Success      200 {array}  repository.UserDTO
 // @Failure      400 {object} ErrResponse
 // @Failure      500 {object} ErrResponse
 // @Router       /users [get]
-func GetUsersHandler(ctx *gin.Context) {
+func GetUsersHandler(ctx *gin.Context, repo repository.UserRepository) {
 	itemsPerPage, currentPage, err := getPaginationData(ctx)
 	if err != nil {
 		logger.Error(err.Error())
@@ -46,7 +48,6 @@ func GetUsersHandler(ctx *gin.Context) {
 		return
 	}
 
-	repo := repository.NewPostgresUserRepository()
 	users, err := repo.GetUsers(ctx, itemsPerPage, currentPage)
 
 	if err != nil {
@@ -65,6 +66,6 @@ func GetUsersHandler(ctx *gin.Context) {
 // @Produce      json
 // @Success      200 {object} map[string]string
 // @Router       /user [patch]
-func UpdateUserHandler(ctx *gin.Context) {
+func UpdateUserHandler(ctx *gin.Context, repo repository.UserRepository) {
 	sendSuccess(ctx, gin.H{"message": "Updated User!"})
 }

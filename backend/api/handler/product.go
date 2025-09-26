@@ -1,6 +1,9 @@
 package handler
 
-import "github.com/gin-gonic/gin"
+import (
+	"github.com/ExtraProjects860/Project-Device-Mobile/repository"
+	"github.com/gin-gonic/gin"
+)
 
 // @BasePath /api/v1
 
@@ -10,7 +13,7 @@ import "github.com/gin-gonic/gin"
 // @Produce      json
 // @Success      200 {object} map[string]string
 // @Router       /product [post]
-func CreateProductHandler(ctx *gin.Context) {
+func CreateProductHandler(ctx *gin.Context, repo repository.ProductRepository) {
 	sendSuccess(ctx, gin.H{"message": "Add Promotion Product!"})
 }
 
@@ -21,7 +24,7 @@ func CreateProductHandler(ctx *gin.Context) {
 // @Produce      json
 // @Success      200 {object} map[string]string
 // @Router       /product [patch]
-func UpdateProductHandler(ctx *gin.Context) {
+func UpdateProductHandler(ctx *gin.Context, repo repository.ProductRepository) {
 	sendSuccess(ctx, gin.H{"message": "Update Promotion Product!"})
 }
 
@@ -31,6 +34,6 @@ func UpdateProductHandler(ctx *gin.Context) {
 // @Produce      json
 // @Success      200 {array} map[string]string
 // @Router       /products [get]
-func GetProductsHandler(ctx *gin.Context) {
+func GetProductsHandler(ctx *gin.Context, repo repository.ProductRepository) {
 	sendSuccess(ctx, gin.H{"message": "Get Promotions Products!"})
 }

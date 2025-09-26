@@ -52,7 +52,7 @@ func getPaginationData(ctx *gin.Context) (uint, uint, error) {
 		return 0, 0, errParamIsRequired("id", "queryParameter")
 	}
 
-	parsedCurrentPage, err := strconv.ParseUint(itemsPerPage, 10, 64)
+	parsedCurrentPage, err := strconv.ParseUint(currentPage, 10, 64)
 	if err != nil {
 		return 0, 0, fmt.Errorf("invalid parsed currentPage: %v", err)
 	}
