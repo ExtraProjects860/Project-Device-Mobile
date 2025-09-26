@@ -2,15 +2,23 @@ package routes
 
 import (
 	"github.com/ExtraProjects860/Project-Device-Mobile/handler"
+	"github.com/ExtraProjects860/Project-Device-Mobile/repository"
 	"github.com/gin-gonic/gin"
 )
 
 func RegisterProductRoutes(rg *gin.RouterGroup) {
+	repo := repository.NewPostgresProductRepository()
 	{
-		rg.GET("/products", handler.GetProductsHandler)
+		rg.GET("/products", func(ctx *gin.Context) {
+			handler.GetProductsHandler(ctx, repo)
+		})
 
-		rg.POST("/product", handler.CreateProductHandler)
+		rg.POST("/product", func(ctx *gin.Context) {
+			handler.CreateProductHandler(ctx, repo)
+		})
 
-		rg.PATCH("/product", handler.UpdateProductHandler)
+		rg.PATCH("/product", func(ctx *gin.Context) {
+			handler.UpdateProductHandler(ctx, repo)
+		})
 	}
 }
