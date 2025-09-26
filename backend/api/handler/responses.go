@@ -11,11 +11,9 @@ func sendErr(ctx *gin.Context, code int, payload gin.H) {
 	ctx.JSON(code, payload)
 }
 
-func sendSuccess(ctx *gin.Context, data interface{}) {
+func sendSuccess(ctx *gin.Context, payload any) {
 	ctx.Header("Content-type", "application/json")
-	ctx.JSON(http.StatusOK, gin.H{
-		"data": data,
-	})
+	ctx.JSON(http.StatusOK, payload)
 }
 
 func sendStatus(ctx *gin.Context, msg string) {

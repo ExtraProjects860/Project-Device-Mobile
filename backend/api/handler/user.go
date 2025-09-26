@@ -27,13 +27,6 @@ func CreateUserHandler(ctx *gin.Context) {
 // @Success      200 {object} map[string]string
 // @Router       /user [get]
 func GetInfoUserHandler(ctx *gin.Context) {
-	err := getIdQuery(ctx)
-	if err != nil {
-		logger.Error(err.Error())
-		sendErr(ctx, http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-
 	sendSuccess(ctx, "Get Info User!")
 }
 
@@ -46,13 +39,22 @@ func GetInfoUserHandler(ctx *gin.Context) {
 // @Failure      500 {object} ErrResponse
 // @Router       /users [get]
 func GetUsersHandler(ctx *gin.Context) {
+	itemsPerPage, currentPage, err := getPaginationData(ctx)
+	if err != nil {
+		logger.Error(err.Error())
+		sendErr(ctx, http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
 	repo := repository.NewPostgresUserRepository()
-	users, err := repo.GetUsers(ctx)
+	users, err := repo.GetUsers(ctx, itemsPerPage, currentPage)
+
 	if err != nil {
 		logger.Error(err.Error())
 		sendErr(ctx, http.StatusInternalServerError, gin.H{"error": "Error to get users in database"})
 		return
 	}
+
 	sendSuccess(ctx, users)
 }
 
@@ -64,12 +66,5 @@ func GetUsersHandler(ctx *gin.Context) {
 // @Success      200 {object} map[string]string
 // @Router       /user [patch]
 func UpdateUserHandler(ctx *gin.Context) {
-	err := getIdQuery(ctx)
-	if err != nil {
-		logger.Error(err.Error())
-		sendErr(ctx, http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-
-	sendSuccess(ctx, "Updated User!")
+	sendSuccess(ctx, gin.H{"message": "Updated User!"})
 }
