@@ -7,12 +7,6 @@ import (
 	"github.com/ExtraProjects860/Project-Device-Mobile/schemas"
 )
 
-type ProductPostgres interface {
-	CreateProduct()
-	GetProducts()
-	UpdateProducts()
-}
-
 type ProductDTO struct {
 	ID                 uint      `json:"id"`
 	Name               string    `json:"name"`
@@ -43,14 +37,14 @@ func makeProductDTO(product schemas.Product) *ProductDTO {
 	}
 }
 
-func (r *PostgresRepository) CreateProduct(ctx context.Context, product schemas.Product) {
+func (r *postgresProductRepository) CreateProduct(ctx context.Context, product schemas.Product) {
 	return
 }
 
-func (r *PostgresRepository) GetProducts(ctx context.Context, itemsPerPage uint, currentPage uint) {
+func (r *postgresProductRepository) GetProducts(ctx context.Context, itemsPerPage uint, currentPage uint) {
 	return
 }
 
-func (r *PostgresRepository) UpdateProducts(ctx context.Context, id uint) {
+func (r *postgresProductRepository) UpdateProducts(ctx context.Context, id uint) {
 	return
 }

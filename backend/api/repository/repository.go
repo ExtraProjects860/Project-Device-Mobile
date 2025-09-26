@@ -1,15 +1,16 @@
 package repository
 
 import (
-	"math"
+	"context"
 
 	"github.com/ExtraProjects860/Project-Device-Mobile/config"
+	"github.com/ExtraProjects860/Project-Device-Mobile/schemas"
 	"gorm.io/gorm"
 )
 
 var (
 	logger *config.Logger
-	db *gorm.DB
+	db     *gorm.DB
 )
 
 func InitializeRepository() {
@@ -17,34 +18,39 @@ func InitializeRepository() {
 	logger = config.GetLogger("repository")
 }
 
-type PaginationDTO struct {
-	Data any;
-	CurrentPage uint;
-	TotalPages uint;
+type EnterpriseRepository interface {
+	CreateEnterprise(ctx context.Context, enterprise schemas.Enterprise)
+	GetEnterprises(ctx context.Context, id uint)
+	UpdateEnterprise(ctx context.Context, id uint, enterprise schemas.Enterprise)
 }
 
-func count(model any) uint {
-	var count int64
-	db.Model(model).Count(&count)
-
-	return uint(count)
+type WishListRepository interface {
+	AddInWishList(ctx context.Context, wishlist schemas.WishList)
+	GetItemsWishList(ctx context.Context, itemsPerPage uint, currentPage uint)
+	UpdateWishList(ctx context.Context, id uint, wishlist schemas.WishList)
 }
 
-func validationPagination(currentPage *uint, itemsPerPage *uint) {
-	if *currentPage <= 0 {
-		*currentPage = 1
-	}
-
-	if *itemsPerPage <= 0 {
-		*itemsPerPage = 1
-	}
+type RoleRepository interface {
+	CreateRole(ctx context.Context, role schemas.Role)
+	GetRoles(ctx context.Context, id uint)
+	UpdateRole(ctx context.Context, id uint, role schemas.Role)
 }
 
-func pagination(model any, itemsPerPage uint, currentPage uint) (uint, uint) {
-	validationPagination(&currentPage, &itemsPerPage)
-	legthItems := count(model)
-	paginationOffset := (currentPage - 1) * itemsPerPage
-	totalPages := uint(math.Ceil(float64(legthItems) / float64(itemsPerPage)))
+type UserRepository interface {
+	CreateUser(ctx context.Context, user schemas.User) error
+	GetInfoUser(ctx context.Context, id uint) (*UserDTO, error)
+	GetUsers(ctx context.Context, itemsPerPage uint, currentPage uint) (PaginationDTO, error)
+	UpdateUser(ctx context.Context, id uint, user schemas.User) (schemas.User, error)
+}
 
-	return paginationOffset, totalPages
+type TokenPasswordRepository interface {
+	CreateToken(ctx context.Context, token schemas.TokenPassword)
+	UpdateToken(ctx context.Context, id uint, token schemas.TokenPassword)
+	GetToken(ctx context.Context, id uint)
+}
+
+type ProductRepository interface {
+	CreateProduct(ctx context.Context, product schemas.Product)
+	GetProducts(ctx context.Context, itemsPerPage uint, currentPage uint)
+	UpdateProducts(ctx context.Context, id uint)
 }
