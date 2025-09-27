@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, TouchableOpacity } from "react-native";
+import { View, Text, TextInput, TouchableOpacity, StatusBar } from "react-native";
 import { MaterialIcons, Feather } from "@expo/vector-icons";
 import Background from "../components/ui/Background";
 import Logo from "../components/ui/Logo";
@@ -8,13 +8,14 @@ export default function LoginScreen() {
   const [showPassword, setShowPassword] = useState(false);
   return (
     <Background>
-      <View className="flex-1 justfy-center items-center align-middle mt-24">
+      <StatusBar barStyle={"light-content"} translucent={true} className='bg-light-primary' />
+      <View className="flex-1 justfy-center items-center align-middle mt-16">
         {/* Logo */}
-        <Logo className="size-48 mb4" resizedMode="center" />
+        <Logo className="size-48 mb-4" resizedMode="center" />
 
         {/* Titulo */}
         <View>
-          <Text className="text-light-text-inverted font-bold text-5xl mb-4">
+          <Text className="text-light-text-inverted font-bold text-4xl mb-4">
             Olá! Seja Bem Vindo!
           </Text>
         </View>
