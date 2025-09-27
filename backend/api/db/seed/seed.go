@@ -24,44 +24,55 @@ func verifyStartSeed(m any) bool {
 }
 
 func seedUser(quantity int) {
-	modelName := "User"
+	userModelName := "User"
 	if verifyStartSeed(&schemas.User{}) {
-		logger.Infof("Table '%s' already has data. Skipping seed.", modelName)
+		logger.Infof("Table '%s' already has data. Skipping seed.", userModelName)
 		return
 	}
 
-	logger.Infof("Seeding table '%s' with %d records...", modelName, quantity)
-	var role []schemas.Role
-	var enterprise []schemas.Enterprise
-	db.Find(&role)
-	db.Find(&enterprise)
+	var roles []schemas.Role
+	var enterprises []schemas.Enterprise
+	var products []schemas.Product
+	db.Find(&roles)
+	db.Find(&enterprises)
+	db.Find(&products)
 
+	if len(roles) == 0 || len(enterprises) == 0 || len(products) == 0 {
+		logger.Warningf("Cannot seed Users. Roles, Enterprises or Products table is empty.")
+		return
+	}
+
+	logger.Infof("Seeding table '%s' with %d records...", userModelName, quantity)
 	hashedPassword, err := utils.GenerateHashPassword("123456")
 	if err != nil {
-		logger.Errorf("Error generate hash password. %v", err)
 		panic(fmt.Sprintf("failed to hash password: %v", err))
 	}
 
-	for range quantity {
-		re := role[rng.IntN(len(role))]
-		en := enterprise[rng.IntN(len(enterprise))]
+	usersToCreate := make([]schemas.User, 0, quantity)
+
+	for i := 0; i < quantity; i++ {
+		re := roles[rng.IntN(len(roles))]
+		en := enterprises[rng.IntN(len(enterprises))]
+		url := fmt.Sprintf("https://picsum.photos/%d/%d?random=%s", 300, 300, faker.Username())
 
 		user := schemas.User{
 			Name:           faker.Name(),
 			Email:          faker.Email(),
 			Password:       hashedPassword,
-			Cpf:            faker.Regex("[0-9]{11}"), // TODO pode gerar cpfs inválidos
+			Cpf:            faker.Regex("[0-9]{11}"),
 			RegisterNumber: uint(faker.Number(1000, 9999)),
+			PhotoUrl:       &url,
 			RoleID:         re.ID,
 			EnterpriseID:   &en.ID,
 		}
-
-		if err := db.CreateInBatches(&user, 5).Error; err != nil {
-			logger.Errorf("Error creating %v: %v", modelName, err)
-		}
+		usersToCreate = append(usersToCreate, user)
 	}
 
-	logger.Infof("Seeding for table '%s' completed.", modelName)
+	if err := db.CreateInBatches(usersToCreate, 10).Error; err != nil {
+		logger.Errorf("Error creating %s: %v", userModelName, err)
+	}
+
+	logger.Infof("Seeding for table '%s' completed.", userModelName)
 }
 
 func seedEnterprise(quantity int) {
@@ -85,6 +96,58 @@ func seedEnterprise(quantity int) {
 	logger.Infof("Seeding for table '%s' completed.", modelName)
 }
 
+func seedWishList() {
+	wishlistModelName := "WishList"
+	if verifyStartSeed(&schemas.WishList{}) {
+		logger.Infof("Table '%s' already has data. Skipping seed.", wishlistModelName)
+		return
+	}
+
+	logger.Infof("Seeding data for '%s'...", wishlistModelName)
+
+	var users []schemas.User
+	var products []schemas.Product
+	db.Find(&users)
+	db.Find(&products)
+
+	if len(users) == 0 || len(products) == 0 {
+		logger.Warningf("Cannot seed '%s'. Users or Products table is empty.", wishlistModelName)
+		return
+	}
+
+	wishlistEntriesToCreate := make([]schemas.WishList, 0)
+	for _, user := range users {
+		numProductsInWishlist := rng.IntN(6) + 2
+
+		productsUsedInThisWishlist := make(map[uint]bool)
+
+		for range numProductsInWishlist {
+			randomProduct := products[rng.IntN(len(products))]
+
+			if productsUsedInThisWishlist[randomProduct.ID] {
+				continue
+			}
+
+			productsUsedInThisWishlist[randomProduct.ID] = true
+
+			entry := schemas.WishList{
+				UserID:    user.ID,
+				ProductID: randomProduct.ID,
+			}
+
+			wishlistEntriesToCreate = append(wishlistEntriesToCreate, entry)
+		}
+	}
+
+	if len(wishlistEntriesToCreate) > 0 {
+		if err := db.CreateInBatches(wishlistEntriesToCreate, 100).Error; err != nil {
+			logger.Errorf("Error creating %s entries: %v", wishlistModelName, err)
+		}
+	}
+
+	logger.Infof("Seeding for '%s' completed.", wishlistModelName)
+}
+
 func seedRole() {
 	modelName := "RoleUser"
 	if verifyStartSeed(&schemas.Role{}) {
@@ -105,41 +168,6 @@ func seedRole() {
 	logger.Infof("Seeding for table '%s' completed.", modelName)
 }
 
-func seedWishList() {
-	modelName := "WishList"
-	if verifyStartSeed(&schemas.WishList{}) {
-		logger.Infof("Table '%s' already has data. Skipping seed.", modelName)
-		return
-	}
-
-	var users []schemas.User
-	var products []schemas.Product
-	db.Find(&users)
-	db.Find(&products)
-
-	if len(users) == 0 || len(products) == 0 {
-		logger.Warningf("Cannot seed '%s'. Users or Products table is empty.", modelName)
-		return
-	}
-
-	logger.Infof("Seeding table '%s'...", modelName)
-	for range 10 {
-		u := users[rand.IntN(len(users))]
-		p := products[rand.IntN(len(products))]
-
-		wishList := schemas.WishList{
-			UserID:    u.ID,
-			ProductID: p.ID,
-		}
-
-		if err := db.CreateInBatches(&wishList, 5).Error; err != nil {
-			logger.Errorf("Error creating %v: %v", modelName, err)
-		}
-	}
-
-	logger.Infof("Seeding for table '%s' completed.", modelName)
-}
-
 func seedProduct(quantity int) {
 	modelName := "Product"
 	if verifyStartSeed(&schemas.Product{}) {
@@ -149,6 +177,7 @@ func seedProduct(quantity int) {
 
 	logger.Infof("Seeding table '%s' with %d records...", modelName, quantity)
 	for range quantity {
+		url := fmt.Sprintf("https://picsum.photos/%d/%d?random=%s", 300, 300, faker.Username())
 		discount := faker.Price(5, 50) / 100
 
 		product := schemas.Product{
@@ -157,6 +186,7 @@ func seedProduct(quantity int) {
 			Value:              faker.Price(50, 5000), // preço entre 50 e 5000
 			Quantity:           faker.Number(1, 100),
 			Discount:           &discount,
+			PhotoUrl:           &url,
 			IsPromotionAvaible: rng.IntN(2) == 1,
 		}
 
@@ -171,8 +201,8 @@ func seedProduct(quantity int) {
 func seeds() {
 	seedRole()
 	seedEnterprise(10)
-	seedUser(30)
 	seedProduct(30)
+	seedUser(30)
 	seedWishList()
 
 	logger.Info("Seed completed.")

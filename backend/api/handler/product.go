@@ -1,6 +1,11 @@
 package handler
 
-import "github.com/gin-gonic/gin"
+import (
+	"net/http"
+
+	"github.com/ExtraProjects860/Project-Device-Mobile/repository"
+	"github.com/gin-gonic/gin"
+)
 
 // @BasePath /api/v1
 
@@ -10,8 +15,8 @@ import "github.com/gin-gonic/gin"
 // @Produce      json
 // @Success      200 {object} map[string]string
 // @Router       /product [post]
-func CreateProductHandler(ctx *gin.Context) {
-	sendSuccess(ctx, "Add Promotion Product!")
+func CreateProductHandler(ctx *gin.Context, repo repository.ProductRepository) {
+	sendSuccess(ctx, gin.H{"message": "Add Promotion Product!"})
 }
 
 // @Summary      Update Product
@@ -21,16 +26,34 @@ func CreateProductHandler(ctx *gin.Context) {
 // @Produce      json
 // @Success      200 {object} map[string]string
 // @Router       /product [patch]
-func UpdateProductHandler(ctx *gin.Context) {
-	sendSuccess(ctx, "Update Promotion Product!")
+func UpdateProductHandler(ctx *gin.Context, repo repository.ProductRepository) {
+	sendSuccess(ctx, gin.H{"message": "Update Promotion Product!"})
 }
 
 // @Summary      Get Products
 // @Description  Returns all products
 // @Tags         products
 // @Produce      json
-// @Success      200 {array} map[string]string
+// @Param        itemsPerPage query string true "Pagination Items"
+// @Param        currentPage query string true "Pagination Current Page"
+// @Success      200 {array}  repository.ProductDTO
+// @Failure      400 {object} ErrResponse
+// @Failure      500 {object} ErrResponse
 // @Router       /products [get]
-func GetProductsHandler(ctx *gin.Context) {
-	sendSuccess(ctx, "Get Promotions Products!")
+func GetProductsHandler(ctx *gin.Context, repo repository.ProductRepository) {
+	itemsPerPage, currentPage, err := getPaginationData(ctx)
+	if err != nil {
+		logger.Error(err.Error())
+		sendErr(ctx, http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	products, err := repo.GetProducts(ctx, itemsPerPage, currentPage)
+	if err != nil {
+		logger.Error(err.Error())
+		sendErr(ctx, http.StatusInternalServerError, gin.H{"error": "Error to get products in database"})
+		return
+	}
+
+	sendSuccess(ctx, products)
 }

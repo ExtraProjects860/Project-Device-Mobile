@@ -2,6 +2,7 @@ package handler
 
 import (
 	"fmt"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -21,12 +22,40 @@ type UserData struct {
 func errParamIsRequired(name string, typ string) error {
 	return fmt.Errorf("param: %s (type: %s) is required", name, typ)
 }
-
-func getIdQuery(ctx *gin.Context) error {
+func getIdQuery(ctx *gin.Context) (uint, error) {
 	id := ctx.Query("id")
 	if id == "" {
-		return errParamIsRequired("id", "queryParameter")
+		return 0, errParamIsRequired("id", "queryParameter")
 	}
 
-	return nil
+	parsedId, err := strconv.ParseUint(id, 10, 64)
+	if err != nil {
+		return 0, fmt.Errorf("invalid id: %v", err)
+	}
+
+	return uint(parsedId), nil
+}
+
+func getPaginationData(ctx *gin.Context) (uint, uint, error) {
+	itemsPerPage := ctx.Query("itemsPerPage")
+	if itemsPerPage == "" {
+		return 0, 0, errParamIsRequired("id", "queryParameter")
+	}
+
+	parsedItemsPerPage, err := strconv.ParseUint(itemsPerPage, 10, 64)
+	if err != nil {
+		return 0, 0, fmt.Errorf("invalid parsed itemsPerPage: %v", err)
+	}
+
+	currentPage := ctx.Query("currentPage")
+	if currentPage == "" {
+		return 0, 0, errParamIsRequired("id", "queryParameter")
+	}
+
+	parsedCurrentPage, err := strconv.ParseUint(currentPage, 10, 64)
+	if err != nil {
+		return 0, 0, fmt.Errorf("invalid parsed currentPage: %v", err)
+	}
+
+	return uint(parsedItemsPerPage), uint(parsedCurrentPage), nil
 }

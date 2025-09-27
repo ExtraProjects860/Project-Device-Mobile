@@ -17,10 +17,10 @@ type User struct {
 	RegisterNumber uint   `gorm:"not null"`
 	PhotoUrl       *string
 
-	Role          Role          `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
-	Enterprise    Enterprise    `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
-	TokenPassword TokenPassword `gorm:"foreignKey:UserID;references:ID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
-	WishLists     []WishList    `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	Role            Role          `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	Enterprise      Enterprise    `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	TokenPassword   TokenPassword `gorm:"foreignKey:UserID;references:ID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	WishListEntries []WishList    `gorm:"foreignKey:UserID"`
 }
 
 type Enterprise struct {
@@ -36,23 +36,20 @@ type TokenPassword struct {
 	User   *User
 }
 
+type WishList struct {
+	UserID    uint      `gorm:"primaryKey"`
+	ProductID uint      `gorm:"primaryKey"`
+	CreatedAt time.Time `gorm:"default:current_timestamp"`
+	UpdatedAt time.Time `gorm:"autoUpdateTime"`
+
+	User    User
+	Product Product
+}
+
 type Role struct {
 	gorm.Model
 	Name  string `gorm:"unique;not null"`
 	Users []User `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
-}
-
-type WishList struct {
-	gorm.Model
-	UserID    uint `gorm:"uniqueIndex:idx_wish_list_group;not null"`
-	ProductID uint `gorm:"uniqueIndex:idx_wish_list_group;not null"`
-
-	User    User    `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
-	Product Product `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
-}
-
-func (WishList) TableName() string {
-	return "wish_lists"
 }
 
 type Product struct {
@@ -61,10 +58,12 @@ type Product struct {
 	Description        string   `gorm:"not null"`
 	Value              float64  `gorm:"type:decimal(10,2);not null"`
 	Quantity           int      `gorm:"not null"`
-	IsPromotionAvaible bool     `gorm:";not null"`
+	IsPromotionAvaible bool     `gorm:"not null"`
 	Discount           *float64 `gorm:"type:decimal(10,2)"`
 	PhotoUrl           *string
 	IsAvaible          bool `gorm:"default:true;not null"`
+
+	WishListEntries []WishList `gorm:"foreignKey:ProductID"`
 }
 
 func AllModelsSlice() []any {
@@ -73,7 +72,7 @@ func AllModelsSlice() []any {
 		&TokenPassword{},
 		&Enterprise{},
 		&Role{},
-		&WishList{},
 		&Product{},
+		&WishList{},
 	}
 }
