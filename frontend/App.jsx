@@ -10,6 +10,7 @@ import WishListScreen from "./src/screens/WishListScreen";
 import NoticesScreen from "./src/screens/NoticesScreeen";
 import NewPasswordScreen from "./src/screens/NewPasswordScreen";
 import ForgotPasswordScreen from "./src/screens/ForgotPasswordScreen";
+import LoginScreen from "./src/screens/LoginScreen.jsx";
 import "./global.css";
 
 function AppContent() {
@@ -21,7 +22,8 @@ function AppContent() {
         future={{ v7_startTransition: true, v7_relativeSplatPath: true }}
       >
         <Routes>
-          <Route path="/" element={<HomeScreen />} />
+          <Route path="/" element={<LoginScreen />} />
+          <Route path="home" element={<HomeScreen />} />
           <Route path="products" element={<ProductsScreen />} />
           <Route path="users" element={<UsersScreen />} />
           <Route path="wishlist" element={<WishListScreen />} />

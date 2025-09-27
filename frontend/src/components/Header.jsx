@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Image, TouchableOpacity } from "react-native";
+import { View, Image, TouchableOpacity, StatusBar } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { useThemeColors } from "../hooks/useThemeColors.js";
 import logo from "../assets/images/logo.png"
@@ -15,6 +15,7 @@ export default function Header({ onMenuPress }) {
 
   return (
     <View className="flex-row items-center justify-between bg-light-secundary dark:bg-dark-sencondary px-4 py-2 shadow-md pt-10">
+      <StatusBar barStyle={"light-content"} translucent={true} className='bg-light-secundary dark:bg-dark-secundary' />
       <Image source={logo} className="w-24 h-24" resizeMode="contain" />
       <TouchableOpacity onPress={onMenuPress} className="p-[5px]">
         <Icon name="menu" size={40} color={themeColors.header} />
