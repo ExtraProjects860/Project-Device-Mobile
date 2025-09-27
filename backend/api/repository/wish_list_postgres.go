@@ -2,30 +2,56 @@ package repository
 
 import (
 	"context"
-	"time"
 
 	"github.com/ExtraProjects860/Project-Device-Mobile/schemas"
 )
 
 type WishListDTO struct {
-	ID        uint         `json:"id"`
-	CreatedAt time.Time    `json:"created_at"`
-	UpdatedAt time.Time    `json:"updated_at"`
+	UserID    uint         `json:"id"`
+	ItemCount int          `json:"item_count"`
 	Products  []ProductDTO `json:"products"`
 }
 
-func makeWishListDTO() *WishListDTO {
-	return &WishListDTO{}
+func makeWishListOutput(wishListEntries []schemas.WishList, userID uint) *WishListDTO {
+	productsDTO := make([]ProductDTO, 0, len(wishListEntries))
+	for _, entry := range wishListEntries {
+		if entry.Product.ID == 0 {
+			continue
+		}
+
+		product := ProductDTO{
+			ID:          entry.Product.ID,
+			Name:        entry.Product.Name,
+			Description: entry.Product.Description,
+			Value:       entry.Product.Value,
+			PhotoUrl:    entry.Product.PhotoUrl,
+		}
+		productsDTO = append(productsDTO, product)
+	}
+
+	return &WishListDTO{
+		UserID:    userID,
+		ItemCount: len(productsDTO),
+		Products:  productsDTO,
+	}
 }
 
-func (r *postgresWishListRepository) AddInWishList(ctx context.Context, wishlist schemas.WishList) {
-	return
-}
+func (r *postgresWishListRepository) GetWishListByUserID(ctx context.Context, userID uint, itemsPerPage uint, currentPage uint) (PaginationDTO, error) {
+	query := r.db.WithContext(ctx).Where("user_id = ?", userID).Model(&schemas.WishList{})
+	paginationOffset, totalPages := pagination(query, itemsPerPage, currentPage)
 
-func (r *postgresWishListRepository) GetItemsWishList(ctx context.Context, itemsPerPage uint, currentPage uint) {
-	return
-}
+	var wishListEntries []schemas.WishList
+	err := query.
+		Limit(int(itemsPerPage)).
+		Offset(int(paginationOffset)).
+		Preload("Product").
+		Find(&wishListEntries).Error
+	if err != nil {
+		logger.Errorf("%v", err)
+		return PaginationDTO{}, err
+	}
 
-func (r *postgresWishListRepository) UpdateWishList(ctx context.Context, id uint, wishlist schemas.WishList) {
-	return
+	wishListDTO := makeWishListOutput(wishListEntries, userID)
+
+	return PaginationDTO{Data: wishListDTO, CurrentPage: currentPage, TotalPages: totalPages}, err
 }

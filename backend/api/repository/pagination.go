@@ -1,16 +1,20 @@
 package repository
 
-import "math"
+import (
+	"math"
+
+	"gorm.io/gorm"
+)
 
 type PaginationDTO struct {
-	Data        any
-	CurrentPage uint
-	TotalPages  uint
+	Data        any  `json:"data"`
+	CurrentPage uint `json:"current_page"`
+	TotalPages  uint `json:"total_pages"`
 }
 
-func count(model any) uint {
+func count(query *gorm.DB) uint {
 	var count int64
-	db.Model(model).Count(&count)
+	query.Count(&count)
 
 	return uint(count)
 }
@@ -25,9 +29,9 @@ func validationPagination(currentPage *uint, itemsPerPage *uint) {
 	}
 }
 
-func pagination(model any, itemsPerPage uint, currentPage uint) (uint, uint) {
+func pagination(query *gorm.DB, itemsPerPage uint, currentPage uint) (uint, uint) {
 	validationPagination(&currentPage, &itemsPerPage)
-	lengthItems := count(model)
+	lengthItems := count(query)
 	if lengthItems == 0 {
 		return 0, 1
 	}

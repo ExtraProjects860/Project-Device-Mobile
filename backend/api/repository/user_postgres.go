@@ -67,10 +67,11 @@ func (r *postgresUserRepository) GetInfoUser(ctx context.Context, id uint) (*Use
 }
 
 func (r *postgresUserRepository) GetUsers(ctx context.Context, itemsPerPage uint, currentPage uint) (PaginationDTO, error) {
-	paginationOffset, totalPages := pagination(&schemas.User{}, itemsPerPage, currentPage)
+	query := r.db.WithContext(ctx).Model(&schemas.User{})
+	paginationOffset, totalPages := pagination(query, itemsPerPage, currentPage)
 
 	var users []schemas.User
-	err := r.db.WithContext(ctx).
+	err := query.
 		Limit(int(itemsPerPage)).
 		Offset(int(paginationOffset)).
 		Preload("Role").

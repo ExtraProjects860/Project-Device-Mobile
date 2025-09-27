@@ -14,7 +14,7 @@ type RoleDTO struct {
 	UpdatedAt time.Time `json:"updated_at"`
 }
 
-func makeRoleDTO(role schemas.Role) *RoleDTO {
+func makeRoleOutput(role schemas.Role) *RoleDTO {
 	return &RoleDTO{
 		ID:        role.ID,
 		Name:      role.Name,

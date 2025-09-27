@@ -49,7 +49,6 @@ func GetUsersHandler(ctx *gin.Context, repo repository.UserRepository) {
 	}
 
 	users, err := repo.GetUsers(ctx, itemsPerPage, currentPage)
-
 	if err != nil {
 		logger.Error(err.Error())
 		sendErr(ctx, http.StatusInternalServerError, gin.H{"error": "Error to get users in database"})

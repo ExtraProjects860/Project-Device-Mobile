@@ -13,7 +13,7 @@ type TokenPasswordDTO struct {
 	TimeUp *time.Time `json:"time_up,omitempty"`
 }
 
-func makeTokenPassword(token schemas.TokenPassword) *TokenPasswordDTO {
+func makeTokenPasswordOutput(token schemas.TokenPassword) *TokenPasswordDTO {
 	return &TokenPasswordDTO{
 		ID:     token.ID,
 		Code:   token.Code,

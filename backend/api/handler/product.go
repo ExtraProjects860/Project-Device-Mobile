@@ -1,6 +1,8 @@
 package handler
 
 import (
+	"net/http"
+
 	"github.com/ExtraProjects860/Project-Device-Mobile/repository"
 	"github.com/gin-gonic/gin"
 )
@@ -32,8 +34,26 @@ func UpdateProductHandler(ctx *gin.Context, repo repository.ProductRepository) {
 // @Description  Returns all products
 // @Tags         products
 // @Produce      json
-// @Success      200 {array} map[string]string
+// @Param        itemsPerPage query string true "Pagination Items"
+// @Param        currentPage query string true "Pagination Current Page"
+// @Success      200 {array}  repository.ProductDTO
+// @Failure      400 {object} ErrResponse
+// @Failure      500 {object} ErrResponse
 // @Router       /products [get]
 func GetProductsHandler(ctx *gin.Context, repo repository.ProductRepository) {
-	sendSuccess(ctx, gin.H{"message": "Get Promotions Products!"})
+	itemsPerPage, currentPage, err := getPaginationData(ctx)
+	if err != nil {
+		logger.Error(err.Error())
+		sendErr(ctx, http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	products, err := repo.GetProducts(ctx, itemsPerPage, currentPage)
+	if err != nil {
+		logger.Error(err.Error())
+		sendErr(ctx, http.StatusInternalServerError, gin.H{"error": "Error to get products in database"})
+		return
+	}
+
+	sendSuccess(ctx, products)
 }

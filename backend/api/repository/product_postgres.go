@@ -21,19 +21,19 @@ type ProductDTO struct {
 	UpdatedAt          time.Time `json:"updated_at"`
 }
 
-func makeProductDTO(product schemas.Product) *ProductDTO {
+func makeProductOutput(product schemas.Product) *ProductDTO {
 	return &ProductDTO{
-		ID: product.ID,
-		Name: product.Name,
-		Description: product.Description,
-		Value: product.Value,
-		Quantity: product.Quantity,
+		ID:                 product.ID,
+		Name:               product.Name,
+		Description:        product.Description,
+		Value:              product.Value,
+		Quantity:           product.Quantity,
 		IsPromotionAvaible: product.IsPromotionAvaible,
-		Discount: product.Discount,
-		PhotoUrl: product.PhotoUrl,
-		IsAvaible: product.IsAvaible,
-		CreatedAt: product.CreatedAt,
-		UpdatedAt: product.UpdatedAt,
+		Discount:           product.Discount,
+		PhotoUrl:           product.PhotoUrl,
+		IsAvaible:          product.IsAvaible,
+		CreatedAt:          product.CreatedAt,
+		UpdatedAt:          product.UpdatedAt,
 	}
 }
 
@@ -41,8 +41,26 @@ func (r *postgresProductRepository) CreateProduct(ctx context.Context, product s
 	return
 }
 
-func (r *postgresProductRepository) GetProducts(ctx context.Context, itemsPerPage uint, currentPage uint) {
-	return
+func (r *postgresProductRepository) GetProducts(ctx context.Context, itemsPerPage uint, currentPage uint) (PaginationDTO, error) {
+	query := r.db.WithContext(ctx).Model(&schemas.Product{})
+	paginationOffset, totalPages := pagination(query, itemsPerPage, currentPage)
+
+	var productsEntries []schemas.Product
+	err := query.
+		Limit(int(itemsPerPage)).
+		Offset(int(paginationOffset)).
+		Find(&productsEntries).Error
+	if err != nil {
+		logger.Errorf("%v", err)
+		return PaginationDTO{}, err
+	}
+
+	var productsDTO []ProductDTO
+	for _, product := range productsEntries {
+		productsDTO = append(productsDTO, *makeProductOutput(product))
+	}
+
+	return PaginationDTO{Data: productsDTO, CurrentPage: currentPage, TotalPages: totalPages}, err
 }
 
 func (r *postgresProductRepository) UpdateProducts(ctx context.Context, id uint) {

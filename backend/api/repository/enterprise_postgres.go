@@ -14,7 +14,7 @@ type EnterpriseDTO struct {
 	UpdatedAt time.Time `json:"updated_at"`
 }
 
-func makeEnterpriseDTO(enterprise schemas.Enterprise) *EnterpriseDTO {
+func makeEnterpriseOutput(enterprise schemas.Enterprise) *EnterpriseDTO {
 	return &EnterpriseDTO{
 		ID:        enterprise.ID,
 		Name:      enterprise.Name,

@@ -11,6 +11,31 @@ definitions:
       password:
         type: string
     type: object
+  repository.ProductDTO:
+    properties:
+      created_at:
+        type: string
+      description:
+        type: string
+      discount:
+        type: number
+      id:
+        type: integer
+      is_avaible:
+        type: boolean
+      is_promotion_avaible:
+        type: boolean
+      name:
+        type: string
+      photo_url:
+        type: string
+      quantity:
+        type: integer
+      updated_at:
+        type: string
+      value:
+        type: number
+    type: object
   repository.UserDTO:
     properties:
       cpf:
@@ -33,6 +58,17 @@ definitions:
         type: string
       updated_at:
         type: string
+    type: object
+  repository.WishListDTO:
+    properties:
+      id:
+        type: integer
+      item_count:
+        type: integer
+      products:
+        items:
+          $ref: '#/definitions/repository.ProductDTO'
+        type: array
     type: object
 info:
   contact: {}
@@ -242,6 +278,17 @@ paths:
   /products:
     get:
       description: Returns all products
+      parameters:
+      - description: Pagination Items
+        in: query
+        name: itemsPerPage
+        required: true
+        type: string
+      - description: Pagination Current Page
+        in: query
+        name: currentPage
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -249,10 +296,16 @@ paths:
           description: OK
           schema:
             items:
-              additionalProperties:
-                type: string
-              type: object
+              $ref: '#/definitions/repository.ProductDTO'
             type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.ErrResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.ErrResponse'
       summary: Get Products
       tags:
       - products
@@ -348,6 +401,22 @@ paths:
   /wishlist:
     get:
       description: Returns all products in the user wish list
+      parameters:
+      - description: User ID
+        in: query
+        name: id
+        required: true
+        type: string
+      - description: Pagination Items
+        in: query
+        name: itemsPerPage
+        required: true
+        type: string
+      - description: Pagination Current Page
+        in: query
+        name: currentPage
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -355,10 +424,16 @@ paths:
           description: OK
           schema:
             items:
-              additionalProperties:
-                type: string
-              type: object
+              $ref: '#/definitions/repository.WishListDTO'
             type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.ErrResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.ErrResponse'
       summary: Get Wish List Items
       tags:
       - wishlist

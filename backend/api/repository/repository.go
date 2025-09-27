@@ -24,16 +24,14 @@ type EnterpriseRepository interface {
 	UpdateEnterprise(ctx context.Context, id uint, enterprise schemas.Enterprise)
 }
 
-type WishListRepository interface {
-	AddInWishList(ctx context.Context, wishlist schemas.WishList)
-	GetItemsWishList(ctx context.Context, itemsPerPage uint, currentPage uint)
-	UpdateWishList(ctx context.Context, id uint, wishlist schemas.WishList)
-}
-
 type RoleRepository interface {
 	CreateRole(ctx context.Context, role schemas.Role)
 	GetRoles(ctx context.Context, id uint)
 	UpdateRole(ctx context.Context, id uint, role schemas.Role)
+}
+
+type WishListRepository interface {
+	GetWishListByUserID(ctx context.Context, userID uint, itemsPerPage uint, currentPage uint) (PaginationDTO, error)
 }
 
 type UserRepository interface {
@@ -51,6 +49,6 @@ type TokenPasswordRepository interface {
 
 type ProductRepository interface {
 	CreateProduct(ctx context.Context, product schemas.Product)
-	GetProducts(ctx context.Context, itemsPerPage uint, currentPage uint)
+	GetProducts(ctx context.Context, itemsPerPage uint, currentPage uint) (PaginationDTO, error)
 	UpdateProducts(ctx context.Context, id uint)
 }

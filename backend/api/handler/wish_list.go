@@ -1,6 +1,8 @@
 package handler
 
 import (
+	"net/http"
+
 	"github.com/ExtraProjects860/Project-Device-Mobile/repository"
 	"github.com/gin-gonic/gin"
 )
@@ -32,8 +34,34 @@ func UpdateWishListHandler(ctx *gin.Context, repo repository.WishListRepository)
 // @Description  Returns all products in the user wish list
 // @Tags         wishlist
 // @Produce      json
-// @Success      200 {array} map[string]string
+// @Param 		 id query string true "User ID"
+// @Param        itemsPerPage query string true "Pagination Items"
+// @Param        currentPage query string true "Pagination Current Page"
+// @Success      200 {array}  repository.WishListDTO
+// @Failure      400 {object} ErrResponse
+// @Failure      500 {object} ErrResponse
 // @Router       /wishlist [get]
-func GetItensWishListHandler(ctx *gin.Context, repo repository.WishListRepository) {
-	sendSuccess(ctx, "Get Itens in Wish List!")
+func GetWishListByUserIDHandler(ctx *gin.Context, repo repository.WishListRepository) {
+	userId, err := getIdQuery(ctx)
+	if err != nil {
+		logger.Error(err.Error())
+		sendErr(ctx, http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	itemsPerPage, currentPage, err := getPaginationData(ctx)
+	if err != nil {
+		logger.Error(err.Error())
+		sendErr(ctx, http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	wishlist, err := repo.GetWishListByUserID(ctx, userId, itemsPerPage, currentPage)
+	if err != nil {
+		logger.Error(err.Error())
+		sendErr(ctx, http.StatusInternalServerError, gin.H{"error": "Error to get wishlist in database"})
+		return
+	}
+
+	sendSuccess(ctx, wishlist)
 }
