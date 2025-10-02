@@ -10,7 +10,7 @@ export default function SearchBar() {
 
   return (
     <View className="flex-row w-full px-5 items-center gap-x-2">
-      <View className="flex-1 flex-row items-center bg-white rounded-full px-4 py-2 gap-x-3">
+      <View className="flex-1 flex-row items-center bg-white rounded-full px-4 gap-x-3">
         <TouchableOpacity>
           <Icon name="menu" size={24} />
         </TouchableOpacity>
@@ -27,7 +27,7 @@ export default function SearchBar() {
       </View>
 
       <View>
-        <TouchableOpacity className="flex-row items-center bg-light-secundary dark:bg-dark-sencondary rounded-full p-4 shadow-md">
+        <TouchableOpacity className="flex-row items-center bg-light-secundary dark:bg-dark-sencondary rounded-full p-2 shadow-md">
           <Icon
             name="account-plus-outline"
             size={24}

@@ -82,7 +82,7 @@ export default function Menu({ visible, onClose }) {
           {/* Header */}
           <View className="flex-row items-center justify-between mb-10 rounded-xl">
             <TouchableOpacity
-              onPress={() => goTo("/")}
+              onPress={() => goTo("/home")}
               className="p-2 border-2 border-light-text-inverted dark:border-dark-text-primary rounded-xl"
             >
               <Icon name="home" size={30} color={themeColors.header} />
@@ -206,6 +206,7 @@ export default function Menu({ visible, onClose }) {
                     Gerenciar Usuários
                   </Text>
                 </TouchableOpacity>
+
                 <TouchableOpacity
                   onPress={() => goTo("/products")}
                   className="flex-row items-center bg-light-card dark:bg-dark-card rounded-full p-3"

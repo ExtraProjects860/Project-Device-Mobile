@@ -1,14 +1,26 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, TouchableOpacity, StatusBar } from "react-native";
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StatusBar,
+} from "react-native";
 import { MaterialIcons, Feather } from "@expo/vector-icons";
 import Background from "../components/ui/Background";
 import Logo from "../components/ui/Logo";
+import { useNavigateTo } from "../hooks/useNavigateTo";
 
 export default function LoginScreen() {
   const [showPassword, setShowPassword] = useState(false);
+  const goTo = useNavigateTo();
   return (
     <Background>
-      <StatusBar barStyle={"light-content"} translucent={true} className='bg-light-primary' />
+      <StatusBar
+        barStyle={"light-content"}
+        translucent={true}
+        className="bg-light-primary dark:bg-dark-primary"
+      />
       <View className="flex-1 justfy-center items-center align-middle mt-16">
         {/* Logo */}
         <Logo className="size-48 mb-4" resizedMode="center" />
@@ -66,7 +78,10 @@ export default function LoginScreen() {
 
         {/* Botões */}
         <View className="w-full items-center flex-1">
-          <TouchableOpacity className="mt-20 mb-3 py-2 px-20 bg-light-secundary rounded-full items-center">
+          <TouchableOpacity
+            onPress={() => goTo("/home")}
+            className="mt-20 mb-3 py-2 px-20 bg-light-secundary rounded-full items-center"
+          >
             <Text className="text-white text-2xl font-bold">Entrar</Text>
           </TouchableOpacity>
 
