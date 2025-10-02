@@ -5,15 +5,18 @@ class UserRequest extends ApiDefault {
     super(axiosInstance);
   }
 
+  async GetUsersRequest(itemsPerPage = 20, currentPage = 1) {
+    const response = await this.axiosInstance.get(
+      `/users?itemsPerPage=${itemsPerPage}&currentPage=${currentPage}`
+    );
+    return response.data;
+  }
+
   CreateUserRequest() {
     return;
   }
 
   GetInfoUserRequest() {
-    return;
-  }
-
-  GetUsersRequest() {
     return;
   }
 
