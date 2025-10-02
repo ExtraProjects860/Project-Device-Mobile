@@ -129,7 +129,10 @@ export default function Menu({ visible, onClose }) {
                   Senha
                 </Text>
               </TouchableOpacity>
-              <TouchableOpacity className="flex-row items-center bg-light-card dark:bg-dark-card rounded-full p-3">
+              <TouchableOpacity
+                onPress={() => goTo("/")}
+                className="flex-row items-center bg-light-card dark:bg-dark-card rounded-full p-3"
+              >
                 <Icon name="logout" size={24} color={themeColors.primary} />
                 <Text className="ml-2 text-light-primary dark:text-dark-text-primary font-semibold text-base">
                   Logout
