@@ -76,7 +76,7 @@ export default function Menu({ visible, onClose }) {
       {/* Sidebar */}
       <Animated.View
         style={animatedMenuStyle}
-        className="absolute top-0 bottom-0 right-0 h-full w-5/6 bg-light-secundary dark:bg-dark-primary p-6 z-50 pt-10"
+        className="absolute top-0 bottom-0 right-0 h-full w-5/6 bg-light-secondary dark:bg-dark-primary p-6 z-50 pt-10"
       >
         <ScrollView>
           {/* Header */}

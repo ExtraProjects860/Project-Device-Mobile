@@ -27,7 +27,7 @@ export default function SearchBar() {
       </View>
 
       <View>
-        <TouchableOpacity className="flex-row items-center bg-light-secundary dark:bg-dark-sencondary rounded-full p-2 shadow-md">
+        <TouchableOpacity className="flex-row items-center bg-light-secondary dark:bg-dark-sencondary rounded-full p-2 shadow-md">
           <Icon
             name="account-plus-outline"
             size={24}

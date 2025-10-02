@@ -43,7 +43,7 @@ export default function LoginScreen() {
           </View>
           <View className="flex-row items-center bg-white rounded-full px-4 py-1 w-5/6">
             <TextInput
-              className="-py-1 ml-2 flex-1 text-light-text-secundary font-semibold text-2xl"
+              className="-py-1 ml-2 flex-1 text-light-text-secondary font-semibold text-2xl"
               placeholder="Exemplo@gmail.com"
               placeholderTextColor="gray"
               keyboardType="email-address"
@@ -61,7 +61,7 @@ export default function LoginScreen() {
           </View>
           <View className="flex-row items-center bg-white rounded-full px-4 py-1 w-5/6">
             <TextInput
-              className="-py-1 ml-2 flex-1 text-light-text-secundary font-semibold text-2xl"
+              className="-py-1 ml-2 flex-1 text-light-text-secondary font-semibold text-2xl"
               secureTextEntry={!showPassword}
               placeholder="*********"
               placeholderTextColor="gray"
@@ -80,7 +80,7 @@ export default function LoginScreen() {
         <View className="w-full items-center flex-1">
           <TouchableOpacity
             onPress={() => goTo("/home")}
-            className="mt-20 mb-3 py-2 px-20 bg-light-secundary rounded-full items-center"
+            className="mt-20 mb-3 py-2 px-20 bg-light-secondary rounded-full items-center"
           >
             <Text className="text-white text-2xl font-bold">Entrar</Text>
           </TouchableOpacity>
