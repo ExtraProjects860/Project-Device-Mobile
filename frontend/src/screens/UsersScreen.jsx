@@ -3,10 +3,12 @@ import { View, Text, Alert } from "react-native";
 import Background from "../components/ui/Background";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { NavBar } from "../components/Navbar";
-import { useThemeColors } from "../hooks/useThemeColors.js";
 import SearchBar from "../components/SearchBar.jsx";
-import { getUsersRequest } from "../lib/UserRequest.js";
 import ListItems from "../components/ListItems.jsx";
+import ButtonAdd from "../components/ui/ButtonAdd.jsx";
+import { getUsersRequest } from "../lib/UserRequest.js";
+import { useThemeColors } from "../hooks/useThemeColors.js";
+import CardUserList from "../components/ui/CardUserList.jsx";
 
 export default function UsersScreen() {
   const themeColors = useThemeColors();
@@ -30,13 +32,11 @@ export default function UsersScreen() {
       </View>
 
       <View className="items-center mb-2">
-        <SearchBar />
+        <SearchBar buttonAdd={<ButtonAdd />} />
       </View>
 
       {/* Usuários */}
-      <ListItems
-        callbackFetch={getUsersRequest}
-      />
+      <ListItems callbackFetch={getUsersRequest} CardListRender={CardUserList} />
     </Background>
   );
 }
