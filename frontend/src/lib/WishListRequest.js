@@ -1,21 +1,13 @@
-import { ApiDefault, instanceMainApi } from "./axios.js";
+import { instanceMainApi } from "./axios.js";
 
-class WishListRequest extends ApiDefault {
-  constructor(axiosInstance) {
-    super(axiosInstance);
-  }
-
-  AddInWishListRequest() {
-    return;
-  }
-
-  UpdateWishListRequest() {
-    return;
-  }
-
-  GetItemsWishListRequest() {
-    return;
-  }
+export async function addInWishListRequest() {
+  return;
 }
 
-export default new WishListRequest(instanceMainApi);
+export async function updateWishListRequest() {
+  return;
+}
+
+export async function getItemsWishListRequest() {
+  return;
+}

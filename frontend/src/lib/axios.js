@@ -1,13 +1,7 @@
 import axios from "axios";
 
-export class ApiDefault {
-  constructor(axiosInstance) {
-    this.axiosInstance = axiosInstance;
-  }
-}
-
 export const instanceMainApi = axios.create({
-  baseURL: "https://bioclimatological-linus-apneic.ngrok-free.dev/api/v1"
+  baseURL: "https://thermogenous-jimmie-manly.ngrok-free.dev/api/v1",
 });
 
 instanceMainApi.defaults.headers.post["Content-Type"] = "application/json";

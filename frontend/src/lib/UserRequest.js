@@ -1,28 +1,21 @@
-import { ApiDefault, instanceMainApi } from "./axios.js";
+import { instanceMainApi } from "./axios.js";
 
-class UserRequest extends ApiDefault {
-  constructor(axiosInstance) {
-    super(axiosInstance);
-  }
+export async function getUsersRequest(itemsPerPage = 20, currentPage = 1) {
+  const response = await instanceMainApi.get(
+    `/users?itemsPerPage=${itemsPerPage}&currentPage=${currentPage}`,
+  );
 
-  async GetUsersRequest(itemsPerPage = 20, currentPage = 1) {
-    const response = await this.axiosInstance.get(
-      `/users?itemsPerPage=${itemsPerPage}&currentPage=${currentPage}`
-    );
-    return response.data;
-  }
-
-  CreateUserRequest() {
-    return;
-  }
-
-  GetInfoUserRequest() {
-    return;
-  }
-
-  UpdateUserRequest() {
-    return;
-  }
+  return response.data || [];
 }
 
-export default new UserRequest(instanceMainApi);
+export async function createUserRequest() {
+  return;
+}
+
+export async function getInfoUserRequest() {
+  return;
+}
+
+export async function updateUserRequest() {
+  return;
+}

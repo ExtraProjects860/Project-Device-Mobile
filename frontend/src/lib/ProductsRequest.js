@@ -1,21 +1,13 @@
-import { ApiDefault, instanceMainApi } from "./axios.js";
+import { instanceMainApi } from "./axios.js";
 
-class ProductRequest extends ApiDefault {
-  constructor(axiosInstance) {
-    super(axiosInstance);
-  }
-
-  CreateProductRequest() {
-    return;
-  }
-
-  UpdateProductRequest() {
-    return;
-  }
-
-  GetProductsRequest() {
-    return;
-  }
+export async function createProductRequest() {
+  return;
 }
 
-export default new ProductRequest(instanceMainApi);
+export async function updateProductRequest() {
+  return;
+}
+
+export async function getProductsRequest() {
+  return;
+}
