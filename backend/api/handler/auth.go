@@ -7,15 +7,13 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// @BasePath /api/v1
-
 // @Summary      Request Password Token
 // @Description  Requests a reset token for user password
 // @Tags         auth
 // @Accept       json
 // @Produce      json
 // @Success      200 {object} map[string]string
-// @Router       /auth/request-token [post]
+// @Router       /api/v1/auth/request-token [post]
 func RequestTokenHandler(ctx *gin.Context) {
 	sendSuccess(ctx, "Require Password!")
 }
@@ -26,7 +24,7 @@ func RequestTokenHandler(ctx *gin.Context) {
 // @Accept       json
 // @Produce      json
 // @Success      200 {object} map[string]string
-// @Router       /auth/reset-password [post]
+// @Router       /api/v1/auth/reset-password [post]
 func ResetPasswordHandler(ctx *gin.Context) {
 	sendSuccess(ctx, "Change Password!")
 }
@@ -39,7 +37,7 @@ func ResetPasswordHandler(ctx *gin.Context) {
 // @Param request body LoginRequest true "Request body"
 // @Success      200 {object} map[string]string
 // @Failure      401 {object} map[string]string
-// @Router       /auth/login [post]
+// @Router       /api/v1/auth/login [post]
 func LoginHandler(ctx *gin.Context) {
 	var request LoginRequest
 	if err := ctx.ShouldBindJSON(&request); err != nil {
@@ -73,7 +71,7 @@ func LoginHandler(ctx *gin.Context) {
 // @Produce      json
 // @Success      200 {object} map[string]string
 // @Failure      401 {object} map[string]string
-// @Router       /auth/refresh-token [post]
+// @Router       /api/v1/auth/refresh-token [post]
 func RefreshTokenHandler(ctx *gin.Context) {
 	var request auth.RequestRefresh
 	if err := ctx.ShouldBindJSON(&request); err != nil {
@@ -99,7 +97,7 @@ func RefreshTokenHandler(ctx *gin.Context) {
 // @Produce      json
 // @Success      200 {object} map[string]string
 // @Failure      401 {object} map[string]string
-// @Router       /auth/logout [post]
+// @Router       /api/v1/auth/logout [post]
 func LogoutHandler(ctx *gin.Context) {
 	sendSuccess(ctx, "Logout!")
 }

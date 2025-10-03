@@ -1,3 +1,4 @@
+basePath: /
 definitions:
   handler.ErrResponse:
     properties:
@@ -70,10 +71,18 @@ definitions:
           $ref: '#/definitions/repository.ProductDTO'
         type: array
     type: object
+<<<<<<< HEAD
+=======
+host: localhost:5050
+>>>>>>> dev
 info:
   contact: {}
+  description: Essa é uma api voltada para um projeto extensionista para programação
+    em dispositivos móveis
+  title: Project Device Mobile API
+  version: "1.0"
 paths:
-  /auth/login:
+  /api/v1/auth/login:
     post:
       consumes:
       - application/json
@@ -103,7 +112,7 @@ paths:
       summary: User Login
       tags:
       - auth
-  /auth/logout:
+  /api/v1/auth/logout:
     post:
       consumes:
       - application/json
@@ -126,7 +135,7 @@ paths:
       summary: User Logout
       tags:
       - auth
-  /auth/refresh-token:
+  /api/v1/auth/refresh-token:
     post:
       consumes:
       - application/json
@@ -149,7 +158,7 @@ paths:
       summary: Refresh Token
       tags:
       - auth
-  /auth/request-token:
+  /api/v1/auth/request-token:
     post:
       consumes:
       - application/json
@@ -166,7 +175,7 @@ paths:
       summary: Request Password Token
       tags:
       - auth
-  /auth/reset-password:
+  /api/v1/auth/reset-password:
     post:
       consumes:
       - application/json
@@ -183,6 +192,237 @@ paths:
       summary: Reset Password
       tags:
       - auth
+  /api/v1/product:
+    patch:
+      description: Updates an existing product
+      parameters:
+      - description: Product ID
+        in: query
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Update Product
+      tags:
+      - products
+    post:
+      description: Creates a new product
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Create Product
+      tags:
+      - products
+  /api/v1/products:
+    get:
+      description: Returns all products
+      parameters:
+      - description: Pagination Items
+        in: query
+        name: itemsPerPage
+        required: true
+        type: string
+      - description: Pagination Current Page
+        in: query
+        name: currentPage
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/repository.ProductDTO'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.ErrResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.ErrResponse'
+      summary: Get Products
+      tags:
+      - products
+  /api/v1/user:
+    get:
+      description: Returns information about a specific user
+      parameters:
+      - description: User ID
+        in: query
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get User Info
+      tags:
+      - users
+    patch:
+      description: Updates an existing user
+      parameters:
+      - description: User ID
+        in: query
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Update User
+      tags:
+      - users
+    post:
+      description: Creates a new user
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Create User
+      tags:
+      - users
+  /api/v1/users:
+    get:
+      description: Returns a list of all users
+      parameters:
+      - description: Pagination Items
+        in: query
+        name: itemsPerPage
+        required: true
+        type: string
+      - description: Pagination Current Page
+        in: query
+        name: currentPage
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/repository.UserDTO'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.ErrResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.ErrResponse'
+      summary: Get Users
+      tags:
+      - users
+  /api/v1/wishlist:
+    get:
+      description: Returns all products in the user wish list
+      parameters:
+      - description: User ID
+        in: query
+        name: id
+        required: true
+        type: string
+      - description: Pagination Items
+        in: query
+        name: itemsPerPage
+        required: true
+        type: string
+      - description: Pagination Current Page
+        in: query
+        name: currentPage
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/repository.WishListDTO'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.ErrResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.ErrResponse'
+      summary: Get Wish List Items
+      tags:
+      - wishlist
+    patch:
+      description: Update a product from the user wish list
+      parameters:
+      - description: WishList ID
+        in: query
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Update Product from Wish List
+      tags:
+      - wishlist
+    post:
+      description: Adds a product to the user wish list
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Add Product to Wish List
+      tags:
+      - wishlist
   /health/api:
     get:
       description: Returns a simple message to confirm API is running
@@ -240,6 +480,7 @@ paths:
       summary: Email service check
       tags:
       - health
+<<<<<<< HEAD
   /product:
     patch:
       description: Updates an existing product
@@ -471,6 +712,8 @@ paths:
       summary: Add Product to Wish List
       tags:
       - wishlist
+=======
+>>>>>>> dev
 securityDefinitions:
   BearerAuth:
     description: Type "Bearer" followed by a space and JWT token.

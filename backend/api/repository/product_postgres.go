@@ -43,7 +43,11 @@ func (r *postgresProductRepository) CreateProduct(ctx context.Context, product s
 
 func (r *postgresProductRepository) GetProducts(ctx context.Context, itemsPerPage uint, currentPage uint) (PaginationDTO, error) {
 	query := r.db.WithContext(ctx).Model(&schemas.Product{})
+<<<<<<< HEAD
 	paginationOffset, totalPages := pagination(query, itemsPerPage, currentPage)
+=======
+	paginationOffset, totalPages, lengthItems := pagination(query, itemsPerPage, currentPage)
+>>>>>>> dev
 
 	var productsEntries []schemas.Product
 	err := query.
@@ -60,7 +64,11 @@ func (r *postgresProductRepository) GetProducts(ctx context.Context, itemsPerPag
 		productsDTO = append(productsDTO, *makeProductOutput(product))
 	}
 
+<<<<<<< HEAD
 	return PaginationDTO{Data: productsDTO, CurrentPage: currentPage, TotalPages: totalPages}, err
+=======
+	return PaginationDTO{Data: productsDTO, CurrentPage: currentPage, TotalPages: totalPages, TotalItems: lengthItems}, err
+>>>>>>> dev
 }
 
 func (r *postgresProductRepository) UpdateProducts(ctx context.Context, id uint) {

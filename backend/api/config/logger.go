@@ -28,35 +28,35 @@ func NewLogger(prefix string) *Logger {
 }
 
 // Create Non-Formatted Logs
-func (l *Logger) Debug(v ...interface{}) {
+func (l *Logger) Debug(v ...any) {
 	l.debug.Println(v...)
 }
 
-func (l *Logger) Info(v ...interface{}) {
+func (l *Logger) Info(v ...any) {
 	l.info.Println(v...)
 } 
 
-func (l *Logger) Warning(v ...interface{}) {
+func (l *Logger) Warning(v ...any) {
 	l.warning.Println(v...)
 } 
 
-func (l *Logger) Error(v ...interface{}) {
+func (l *Logger) Error(v ...any) {
 	l.err.Println(v...)
 }
 
 // Create Formatted Logs
-func (l *Logger) Debugf(format string, v ...interface{}) {
+func (l *Logger) Debugf(format string, v ...any) {
 	l.debug.Printf(format, v...)
 }
 
-func (l *Logger) Infof(format string, v ...interface{}) {
+func (l *Logger) Infof(format string, v ...any) {
 	l.info.Printf(format, v...)
 } 
 
-func (l *Logger) Warningf(format string, v ...interface{}) {
+func (l *Logger) Warningf(format string, v ...any) {
 	l.warning.Printf(format, v...)
 } 
 
-func (l *Logger) Errorf(format string, v ...interface{}) {
+func (l *Logger) Errorf(format string, v ...any) {
 	l.err.Printf(format, v...)
 }

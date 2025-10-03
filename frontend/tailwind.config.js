@@ -15,7 +15,7 @@ module.exports = {
 
         light: {
           primary: "#087975",
-          secundary: "#E91D62",
+          secondary: "#E91D62",
           card: "#ffffff",
           "text-primary": "#1e293b",
           "text-secondary": "#475569",
@@ -23,7 +23,7 @@ module.exports = {
         },
         dark: {
           primary: "#0f172a",
-          secundary: "#E95",
+          secondary: "#E95",
           card: "#1e293b",
           "text-primary": "#f1f5f9",
           "text-secondary": "#94a3b8",

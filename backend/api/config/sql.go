@@ -20,8 +20,8 @@ func formatterUriDb(format string, env *EnvVariables) string {
 	)
 }
 
-func InitializeDbSQL() (*gorm.DB, error) {
-	urlDB := formatterUriDb("%s://%s:%s@%s/%s?sslmode=disable", GetEnv())
+func InitializeDbSQL(env *EnvVariables) (*gorm.DB, error) {
+	urlDB := formatterUriDb("%s://%s:%s@%s/%s?sslmode=disable", env)
 
 	db, err := gorm.Open(postgres.Open(urlDB), &gorm.Config{})
 	if err != nil {
@@ -33,14 +33,14 @@ func InitializeDbSQL() (*gorm.DB, error) {
 	return db, nil
 }
 
-func TestConnectionSQL() error {
-	db, err := GetDB().DB()
+func TestConnectionSQL(database *gorm.DB) error {
+	dbConn, err := database.DB()
 	if err != nil {
 		loggerSQL.Errorf("Expected valid sql.DB got error! Error: %v", err)
 		return err
 	}
 
-	if err := db.Ping(); err != nil {
+	if err := dbConn.Ping(); err != nil {
 		loggerSQL.Errorf("Expected to ping database successfully, got %v", err)
 		return err
 	}

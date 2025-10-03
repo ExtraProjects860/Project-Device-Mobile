@@ -68,7 +68,11 @@ func (r *postgresUserRepository) GetInfoUser(ctx context.Context, id uint) (*Use
 
 func (r *postgresUserRepository) GetUsers(ctx context.Context, itemsPerPage uint, currentPage uint) (PaginationDTO, error) {
 	query := r.db.WithContext(ctx).Model(&schemas.User{})
+<<<<<<< HEAD
 	paginationOffset, totalPages := pagination(query, itemsPerPage, currentPage)
+=======
+	paginationOffset, totalPages, lengthItems := pagination(query, itemsPerPage, currentPage)
+>>>>>>> dev
 
 	var users []schemas.User
 	err := query.
@@ -87,7 +91,11 @@ func (r *postgresUserRepository) GetUsers(ctx context.Context, itemsPerPage uint
 		usersDTO = append(usersDTO, *makeUserOutput(user))
 	}
 
+<<<<<<< HEAD
 	return PaginationDTO{Data: usersDTO, CurrentPage: currentPage, TotalPages: totalPages}, err
+=======
+	return PaginationDTO{Data: usersDTO, CurrentPage: currentPage, TotalPages: totalPages, TotalItems: lengthItems}, err
+>>>>>>> dev
 }
 
 func (r *postgresUserRepository) UpdateUser(ctx context.Context, id uint, user schemas.User) (schemas.User, error) {

@@ -7,6 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+<<<<<<< HEAD
 func RegisterWishListRoutes(rg *gin.RouterGroup) {
 	repo := repository.NewPostgresWishListRepository()
 	{
@@ -21,5 +22,15 @@ func RegisterWishListRoutes(rg *gin.RouterGroup) {
 		rg.PATCH("/wishlist", func(ctx *gin.Context) {
 			handler.UpdateWishListHandler(ctx, repo)
 		})
+=======
+func RegisterWishListRoutes(rg *gin.RouterGroup, repo repository.WishListRepository) {
+	wishlistHandler := handler.NewWishListHandler(repo)
+	{
+		rg.GET("/wishlist", wishlistHandler.GetWishListByUserIDHandler)
+
+		rg.POST("/wishlist", wishlistHandler.AddInWishListHandler)
+
+		rg.PATCH("/wishlist", wishlistHandler.UpdateWishListHandler)
+>>>>>>> dev
 	}
 }

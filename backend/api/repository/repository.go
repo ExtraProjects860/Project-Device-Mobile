@@ -5,6 +5,7 @@ import (
 
 	"github.com/ExtraProjects860/Project-Device-Mobile/config"
 	"github.com/ExtraProjects860/Project-Device-Mobile/schemas"
+<<<<<<< HEAD
 	"gorm.io/gorm"
 )
 
@@ -12,11 +13,11 @@ var (
 	logger *config.Logger
 	db     *gorm.DB
 )
+=======
+)
 
-func InitializeRepository() {
-	db = config.GetDB()
-	logger = config.GetLogger("repository")
-}
+var logger *config.Logger = config.GetLogger("repository")
+>>>>>>> dev
 
 type EnterpriseRepository interface {
 	CreateEnterprise(ctx context.Context, enterprise schemas.Enterprise)
@@ -24,6 +25,15 @@ type EnterpriseRepository interface {
 	UpdateEnterprise(ctx context.Context, id uint, enterprise schemas.Enterprise)
 }
 
+<<<<<<< HEAD
+type EnterpriseRepository interface {
+	CreateEnterprise(ctx context.Context, enterprise schemas.Enterprise)
+	GetEnterprises(ctx context.Context, id uint)
+	UpdateEnterprise(ctx context.Context, id uint, enterprise schemas.Enterprise)
+}
+
+=======
+>>>>>>> dev
 type RoleRepository interface {
 	CreateRole(ctx context.Context, role schemas.Role)
 	GetRoles(ctx context.Context, id uint)

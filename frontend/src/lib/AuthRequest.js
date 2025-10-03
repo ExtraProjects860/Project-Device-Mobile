@@ -1,29 +1,21 @@
-import { ApiDefault, instanceMainApi } from "./axios.js";
+import { instanceMainApi } from "./axios.js";
 
-class AuthRequests extends ApiDefault {
-  constructor(axiosInstance) {
-    super(axiosInstance);
-  }
-
-  RequestToken() {
-    return;
-  }
-
-  ResetPasswordRequest() {
-    return;
-  }
-
-  LoginRequest() {
-    return;
-  }
-
-  RefreshTokenRequest() {
-    return;
-  }
-
-  LogoutRequest() {
-    return;
-  }
+export async function RequestToken() {
+  return;
 }
 
-export default new AuthRequests(instanceMainApi);
+export async function ResetPasswordRequest() {
+  return;
+}
+
+export async function LoginRequest() {
+  return;
+}
+
+export async function RefreshTokenRequest() {
+  return;
+}
+
+export async function LogoutRequest() {
+  return;
+}
