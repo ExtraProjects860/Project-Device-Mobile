@@ -4,24 +4,23 @@ import (
 	"fmt"
 
 	"github.com/ExtraProjects860/Project-Device-Mobile/config"
-	"github.com/ExtraProjects860/Project-Device-Mobile/middleware"
 	"github.com/ExtraProjects860/Project-Device-Mobile/routes"
-
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 )
 
-func configureRouter(router *gin.Engine) {
+func configureNetwork(router *gin.Engine) {
 	router.ForwardedByClientIP = true
 	router.SetTrustedProxies([]string{})
-
-	middleware.SetCors(router)
 }
 
-func InitializeRouter() {
+func InitializeRouter(db *gorm.DB) {
 	router := gin.Default()
-	configureRouter(router)
-	routes.InitHealthCheckRoutes(router)
-	routes.InitMainRoutes(router)
+
+	configureNetwork(router)
+
+	routes.InitHealthCheckRoutes(router, db)
+	routes.InitRoutesApiV1(router, db)
 	routes.InitSwaggerRoute(router)
 
 	port := config.GetEnv().API.Port

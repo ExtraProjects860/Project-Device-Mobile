@@ -7,15 +7,21 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// @BasePath /api/v1
+type ProductHandler struct {
+	repo repository.ProductRepository
+}
+
+func NewProductHandler(repo repository.ProductRepository) *ProductHandler {
+	return &ProductHandler{repo: repo}
+}
 
 // @Summary      Create Product
 // @Description  Creates a new product
 // @Tags         products
 // @Produce      json
 // @Success      200 {object} map[string]string
-// @Router       /product [post]
-func CreateProductHandler(ctx *gin.Context, repo repository.ProductRepository) {
+// @Router       /api/v1/product [post]
+func (h *ProductHandler) CreateProductHandler(ctx *gin.Context) {
 	sendSuccess(ctx, gin.H{"message": "Add Promotion Product!"})
 }
 
@@ -25,8 +31,8 @@ func CreateProductHandler(ctx *gin.Context, repo repository.ProductRepository) {
 // @Param 		 id query string true "Product ID"
 // @Produce      json
 // @Success      200 {object} map[string]string
-// @Router       /product [patch]
-func UpdateProductHandler(ctx *gin.Context, repo repository.ProductRepository) {
+// @Router       /api/v1/product [patch]
+func (h *ProductHandler) UpdateProductHandler(ctx *gin.Context) {
 	sendSuccess(ctx, gin.H{"message": "Update Promotion Product!"})
 }
 
@@ -39,8 +45,8 @@ func UpdateProductHandler(ctx *gin.Context, repo repository.ProductRepository) {
 // @Success      200 {array}  repository.ProductDTO
 // @Failure      400 {object} ErrResponse
 // @Failure      500 {object} ErrResponse
-// @Router       /products [get]
-func GetProductsHandler(ctx *gin.Context, repo repository.ProductRepository) {
+// @Router       /api/v1/products [get]
+func (h *ProductHandler) GetProductsHandler(ctx *gin.Context) {
 	itemsPerPage, currentPage, err := getPaginationData(ctx)
 	if err != nil {
 		logger.Error(err.Error())
@@ -48,7 +54,7 @@ func GetProductsHandler(ctx *gin.Context, repo repository.ProductRepository) {
 		return
 	}
 
-	products, err := repo.GetProducts(ctx, itemsPerPage, currentPage)
+	products, err := h.repo.GetProducts(ctx, itemsPerPage, currentPage)
 	if err != nil {
 		logger.Error(err.Error())
 		sendErr(ctx, http.StatusInternalServerError, gin.H{"error": "Error to get products in database"})

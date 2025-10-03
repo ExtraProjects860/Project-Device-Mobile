@@ -15,7 +15,7 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/auth/login": {
+        "/api/v1/auth/login": {
             "post": {
                 "description": "Authenticates user and returns access token",
                 "consumes": [
@@ -61,7 +61,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/auth/logout": {
+        "/api/v1/auth/logout": {
             "post": {
                 "description": "Logs out the user and invalidates token",
                 "consumes": [
@@ -96,7 +96,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/auth/refresh-token": {
+        "/api/v1/auth/refresh-token": {
             "post": {
                 "description": "Refreshes the authentication token",
                 "consumes": [
@@ -131,7 +131,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/auth/request-token": {
+        "/api/v1/auth/request-token": {
             "post": {
                 "description": "Requests a reset token for user password",
                 "consumes": [
@@ -157,7 +157,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/auth/reset-password": {
+        "/api/v1/auth/reset-password": {
             "post": {
                 "description": "Resets user password using the token",
                 "consumes": [
@@ -183,94 +183,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/health/api": {
-            "get": {
-                "description": "Returns a simple message to confirm API is running",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "health"
-                ],
-                "summary": "API status check",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/health/database": {
-            "get": {
-                "description": "Tests connection to the database and returns status",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "health"
-                ],
-                "summary": "Database status check",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/health/email": {
-            "get": {
-                "description": "Calls external email service to verify availability",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "health"
-                ],
-                "summary": "Email service check",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/product": {
+        "/api/v1/product": {
             "post": {
                 "description": "Creates a new product",
                 "produces": [
@@ -323,7 +236,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/products": {
+        "/api/v1/products": {
             "get": {
                 "description": "Returns all products",
                 "produces": [
@@ -374,7 +287,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/user": {
+        "/api/v1/user": {
             "get": {
                 "description": "Returns information about a specific user",
                 "produces": [
@@ -457,7 +370,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/users": {
+        "/api/v1/users": {
             "get": {
                 "description": "Returns a list of all users",
                 "produces": [
@@ -508,7 +421,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/wishlist": {
+        "/api/v1/wishlist": {
             "get": {
                 "description": "Returns all products in the user wish list",
                 "produces": [
@@ -607,6 +520,93 @@ const docTemplate = `{
                 "responses": {
                     "200": {
                         "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/health/api": {
+            "get": {
+                "description": "Returns a simple message to confirm API is running",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "health"
+                ],
+                "summary": "API status check",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/health/database": {
+            "get": {
+                "description": "Tests connection to the database and returns status",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "health"
+                ],
+                "summary": "Database status check",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/health/email": {
+            "get": {
+                "description": "Calls external email service to verify availability",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "health"
+                ],
+                "summary": "Email service check",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
                         "schema": {
                             "type": "object",
                             "additionalProperties": {
@@ -741,12 +741,12 @@ const docTemplate = `{
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
-	Version:          "",
-	Host:             "",
-	BasePath:         "",
+	Version:          "1.0",
+	Host:             "localhost:5050",
+	BasePath:         "/",
 	Schemes:          []string{},
-	Title:            "",
-	Description:      "",
+	Title:            "Project Device Mobile API",
+	Description:      "Essa é uma api voltada para um projeto extensionista para programação em dispositivos móveis",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 	LeftDelim:        "{{",

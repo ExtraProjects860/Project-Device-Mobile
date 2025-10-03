@@ -6,9 +6,8 @@ import (
 
 	"github.com/ExtraProjects860/Project-Device-Mobile/config"
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 )
-
-// @BasePath /api/v1
 
 // @Summary      API status check
 // @Description  Returns a simple message to confirm API is running
@@ -27,12 +26,12 @@ func ApiHandler(ctx *gin.Context) {
 // @Success      200 {object} map[string]string
 // @Failure      500 {object} map[string]string
 // @Router       /health/database [get]
-func DatabaseHandler(ctx *gin.Context) {
-	if err := config.TestConnectionSQL(); err != nil {
+func DatabaseHandler(ctx *gin.Context, db *gorm.DB) {
+	if err := config.TestConnectionSQL(db); err != nil {
 		logger.Errorf("database connection test failed: %v", err)
 		sendErr(
-			ctx, 
-			http.StatusInternalServerError, 
+			ctx,
+			http.StatusInternalServerError,
 			gin.H{"status": "Database connection failed", "error": err.Error()},
 		)
 		return
@@ -48,12 +47,10 @@ func DatabaseHandler(ctx *gin.Context) {
 // @Success      200 {object} map[string]string
 // @Failure      500 {object} map[string]string
 // @Router       /health/email [get]
-func EmailServiceHandler(ctx *gin.Context) {
-	url := env.API.EmailService
-
-	resp, err := http.Get(url)
+func EmailServiceHandler(ctx *gin.Context, serverDomain string) {
+	resp, err := http.Get(serverDomain)
 	if err != nil {
-		logger.Errorf("failed to call email service at %s: %v", url, err)
+		logger.Errorf("failed to call email service at %s: %v", serverDomain, err)
 		sendErr(ctx, http.StatusInternalServerError, gin.H{"error": "unable to reach email service"})
 		return
 	}
@@ -61,11 +58,10 @@ func EmailServiceHandler(ctx *gin.Context) {
 
 	_, err = io.ReadAll(resp.Body)
 	if err != nil {
-		logger.Errorf("failed to read response body from %s: %v", url, err.Error())
+		logger.Errorf("failed to read response body from %s: %v", serverDomain, err.Error())
 		sendErr(ctx, http.StatusInternalServerError, gin.H{"error": "failed to read response from email service"})
 		return
 	}
 
 	sendStatus(ctx, "Email service called successfully")
 }
-

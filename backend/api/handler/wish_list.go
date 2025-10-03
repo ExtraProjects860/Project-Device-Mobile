@@ -7,15 +7,21 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// @BasePath /api/v1
+type WishListHandler struct {
+	repo repository.WishListRepository
+}
+
+func NewWishListHandler(repo repository.WishListRepository) *WishListHandler {
+	return &WishListHandler{repo: repo}
+}
 
 // @Summary      Add Product to Wish List
 // @Description  Adds a product to the user wish list
 // @Tags         wishlist
 // @Produce      json
 // @Success      200 {object} map[string]string
-// @Router       /wishlist [post]
-func AddInWishListHandler(ctx *gin.Context, repo repository.WishListRepository) {
+// @Router       /api/v1/wishlist [post]
+func (h *WishListHandler) AddInWishListHandler(ctx *gin.Context) {
 	sendSuccess(ctx, "Add Product in Wish List!")
 }
 
@@ -25,8 +31,8 @@ func AddInWishListHandler(ctx *gin.Context, repo repository.WishListRepository) 
 // @Param 		 id query string true "WishList ID"
 // @Produce      json
 // @Success      200 {object} map[string]string
-// @Router       /wishlist [patch]
-func UpdateWishListHandler(ctx *gin.Context, repo repository.WishListRepository) {
+// @Router       /api/v1/wishlist [patch]
+func (h *WishListHandler) UpdateWishListHandler(ctx *gin.Context) {
 	sendSuccess(ctx, "Delete Product in Wish List!")
 }
 
@@ -40,8 +46,8 @@ func UpdateWishListHandler(ctx *gin.Context, repo repository.WishListRepository)
 // @Success      200 {array}  repository.WishListDTO
 // @Failure      400 {object} ErrResponse
 // @Failure      500 {object} ErrResponse
-// @Router       /wishlist [get]
-func GetWishListByUserIDHandler(ctx *gin.Context, repo repository.WishListRepository) {
+// @Router       /api/v1/wishlist [get]
+func (h *WishListHandler) GetWishListByUserIDHandler(ctx *gin.Context) {
 	userId, err := getIdQuery(ctx)
 	if err != nil {
 		logger.Error(err.Error())
@@ -56,7 +62,7 @@ func GetWishListByUserIDHandler(ctx *gin.Context, repo repository.WishListReposi
 		return
 	}
 
-	wishlist, err := repo.GetWishListByUserID(ctx, userId, itemsPerPage, currentPage)
+	wishlist, err := h.repo.GetWishListByUserID(ctx, userId, itemsPerPage, currentPage)
 	if err != nil {
 		logger.Error(err.Error())
 		sendErr(ctx, http.StatusInternalServerError, gin.H{"error": "Error to get wishlist in database"})

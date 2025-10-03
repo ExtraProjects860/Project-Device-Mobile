@@ -7,23 +7,15 @@ import (
 )
 
 // TODO colocar middlewares dps
-func RegisterUserRoutes(rg *gin.RouterGroup) {
-	repo := repository.NewPostgresUserRepository()
+func RegisterUserRoutes(rg *gin.RouterGroup, repo repository.UserRepository) {
+	userHandler := handler.NewUserHandler(repo)
 	{
-		rg.GET("/users", func(ctx *gin.Context) {
-			handler.GetUsersHandler(ctx, repo)
-		})
+		rg.GET("/users", userHandler.GetUsersHandler)
 
-		rg.GET("/user", func(ctx *gin.Context) {
-			handler.GetInfoUserHandler(ctx, repo)
-		})
+		rg.GET("/user", userHandler.GetInfoUserHandler)
 
-		rg.POST("/user", func(ctx *gin.Context) {
-			handler.CreateUserHandler(ctx, repo)
-		})
+		rg.POST("/user", userHandler.CreateUserHandler)
 
-		rg.PATCH("/user", func(ctx *gin.Context) {
-			handler.UpdateUserHandler(ctx, repo)
-		})
+		rg.PATCH("/user", userHandler.UpdateUserHandler)
 	}
 }

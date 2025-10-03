@@ -9,6 +9,7 @@ import (
 	"github.com/ExtraProjects860/Project-Device-Mobile/schemas"
 	"github.com/ExtraProjects860/Project-Device-Mobile/utils"
 	"github.com/brianvoe/gofakeit/v7"
+	"gorm.io/gorm"
 )
 
 var (
@@ -17,15 +18,15 @@ var (
 	faker  *gofakeit.Faker = gofakeit.NewFaker(rng, true)
 )
 
-func verifyStartSeed(m any) bool {
+func verifyStartSeed(db *gorm.DB, m any) bool {
 	var count int64
 	db.Model(m).Count(&count)
 	return count > 0
 }
 
-func seedUser(quantity int) {
+func seedUser(db *gorm.DB, quantity int) {
 	userModelName := "User"
-	if verifyStartSeed(&schemas.User{}) {
+	if verifyStartSeed(db, &schemas.User{}) {
 		logger.Infof("Table '%s' already has data. Skipping seed.", userModelName)
 		return
 	}
@@ -75,9 +76,9 @@ func seedUser(quantity int) {
 	logger.Infof("Seeding for table '%s' completed.", userModelName)
 }
 
-func seedEnterprise(quantity int) {
+func seedEnterprise(db *gorm.DB, quantity int) {
 	modelName := "Enterprise"
-	if verifyStartSeed(&schemas.Enterprise{}) {
+	if verifyStartSeed(db, &schemas.Enterprise{}) {
 		logger.Infof("Table '%s' already has data. Skipping seed.", modelName)
 		return
 	}
@@ -96,9 +97,9 @@ func seedEnterprise(quantity int) {
 	logger.Infof("Seeding for table '%s' completed.", modelName)
 }
 
-func seedWishList() {
+func seedWishList(db *gorm.DB) {
 	wishlistModelName := "WishList"
-	if verifyStartSeed(&schemas.WishList{}) {
+	if verifyStartSeed(db, &schemas.WishList{}) {
 		logger.Infof("Table '%s' already has data. Skipping seed.", wishlistModelName)
 		return
 	}
@@ -148,9 +149,9 @@ func seedWishList() {
 	logger.Infof("Seeding for '%s' completed.", wishlistModelName)
 }
 
-func seedRole() {
+func seedRole(db *gorm.DB) {
 	modelName := "RoleUser"
-	if verifyStartSeed(&schemas.Role{}) {
+	if verifyStartSeed(db, &schemas.Role{}) {
 		logger.Infof("Table '%s' already has data. Skipping seed.", modelName)
 		return
 	}
@@ -168,9 +169,9 @@ func seedRole() {
 	logger.Infof("Seeding for table '%s' completed.", modelName)
 }
 
-func seedProduct(quantity int) {
+func seedProduct(db *gorm.DB, quantity int) {
 	modelName := "Product"
-	if verifyStartSeed(&schemas.Product{}) {
+	if verifyStartSeed(db, &schemas.Product{}) {
 		logger.Infof("Table '%s' already has data. Skipping seed.", modelName)
 		return
 	}
@@ -198,12 +199,12 @@ func seedProduct(quantity int) {
 	logger.Infof("Seeding for table '%s' completed.", modelName)
 }
 
-func seeds() {
-	seedRole()
-	seedEnterprise(10)
-	seedProduct(30)
-	seedUser(30)
-	seedWishList()
+func seeds(db *gorm.DB) {
+	seedRole(db)
+	seedEnterprise(db, 10)
+	seedProduct(db, 30)
+	seedUser(db, 30)
+	seedWishList(db, )
 
 	logger.Info("Seed completed.")
 }

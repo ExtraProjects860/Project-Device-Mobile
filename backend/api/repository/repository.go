@@ -5,18 +5,9 @@ import (
 
 	"github.com/ExtraProjects860/Project-Device-Mobile/config"
 	"github.com/ExtraProjects860/Project-Device-Mobile/schemas"
-	"gorm.io/gorm"
 )
 
-var (
-	logger *config.Logger
-	db     *gorm.DB
-)
-
-func InitializeRepository() {
-	db = config.GetDB()
-	logger = config.GetLogger("repository")
-}
+var logger *config.Logger = config.GetLogger("repository")
 
 type EnterpriseRepository interface {
 	CreateEnterprise(ctx context.Context, enterprise schemas.Enterprise)

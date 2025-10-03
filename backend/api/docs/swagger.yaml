@@ -1,3 +1,4 @@
+basePath: /
 definitions:
   handler.ErrResponse:
     properties:
@@ -70,10 +71,15 @@ definitions:
           $ref: '#/definitions/repository.ProductDTO'
         type: array
     type: object
+host: localhost:5050
 info:
   contact: {}
+  description: Essa é uma api voltada para um projeto extensionista para programação
+    em dispositivos móveis
+  title: Project Device Mobile API
+  version: "1.0"
 paths:
-  /auth/login:
+  /api/v1/auth/login:
     post:
       consumes:
       - application/json
@@ -103,7 +109,7 @@ paths:
       summary: User Login
       tags:
       - auth
-  /auth/logout:
+  /api/v1/auth/logout:
     post:
       consumes:
       - application/json
@@ -126,7 +132,7 @@ paths:
       summary: User Logout
       tags:
       - auth
-  /auth/refresh-token:
+  /api/v1/auth/refresh-token:
     post:
       consumes:
       - application/json
@@ -149,7 +155,7 @@ paths:
       summary: Refresh Token
       tags:
       - auth
-  /auth/request-token:
+  /api/v1/auth/request-token:
     post:
       consumes:
       - application/json
@@ -166,7 +172,7 @@ paths:
       summary: Request Password Token
       tags:
       - auth
-  /auth/reset-password:
+  /api/v1/auth/reset-password:
     post:
       consumes:
       - application/json
@@ -183,64 +189,7 @@ paths:
       summary: Reset Password
       tags:
       - auth
-  /health/api:
-    get:
-      description: Returns a simple message to confirm API is running
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            additionalProperties:
-              type: string
-            type: object
-      summary: API status check
-      tags:
-      - health
-  /health/database:
-    get:
-      description: Tests connection to the database and returns status
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            additionalProperties:
-              type: string
-            type: object
-        "500":
-          description: Internal Server Error
-          schema:
-            additionalProperties:
-              type: string
-            type: object
-      summary: Database status check
-      tags:
-      - health
-  /health/email:
-    get:
-      description: Calls external email service to verify availability
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            additionalProperties:
-              type: string
-            type: object
-        "500":
-          description: Internal Server Error
-          schema:
-            additionalProperties:
-              type: string
-            type: object
-      summary: Email service check
-      tags:
-      - health
-  /product:
+  /api/v1/product:
     patch:
       description: Updates an existing product
       parameters:
@@ -275,7 +224,7 @@ paths:
       summary: Create Product
       tags:
       - products
-  /products:
+  /api/v1/products:
     get:
       description: Returns all products
       parameters:
@@ -309,7 +258,7 @@ paths:
       summary: Get Products
       tags:
       - products
-  /user:
+  /api/v1/user:
     get:
       description: Returns information about a specific user
       parameters:
@@ -364,7 +313,7 @@ paths:
       summary: Create User
       tags:
       - users
-  /users:
+  /api/v1/users:
     get:
       description: Returns a list of all users
       parameters:
@@ -398,7 +347,7 @@ paths:
       summary: Get Users
       tags:
       - users
-  /wishlist:
+  /api/v1/wishlist:
     get:
       description: Returns all products in the user wish list
       parameters:
@@ -471,6 +420,63 @@ paths:
       summary: Add Product to Wish List
       tags:
       - wishlist
+  /health/api:
+    get:
+      description: Returns a simple message to confirm API is running
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: API status check
+      tags:
+      - health
+  /health/database:
+    get:
+      description: Tests connection to the database and returns status
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Database status check
+      tags:
+      - health
+  /health/email:
+    get:
+      description: Calls external email service to verify availability
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Email service check
+      tags:
+      - health
 securityDefinitions:
   BearerAuth:
     description: Type "Bearer" followed by a space and JWT token.

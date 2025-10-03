@@ -10,6 +10,7 @@ type PaginationDTO struct {
 	Data        any  `json:"data"`
 	CurrentPage uint `json:"current_page"`
 	TotalPages  uint `json:"total_pages"`
+	TotalItems  uint `json:"total_items"`
 }
 
 func count(query *gorm.DB) uint {
@@ -29,11 +30,11 @@ func validationPagination(currentPage *uint, itemsPerPage *uint) {
 	}
 }
 
-func pagination(query *gorm.DB, itemsPerPage uint, currentPage uint) (uint, uint) {
+func pagination(query *gorm.DB, itemsPerPage uint, currentPage uint) (uint, uint, uint) {
 	validationPagination(&currentPage, &itemsPerPage)
 	lengthItems := count(query)
 	if lengthItems == 0 {
-		return 0, 1
+		return 0, 1, 0
 	}
 
 	totalPages := uint(math.Ceil(float64(lengthItems) / float64(itemsPerPage)))
@@ -44,5 +45,5 @@ func pagination(query *gorm.DB, itemsPerPage uint, currentPage uint) (uint, uint
 
 	paginationOffset := (currentPage - 1) * itemsPerPage
 
-	return paginationOffset, totalPages
+	return paginationOffset, totalPages, lengthItems
 }

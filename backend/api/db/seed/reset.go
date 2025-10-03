@@ -1,8 +1,11 @@
 package main
 
-import "github.com/ExtraProjects860/Project-Device-Mobile/schemas"
+import (
+	"github.com/ExtraProjects860/Project-Device-Mobile/schemas"
+	"gorm.io/gorm"
+)
 
-func resetDB() {
+func resetDB(db *gorm.DB) {
 	logger.Info("Dropping all tables...")
 	db.Migrator().DropTable(
 		schemas.AllModelsSlice()...,

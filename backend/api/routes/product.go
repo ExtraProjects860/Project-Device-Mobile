@@ -6,19 +6,13 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func RegisterProductRoutes(rg *gin.RouterGroup) {
-	repo := repository.NewPostgresProductRepository()
+func RegisterProductRoutes(rg *gin.RouterGroup, repo repository.ProductRepository) {
+	productHandler := handler.NewProductHandler(repo)
 	{
-		rg.GET("/products", func(ctx *gin.Context) {
-			handler.GetProductsHandler(ctx, repo)
-		})
+		rg.GET("/products", productHandler.GetProductsHandler)
 
-		rg.POST("/product", func(ctx *gin.Context) {
-			handler.CreateProductHandler(ctx, repo)
-		})
+		rg.POST("/product", productHandler.CreateProductHandler)
 
-		rg.PATCH("/product", func(ctx *gin.Context) {
-			handler.UpdateProductHandler(ctx, repo)
-		})
+		rg.PATCH("/product", productHandler.UpdateProductHandler)
 	}
 }

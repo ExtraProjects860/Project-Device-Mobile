@@ -7,15 +7,21 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// @BasePath /api/v1
+type UserHandler struct {
+	repo repository.UserRepository
+}
+
+func NewUserHandler(repo repository.UserRepository) *UserHandler {
+	return &UserHandler{repo: repo}
+}
 
 // @Summary      Create User
 // @Description  Creates a new user
 // @Tags         users
 // @Produce      json
 // @Success      200 {object} map[string]string
-// @Router       /user [post]
-func CreateUserHandler(ctx *gin.Context, repo repository.UserRepository) {
+// @Router       /api/v1/user [post]
+func (h *UserHandler) CreateUserHandler(ctx *gin.Context) {
 	sendSuccess(ctx, "Create User!")
 }
 
@@ -25,8 +31,8 @@ func CreateUserHandler(ctx *gin.Context, repo repository.UserRepository) {
 // @Param 		 id query string true "User ID"
 // @Produce      json
 // @Success      200 {object} map[string]string
-// @Router       /user [get]
-func GetInfoUserHandler(ctx *gin.Context, repo repository.UserRepository) {
+// @Router       /api/v1/user [get]
+func (h *UserHandler) GetInfoUserHandler(ctx *gin.Context) {
 	sendSuccess(ctx, "Get Info User!")
 }
 
@@ -39,8 +45,8 @@ func GetInfoUserHandler(ctx *gin.Context, repo repository.UserRepository) {
 // @Success      200 {array}  repository.UserDTO
 // @Failure      400 {object} ErrResponse
 // @Failure      500 {object} ErrResponse
-// @Router       /users [get]
-func GetUsersHandler(ctx *gin.Context, repo repository.UserRepository) {
+// @Router       /api/v1/users [get]
+func (h *UserHandler) GetUsersHandler(ctx *gin.Context) {
 	itemsPerPage, currentPage, err := getPaginationData(ctx)
 	if err != nil {
 		logger.Error(err.Error())
@@ -48,7 +54,7 @@ func GetUsersHandler(ctx *gin.Context, repo repository.UserRepository) {
 		return
 	}
 
-	users, err := repo.GetUsers(ctx, itemsPerPage, currentPage)
+	users, err := h.repo.GetUsers(ctx, itemsPerPage, currentPage)
 	if err != nil {
 		logger.Error(err.Error())
 		sendErr(ctx, http.StatusInternalServerError, gin.H{"error": "Error to get users in database"})
@@ -64,7 +70,7 @@ func GetUsersHandler(ctx *gin.Context, repo repository.UserRepository) {
 // @Param 		 id query string true "User ID"
 // @Produce      json
 // @Success      200 {object} map[string]string
-// @Router       /user [patch]
-func UpdateUserHandler(ctx *gin.Context, repo repository.UserRepository) {
+// @Router       /api/v1/user [patch]
+func (h *UserHandler) UpdateUserHandler(ctx *gin.Context) {
 	sendSuccess(ctx, gin.H{"message": "Updated User!"})
 }

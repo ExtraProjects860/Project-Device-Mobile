@@ -19,7 +19,7 @@ func Init() error {
 		return fmt.Errorf("error initializing env variables: %v", err)
 	}
 
-	db, err = InitializeDbSQL()
+	db, err = InitializeDbSQL(env)
 	if err != nil {
 		return fmt.Errorf("failed to connection to DataBase, error: %v", err)
 	}
