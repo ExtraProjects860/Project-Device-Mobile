@@ -36,10 +36,6 @@ export default function SearchBar() {
           <Text className="ml-2 text-white font-semibold">Add</Text>
         </TouchableOpacity>
       </View>
-
-      <View>
-        
-      </View>
     </View>
   );
 }
