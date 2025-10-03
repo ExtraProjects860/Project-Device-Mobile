@@ -14,6 +14,7 @@ import { useNavigateTo } from "../hooks/useNavigateTo";
 export default function LoginScreen() {
   const [showPassword, setShowPassword] = useState(false);
   const goTo = useNavigateTo();
+  
   return (
     <Background>
       <StatusBar

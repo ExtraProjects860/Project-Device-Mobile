@@ -13,16 +13,14 @@ export default function ProductsScreen() {
 
   return (
     <PageLoader fetchData={fetchNotices}>
-      {(data) => (
-        <Background>
-          <NavBar />
-          <View className="flex-1 items-center justify-center">
-            <Text className="text-xl color-white font-bold text-slate-800">
-              Esta é a Tela de Notícias
-            </Text>
-          </View>
-        </Background>
-      )}
+      <Background>
+        <NavBar />
+        <View className="flex-1 items-center justify-center">
+          <Text className="text-xl color-white font-bold text-slate-800">
+            Esta é a Tela de Notícias
+          </Text>
+        </View>
+      </Background>
     </PageLoader>
   );
 }
