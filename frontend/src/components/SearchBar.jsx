@@ -1,12 +1,9 @@
 import React, { useState } from "react";
-import { View, Text, TouchableOpacity, TextInput } from "react-native";
+import { View, TouchableOpacity, TextInput } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import { useThemeColors } from "../hooks/useThemeColors.js";
 
-export default function SearchBar() {
+export default function SearchBar({ buttonAdd }) {
   const [search, setSearch] = useState();
-
-  const themeColors = useThemeColors();
 
   return (
     <View className="flex-row w-full px-5 items-center gap-x-2">
@@ -21,20 +18,15 @@ export default function SearchBar() {
           onChangeText={setSearch}
           className="flex-1 text-base text-light-text-primary dark:text-dark-text-primary"
         />
+
         <TouchableOpacity className="px-2">
           <Icon name="magnify" size={24} />
         </TouchableOpacity>
-      </View>
 
-      <View>
-        <TouchableOpacity className="flex-row items-center bg-light-secondary dark:bg-dark-sencondary rounded-full p-2 shadow-md">
-          <Icon
-            name="account-plus-outline"
-            size={24}
-            color={themeColors.header}
-          />
-          <Text className="ml-2 text-white font-semibold">Add</Text>
-        </TouchableOpacity>
+        {/* TODO ajustar esse krl do botão pq ta todo bugado, precisa fazer outros depois */}
+        <View>
+          {buttonAdd}
+        </View>
       </View>
     </View>
   );
