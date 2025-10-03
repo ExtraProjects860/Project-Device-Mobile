@@ -6,18 +6,18 @@ import {
   TouchableOpacity,
   RefreshControl,
 } from "react-native";
-import CardListItem from "./ui/CardUserListItem.jsx";
 import PageLoader from "../context/PageLoader.js";
 import Loading from "./ui/Loading.jsx";
 import WarningNotFound from "./ui/WarningNotFound.jsx";
 import { usePagination } from "../hooks/usePagination.js";
 
-export default function ListItems({ callbackFetch }) {
+export default function ListItems({ callbackFetch, CardListRender }) {
   const {
     listItems,
     isLoadingMore,
     isRefreshing,
     flatListRef,
+    totalResult,
     allItemsLoaded,
     initialLoad,
     loadMore,
@@ -50,34 +50,38 @@ export default function ListItems({ callbackFetch }) {
 
   return (
     <PageLoader fetchData={initialLoad}>
-      <View className="flex-1">
-        <View className="w-full items-center my-4">
-          <Text className="text-white">
-            Total de itens sendo exibidos: {listItems.length} de
-          </Text>
-        </View>
+      {isRefreshing && listItems.length > 0 ? (
+        <Loading />
+      ) : (
+        <View className="flex-1">
+          <View className="w-full items-center my-4">
+            <Text className="text-white">
+              Total de itens sendo exibidos: {listItems.length} de {totalResult}
+            </Text>
+          </View>
 
-        <FlatList
-          contentContainerStyle={{ paddingBottom: 40 }}
-          ref={flatListRef}
-          data={listItems}
-          numColumns={2}
-          keyExtractor={(item) => item.id.toString()}
-          onEndReached={loadMore}
-          onEndReachedThreshold={0.5}
-          ListFooterComponent={renderInFooter}
-          renderItem={({ item }) => <CardListItem item={item} />}
-          refreshControl={
-            <RefreshControl
-              refreshing={isRefreshing}
-              onRefresh={handleRefresh}
-            />
-          }
-          ListEmptyComponent={
-            <WarningNotFound message={"Nenhum item encontrado"} />
-          }
-        />
-      </View>
+          <FlatList
+            contentContainerStyle={{ paddingBottom: 40 }}
+            ref={flatListRef}
+            data={listItems}
+            numColumns={2}
+            keyExtractor={(item) => item.id.toString()}
+            onEndReached={loadMore}
+            onEndReachedThreshold={0.5}
+            ListFooterComponent={renderInFooter}
+            renderItem={({ item }) => <CardListRender item={item} />}
+            refreshControl={
+              <RefreshControl
+                refreshing={isRefreshing}
+                onRefresh={handleRefresh}
+              />
+            }
+            ListEmptyComponent={
+              <WarningNotFound message={"Nenhum item encontrado"} />
+            }
+          />
+        </View>
+      )}
     </PageLoader>
   );
 }

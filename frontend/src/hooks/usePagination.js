@@ -1,18 +1,19 @@
-import { useState, useCallback, useRef } from "react";
+import { useState, useCallback, useRef, use } from "react";
 
 const initialData = {
   data: [],
   refreshing: false,
-  totalResult: 0,
   loadingMore: false,
   currentPage: 1,
   totalPages: 1,
+  totalResult: 0,
 };
 
 export function usePagination(callbackFetch) {
   const [listItems, setListItems] = useState(initialData.data);
   const [currentPage, setCurrentPage] = useState(initialData.currentPage);
   const [totalPages, setTotalPages] = useState(initialData.totalPages);
+  const [totalResult, setTotalResult] = useState(initialData.totalResult);
   const [isLoadingMore, setIsLoadingMore] = useState(initialData.loadingMore);
   const [isRefreshing, setRefreshing] = useState(initialData.refreshing);
 
@@ -28,6 +29,7 @@ export function usePagination(callbackFetch) {
         setListItems(result.data);
         setCurrentPage(result.current_page);
         setTotalPages(result.total_pages);
+        setTotalResult(result.total_items);
       }
     } catch (error) {
       // TODO colocar erro na tela como modal para usuário, ou seja, fazer um modal padrão para erros
@@ -80,6 +82,7 @@ export function usePagination(callbackFetch) {
     listItems,
     currentPage,
     totalPages,
+    totalResult,
     flatListRef,
     allItemsLoaded,
     isLoadingMore,
