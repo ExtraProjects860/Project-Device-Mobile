@@ -13,11 +13,3 @@ type TokenPassword struct {
 	TimeUp *time.Time
 	User   *User
 }
-
-func (s *TokenPassword) validateTokenPassword() error {
-	return nil
-}
-
-func (s *TokenPassword) formatTokenPassword() {
-
-}

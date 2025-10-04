@@ -13,11 +13,3 @@ type WishList struct {
 	User    User
 	Product Product
 }
-
-func (s *WishList) validateWishList() error {
-	return nil
-}
-
-func (s *WishList) formatWishList() {
-
-}
