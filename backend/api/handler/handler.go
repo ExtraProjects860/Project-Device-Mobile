@@ -9,7 +9,7 @@ var (
 	env *config.EnvVariables
 )
 
-func InitializeHandler() {
+func init() {
 	logger = config.GetLogger("handler")
 	env = config.GetEnv()
 }
