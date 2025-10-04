@@ -6,7 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func RegisterProductRoutes(rg *gin.RouterGroup, repo repository.ProductRepository) {
+func registerProductRoutes(rg *gin.RouterGroup, repo repository.ProductRepository) {
 	productHandler := handler.NewProductHandler(repo)
 	{
 		rg.GET("/products", productHandler.GetProductsHandler)

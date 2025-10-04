@@ -14,12 +14,12 @@ var (
 func Init() error {
 	var err error
 
-	env, err = InitilizeEnvVariables()
+	env, err = initilizeEnvVariables()
 	if err != nil {
 		return fmt.Errorf("error initializing env variables: %v", err)
 	}
 
-	db, err = InitializeDbSQL(env)
+	db, err = initializeDbSQL(env)
 	if err != nil {
 		return fmt.Errorf("failed to connection to DataBase, error: %v", err)
 	}

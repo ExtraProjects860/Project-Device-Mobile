@@ -9,8 +9,8 @@ import (
 func InitRoutesApiV1(router *gin.Engine, db *gorm.DB) {
 	apiV1 := router.Group("/api/v1")
 	
-	RegisterUserRoutes(apiV1, repository.NewPostgresUserRepository(db))
-	RegisterProductRoutes(apiV1, repository.NewPostgresProductRepository(db))
-	RegisterAuthRoutes(apiV1)
-	RegisterWishListRoutes(apiV1, repository.NewPostgresWishListRepository(db))
+	registerUserRoutes(apiV1, repository.NewPostgresUserRepository(db))
+	registerProductRoutes(apiV1, repository.NewPostgresProductRepository(db))
+	registerAuthRoutes(apiV1)
+	registerWishListRoutes(apiV1, repository.NewPostgresWishListRepository(db))
 }

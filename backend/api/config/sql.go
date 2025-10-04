@@ -20,7 +20,7 @@ func formatterUriDb(format string, env *EnvVariables) string {
 	)
 }
 
-func InitializeDbSQL(env *EnvVariables) (*gorm.DB, error) {
+func initializeDbSQL(env *EnvVariables) (*gorm.DB, error) {
 	urlDB := formatterUriDb("%s://%s:%s@%s/%s?sslmode=disable", env)
 
 	db, err := gorm.Open(postgres.Open(urlDB), &gorm.Config{})

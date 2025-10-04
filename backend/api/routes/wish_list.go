@@ -7,7 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func RegisterWishListRoutes(rg *gin.RouterGroup, repo repository.WishListRepository) {
+func registerWishListRoutes(rg *gin.RouterGroup, repo repository.WishListRepository) {
 	wishlistHandler := handler.NewWishListHandler(repo)
 	{
 		rg.GET("/wishlist", wishlistHandler.GetWishListByUserIDHandler)
