@@ -7,7 +7,7 @@ import (
 )
 
 // TODO colocar middlewares dps
-func RegisterUserRoutes(rg *gin.RouterGroup, repo repository.UserRepository) {
+func registerUserRoutes(rg *gin.RouterGroup, repo repository.UserRepository) {
 	userHandler := handler.NewUserHandler(repo)
 	{
 		rg.GET("/users", userHandler.GetUsersHandler)

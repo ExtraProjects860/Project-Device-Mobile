@@ -23,14 +23,32 @@ func makeRoleOutput(role schemas.Role) *RoleDTO {
 	}
 }
 
-func (r *postgresRoleRepository) CreateRole(ctx context.Context, role schemas.Role) {
-	return
+func (r *postgresRoleRepository) CreateRole(ctx context.Context, role schemas.Role) error {
+	return create(ctx, r.db, &role)
 }
 
-func (r *postgresRoleRepository) GetRoles(ctx context.Context, id uint) {
-	return
+func (r *postgresRoleRepository) GetRoles(ctx context.Context, itemsPerPage uint, currentPage uint) (PaginationDTO, error) {
+	query := r.db.WithContext(ctx).Model(&schemas.Role{})
+
+	roles, totalPages, totalItems, err := getByPagination[schemas.Role](query, itemsPerPage, currentPage)
+	if err != nil {
+		return PaginationDTO{}, err
+	}
+
+	var rolesDTO []RoleDTO
+	for _, role := range roles {
+		rolesDTO = append(rolesDTO, *makeRoleOutput(role))
+	}
+
+	return PaginationDTO{
+		Data:        rolesDTO,
+		CurrentPage: currentPage,
+		TotalPages:  totalPages,
+		TotalItems:  totalItems,
+	}, nil
 }
 
-func (r *postgresRoleRepository) UpdateRole(ctx context.Context, id uint, role schemas.Role) {
-	return
+func (r *postgresRoleRepository) UpdateRole(ctx context.Context, id uint, role schemas.Role) (schemas.Role, error) {
+	err := update(ctx, r.db, id, &role)
+	return role, err
 }

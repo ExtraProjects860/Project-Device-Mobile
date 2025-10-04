@@ -37,32 +37,32 @@ func makeProductOutput(product schemas.Product) *ProductDTO {
 	}
 }
 
-func (r *postgresProductRepository) CreateProduct(ctx context.Context, product schemas.Product) {
-	return
+func (r *postgresProductRepository) CreateProduct(ctx context.Context, product schemas.Product) error {
+	return create(ctx, r.db, &product)
 }
 
 func (r *postgresProductRepository) GetProducts(ctx context.Context, itemsPerPage uint, currentPage uint) (PaginationDTO, error) {
 	query := r.db.WithContext(ctx).Model(&schemas.Product{})
-	paginationOffset, totalPages, lengthItems := pagination(query, itemsPerPage, currentPage)
 
-	var productsEntries []schemas.Product
-	err := query.
-		Limit(int(itemsPerPage)).
-		Offset(int(paginationOffset)).
-		Find(&productsEntries).Error
+	products, totalPages, totalItems, err := getByPagination[schemas.Product](query, itemsPerPage, currentPage)
 	if err != nil {
-		logger.Errorf("%v", err)
 		return PaginationDTO{}, err
 	}
 
 	var productsDTO []ProductDTO
-	for _, product := range productsEntries {
+	for _, product := range products {
 		productsDTO = append(productsDTO, *makeProductOutput(product))
 	}
 
-	return PaginationDTO{Data: productsDTO, CurrentPage: currentPage, TotalPages: totalPages, TotalItems: lengthItems}, err
+	return PaginationDTO{
+		Data:        productsDTO,
+		CurrentPage: currentPage,
+		TotalPages:  totalPages,
+		TotalItems:  totalItems,
+	}, nil
 }
 
-func (r *postgresProductRepository) UpdateProducts(ctx context.Context, id uint) {
-	return
+func (r *postgresProductRepository) UpdateProducts(ctx context.Context, id uint, product schemas.Product) (schemas.Product, error) {
+	err := update(ctx, r.db, id, &product)
+	return product, err
 }

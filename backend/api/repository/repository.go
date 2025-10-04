@@ -10,15 +10,15 @@ import (
 var logger *config.Logger = config.GetLogger("repository")
 
 type EnterpriseRepository interface {
-	CreateEnterprise(ctx context.Context, enterprise schemas.Enterprise)
-	GetEnterprises(ctx context.Context, id uint)
-	UpdateEnterprise(ctx context.Context, id uint, enterprise schemas.Enterprise)
+	CreateEnterprise(ctx context.Context, enterprise schemas.Enterprise) error
+	GetEnterprises(ctx context.Context, itemsPerPage uint, currentPage uint) (PaginationDTO, error)
+	UpdateEnterprise(ctx context.Context, id uint, enterprise schemas.Enterprise) (schemas.Enterprise, error)
 }
 
 type RoleRepository interface {
-	CreateRole(ctx context.Context, role schemas.Role)
-	GetRoles(ctx context.Context, id uint)
-	UpdateRole(ctx context.Context, id uint, role schemas.Role)
+	CreateRole(ctx context.Context, role schemas.Role) error
+	GetRoles(ctx context.Context, itemsPerPage uint, currentPage uint) (PaginationDTO, error)
+	UpdateRole(ctx context.Context, id uint, role schemas.Role) (schemas.Role, error)
 }
 
 type WishListRepository interface {
@@ -33,13 +33,13 @@ type UserRepository interface {
 }
 
 type TokenPasswordRepository interface {
-	CreateToken(ctx context.Context, token schemas.TokenPassword)
-	UpdateToken(ctx context.Context, id uint, token schemas.TokenPassword)
-	GetToken(ctx context.Context, id uint)
+	CreateToken(ctx context.Context, token schemas.TokenPassword) error
+	UpdateToken(ctx context.Context, id uint, token schemas.TokenPassword) (schemas.TokenPassword, error)
+	GetToken(ctx context.Context, id uint) (*TokenPasswordDTO, error)
 }
 
 type ProductRepository interface {
-	CreateProduct(ctx context.Context, product schemas.Product)
+	CreateProduct(ctx context.Context, product schemas.Product) error
 	GetProducts(ctx context.Context, itemsPerPage uint, currentPage uint) (PaginationDTO, error)
-	UpdateProducts(ctx context.Context, id uint)
+	UpdateProducts(ctx context.Context, id uint, product schemas.Product) (schemas.Product, error)
 }

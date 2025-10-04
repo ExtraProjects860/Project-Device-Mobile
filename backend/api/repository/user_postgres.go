@@ -5,7 +5,6 @@ import (
 	"time"
 
 	"github.com/ExtraProjects860/Project-Device-Mobile/schemas"
-	"gorm.io/gorm"
 )
 
 type UserDTO struct {
@@ -42,43 +41,29 @@ func makeUserOutput(user schemas.User) *UserDTO {
 }
 
 func (r *postgresUserRepository) CreateUser(ctx context.Context, user schemas.User) error {
-	return r.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
-		if err := tx.Create(&user).Error; err != nil {
-			logger.Errorf("%v", err)
-			return err
-		}
-		return nil
-	})
+	return create(ctx, r.db, &user)
 }
 
 func (r *postgresUserRepository) GetInfoUser(ctx context.Context, id uint) (*UserDTO, error) {
-	var user schemas.User
-	err := r.db.WithContext(ctx).
-		Preload("Role").
-		Preload("Enterprise").
-		First(&user, id).Error
+	query := r.db.WithContext(ctx).Model(&schemas.User{}).Preload("Role").Preload("Enterprise")
 
+	user, err := getByID[schemas.User](ctx, query, id)
 	if err != nil {
-		logger.Errorf("%v", err)
-		return &UserDTO{}, err
+		return nil, err
 	}
+	return makeUserOutput(*user), nil
+}
 
-	return makeUserOutput(user), err
+func (r *postgresUserRepository) UpdateUser(ctx context.Context, id uint, user schemas.User) (schemas.User, error) {
+	err := update(ctx, r.db, id, &user)
+	return user, err
 }
 
 func (r *postgresUserRepository) GetUsers(ctx context.Context, itemsPerPage uint, currentPage uint) (PaginationDTO, error) {
-	query := r.db.WithContext(ctx).Model(&schemas.User{})
-	paginationOffset, totalPages, lengthItems := pagination(query, itemsPerPage, currentPage)
+	query := r.db.WithContext(ctx).Model(&schemas.User{}).Preload("Role").Preload("Enterprise")
 
-	var users []schemas.User
-	err := query.
-		Limit(int(itemsPerPage)).
-		Offset(int(paginationOffset)).
-		Preload("Role").
-		Preload("Enterprise").
-		Find(&users).Error
+	users, totalPages, totalItems, err := getByPagination[schemas.User](query, itemsPerPage, currentPage)
 	if err != nil {
-		logger.Errorf("%v", err)
 		return PaginationDTO{}, err
 	}
 
@@ -87,18 +72,10 @@ func (r *postgresUserRepository) GetUsers(ctx context.Context, itemsPerPage uint
 		usersDTO = append(usersDTO, *makeUserOutput(user))
 	}
 
-	return PaginationDTO{Data: usersDTO, CurrentPage: currentPage, TotalPages: totalPages, TotalItems: lengthItems}, err
-}
-
-func (r *postgresUserRepository) UpdateUser(ctx context.Context, id uint, user schemas.User) (schemas.User, error) {
-	err := r.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
-		if err := tx.Model(&schemas.User{}).Where("id = ?", id).Updates(user).Error; err != nil {
-			logger.Errorf("%v", err)
-			return err
-		}
-
-		return nil
-	})
-
-	return user, err
+	return PaginationDTO{
+		Data:        usersDTO,
+		CurrentPage: currentPage,
+		TotalPages:  totalPages,
+		TotalItems:  totalItems,
+	}, nil
 }
