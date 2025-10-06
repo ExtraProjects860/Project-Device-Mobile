@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"errors"
 	"net/http"
 
 	"github.com/ExtraProjects860/Project-Device-Mobile/repository"
@@ -22,7 +23,7 @@ func NewProductHandler(repo repository.ProductRepository) *ProductHandler {
 // @Success      200 {object} map[string]string
 // @Router       /api/v1/product [post]
 func (h *ProductHandler) CreateProductHandler(ctx *gin.Context) {
-	sendSuccess(ctx, gin.H{"message": "Add Promotion Product!"})
+	sendSuccess(ctx, http.StatusCreated, gin.H{"message": "Add Promotion Product!"})
 }
 
 // @Summary      Update Product
@@ -33,7 +34,7 @@ func (h *ProductHandler) CreateProductHandler(ctx *gin.Context) {
 // @Success      200 {object} map[string]string
 // @Router       /api/v1/product [patch]
 func (h *ProductHandler) UpdateProductHandler(ctx *gin.Context) {
-	sendSuccess(ctx, gin.H{"message": "Update Promotion Product!"})
+	sendSuccess(ctx, http.StatusOK, gin.H{"message": "Update Promotion Product!"})
 }
 
 // @Summary      Get Products
@@ -50,16 +51,16 @@ func (h *ProductHandler) GetProductsHandler(ctx *gin.Context) {
 	itemsPerPage, currentPage, err := getPaginationData(ctx)
 	if err != nil {
 		logger.Error(err.Error())
-		sendErr(ctx, http.StatusInternalServerError, gin.H{"error": err.Error()})
+		sendErr(ctx, http.StatusBadRequest, err)
 		return
 	}
 
 	products, err := h.repo.GetProducts(ctx, itemsPerPage, currentPage)
 	if err != nil {
 		logger.Error(err.Error())
-		sendErr(ctx, http.StatusInternalServerError, gin.H{"error": "Error to get products in database"})
+		sendErr(ctx, http.StatusInternalServerError, errors.New("error to get products in database"))
 		return
 	}
 
-	sendSuccess(ctx, products)
+	sendSuccess(ctx, http.StatusOK, products)
 }

@@ -36,16 +36,21 @@ func makeWishListOutput(wishListEntries []schemas.WishList, userID uint) *WishLi
 	}
 }
 
-func (r *postgresWishListRepository) GetWishListByUserID(ctx context.Context, userID uint, itemsPerPage uint, currentPage uint) (PaginationDTO, error) {
+func (r *postgresWishListRepository) GetWishListByUserID(ctx context.Context, userID uint, itemsPerPage uint, currentPage uint) (*PaginationDTO, error) {
 	query := r.db.WithContext(ctx).Where("user_id = ?", userID).Model(&schemas.WishList{}).Preload("Product")
 
 	wishListEntries, totalPages, totalItems, err := getByPagination[schemas.WishList](query, itemsPerPage, currentPage)
 	if err != nil {
 		logger.Errorf("%v", err)
-		return PaginationDTO{}, err
+		return nil, err
 	}
 
 	wishListDTO := makeWishListOutput(wishListEntries, userID)
 
-	return PaginationDTO{Data: wishListDTO, CurrentPage: currentPage, TotalPages: totalPages, TotalItems: totalItems}, err
+	return &PaginationDTO{
+		Data: wishListDTO, 
+		CurrentPage: currentPage, 
+		TotalPages: totalPages, 
+		TotalItems: totalItems,
+	}, nil
 }

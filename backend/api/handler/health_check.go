@@ -1,6 +1,8 @@
 package handler
 
 import (
+	"errors"
+	"fmt"
 	"io"
 	"net/http"
 
@@ -16,7 +18,7 @@ import (
 // @Success      200 {object} map[string]string
 // @Router       /health/api [get]
 func ApiHandler(ctx *gin.Context) {
-	sendStatus(ctx, "Api is ok")
+	sendStatus(ctx, http.StatusOK, "Api is ok")
 }
 
 // @Summary      Database status check
@@ -32,12 +34,12 @@ func DatabaseHandler(ctx *gin.Context, db *gorm.DB) {
 		sendErr(
 			ctx,
 			http.StatusInternalServerError,
-			gin.H{"status": "Database connection failed", "error": err.Error()},
+			fmt.Errorf("database connection failed: %v", err.Error()),
 		)
 		return
 	}
 
-	sendStatus(ctx, "Database connected")
+	sendStatus(ctx, http.StatusOK, "Database connected")
 }
 
 // @Summary      Email service check
@@ -51,7 +53,7 @@ func EmailServiceHandler(ctx *gin.Context, serverDomain string) {
 	resp, err := http.Get(serverDomain)
 	if err != nil {
 		logger.Errorf("failed to call email service at %s: %v", serverDomain, err)
-		sendErr(ctx, http.StatusInternalServerError, gin.H{"error": "unable to reach email service"})
+		sendErr(ctx, http.StatusInternalServerError, errors.New("unable to reach email service"))
 		return
 	}
 	defer resp.Body.Close()
@@ -59,9 +61,9 @@ func EmailServiceHandler(ctx *gin.Context, serverDomain string) {
 	_, err = io.ReadAll(resp.Body)
 	if err != nil {
 		logger.Errorf("failed to read response body from %s: %v", serverDomain, err.Error())
-		sendErr(ctx, http.StatusInternalServerError, gin.H{"error": "failed to read response from email service"})
+		sendErr(ctx, http.StatusInternalServerError, errors.New("failed to read response from email service"))
 		return
 	}
 
-	sendStatus(ctx, "Email service called successfully")
+	sendStatus(ctx, http.StatusOK, "Email service called successfully")
 }

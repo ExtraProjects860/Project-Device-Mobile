@@ -4,12 +4,8 @@ import (
 	"github.com/ExtraProjects860/Project-Device-Mobile/config"
 )
 
-var (
-	logger *config.Logger
-	env *config.EnvVariables
-)
+var logger *config.Logger
 
 func init() {
 	logger = config.GetLogger("handler")
-	env = config.GetEnv()
 }

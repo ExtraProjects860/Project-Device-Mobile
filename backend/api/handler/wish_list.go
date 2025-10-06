@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"errors"
 	"net/http"
 
 	"github.com/ExtraProjects860/Project-Device-Mobile/repository"
@@ -22,7 +23,7 @@ func NewWishListHandler(repo repository.WishListRepository) *WishListHandler {
 // @Success      200 {object} map[string]string
 // @Router       /api/v1/wishlist [post]
 func (h *WishListHandler) AddInWishListHandler(ctx *gin.Context) {
-	sendSuccess(ctx, "Add Product in Wish List!")
+	sendSuccess(ctx, http.StatusCreated, "Add Product in Wish List!")
 }
 
 // @Summary      Update Product from Wish List
@@ -33,7 +34,7 @@ func (h *WishListHandler) AddInWishListHandler(ctx *gin.Context) {
 // @Success      200 {object} map[string]string
 // @Router       /api/v1/wishlist [patch]
 func (h *WishListHandler) UpdateWishListHandler(ctx *gin.Context) {
-	sendSuccess(ctx, "Delete Product in Wish List!")
+	sendSuccess(ctx, http.StatusOK, "Delete Product in Wish List!")
 }
 
 // @Summary      Get Wish List Items
@@ -51,23 +52,23 @@ func (h *WishListHandler) GetWishListByUserIDHandler(ctx *gin.Context) {
 	userId, err := getIdQuery(ctx)
 	if err != nil {
 		logger.Error(err.Error())
-		sendErr(ctx, http.StatusBadRequest, gin.H{"error": err.Error()})
+		sendErr(ctx, http.StatusBadRequest, err)
 		return
 	}
 
 	itemsPerPage, currentPage, err := getPaginationData(ctx)
 	if err != nil {
 		logger.Error(err.Error())
-		sendErr(ctx, http.StatusBadRequest, gin.H{"error": err.Error()})
+		sendErr(ctx, http.StatusBadRequest, err)
 		return
 	}
 
 	wishlist, err := h.repo.GetWishListByUserID(ctx, userId, itemsPerPage, currentPage)
 	if err != nil {
 		logger.Error(err.Error())
-		sendErr(ctx, http.StatusInternalServerError, gin.H{"error": "Error to get wishlist in database"})
+		sendErr(ctx, http.StatusInternalServerError, errors.New("error to get wishlist in database"))
 		return
 	}
 
-	sendSuccess(ctx, wishlist)
+	sendSuccess(ctx, http.StatusOK, wishlist)
 }

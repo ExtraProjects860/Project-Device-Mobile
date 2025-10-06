@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"errors"
 	"net/http"
 
 	"github.com/ExtraProjects860/Project-Device-Mobile/repository"
@@ -22,7 +23,7 @@ func NewUserHandler(repo repository.UserRepository) *UserHandler {
 // @Success      200 {object} map[string]string
 // @Router       /api/v1/user [post]
 func (h *UserHandler) CreateUserHandler(ctx *gin.Context) {
-	sendSuccess(ctx, "Create User!")
+	sendSuccess(ctx, http.StatusCreated, "Create User!")
 }
 
 // @Summary      Get User Info
@@ -33,7 +34,7 @@ func (h *UserHandler) CreateUserHandler(ctx *gin.Context) {
 // @Success      200 {object} map[string]string
 // @Router       /api/v1/user [get]
 func (h *UserHandler) GetInfoUserHandler(ctx *gin.Context) {
-	sendSuccess(ctx, "Get Info User!")
+	sendSuccess(ctx, http.StatusOK, "Get Info User!")
 }
 
 // @Summary      Get Users
@@ -50,18 +51,18 @@ func (h *UserHandler) GetUsersHandler(ctx *gin.Context) {
 	itemsPerPage, currentPage, err := getPaginationData(ctx)
 	if err != nil {
 		logger.Error(err.Error())
-		sendErr(ctx, http.StatusInternalServerError, gin.H{"error": err.Error()})
+		sendErr(ctx, http.StatusBadRequest, err)
 		return
 	}
 
 	users, err := h.repo.GetUsers(ctx, itemsPerPage, currentPage)
 	if err != nil {
 		logger.Error(err.Error())
-		sendErr(ctx, http.StatusInternalServerError, gin.H{"error": "Error to get users in database"})
+		sendErr(ctx, http.StatusInternalServerError, errors.New("error to get users in database"))
 		return
 	}
 
-	sendSuccess(ctx, users)
+	sendSuccess(ctx, http.StatusOK, users)
 }
 
 // @Summary      Update User
@@ -72,5 +73,5 @@ func (h *UserHandler) GetUsersHandler(ctx *gin.Context) {
 // @Success      200 {object} map[string]string
 // @Router       /api/v1/user [patch]
 func (h *UserHandler) UpdateUserHandler(ctx *gin.Context) {
-	sendSuccess(ctx, gin.H{"message": "Updated User!"})
+	sendSuccess(ctx, http.StatusOK, gin.H{"message": "Updated User!"})
 }

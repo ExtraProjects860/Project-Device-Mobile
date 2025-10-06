@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"errors"
 	"net/http"
 
 	"github.com/ExtraProjects860/Project-Device-Mobile/auth"
@@ -15,7 +16,7 @@ import (
 // @Success      200 {object} map[string]string
 // @Router       /api/v1/auth/request-token [post]
 func RequestTokenHandler(ctx *gin.Context) {
-	sendSuccess(ctx, "Require Password!")
+	sendSuccess(ctx, http.StatusOK, "Require Password!")
 }
 
 // @Summary      Reset Password
@@ -26,7 +27,7 @@ func RequestTokenHandler(ctx *gin.Context) {
 // @Success      200 {object} map[string]string
 // @Router       /api/v1/auth/reset-password [post]
 func ResetPasswordHandler(ctx *gin.Context) {
-	sendSuccess(ctx, "Change Password!")
+	sendSuccess(ctx, http.StatusOK, "Change Password!")
 }
 
 // @Summary      User Login
@@ -41,24 +42,26 @@ func ResetPasswordHandler(ctx *gin.Context) {
 func LoginHandler(ctx *gin.Context) {
 	var request LoginRequest
 	if err := ctx.ShouldBindJSON(&request); err != nil {
-		sendErr(ctx, http.StatusBadRequest, gin.H{"message": "Invalid input"})
+		logger.Error(err.Error())
+		sendErr(ctx, http.StatusBadRequest, errors.New("invalid input"))
 		return
 	}
 
 	// TODO Simulating user authentication (replace with real logic) *se não vai dar merda, e precisa implementar o repository*
 	if request.Email != "test@gmail.com" || request.Password != "1234ok" {
-		sendErr(ctx, http.StatusUnauthorized, gin.H{"message": "unauthorized"})
+		sendErr(ctx, http.StatusUnauthorized, errors.New("Unauthorized"))
 		return
 	}
 
 	user := &UserData{ID: 1, Email: "test@gmail.com"}
 	jwtToken, refreshToken, err := auth.GenerateTokens(user.ID)
 	if err != nil {
-		sendErr(ctx, http.StatusInternalServerError, gin.H{"message": err.Error()})
+		logger.Error(err.Error())
+		sendErr(ctx, http.StatusInternalServerError, errors.New("error to generate jwt token and refresh token"))
 		return
 	}
 
-	sendSuccess(ctx, gin.H{
+	sendSuccess(ctx, http.StatusCreated, gin.H{
 		"jwt_token":     jwtToken,
 		"refresh_token": refreshToken,
 	})
@@ -75,17 +78,19 @@ func LoginHandler(ctx *gin.Context) {
 func RefreshTokenHandler(ctx *gin.Context) {
 	var request auth.RequestRefresh
 	if err := ctx.ShouldBindJSON(&request); err != nil {
-		sendErr(ctx, http.StatusBadRequest, gin.H{"message": "Invalid input"})
+		logger.Error(err.Error())
+		sendErr(ctx, http.StatusBadRequest, errors.New("invalid input"))
 		return
 	}
 
 	newJWT, err := auth.RefreshToken(request.RefreshToken)
 	if err != nil {
-		sendErr(ctx, http.StatusUnauthorized, gin.H{"message": err.Error()})
+		logger.Error(err.Error())
+		sendErr(ctx, http.StatusInternalServerError, errors.New("error to generate new jwt token"))
 		return
 	}
 
-	sendSuccess(ctx, gin.H{
+	sendSuccess(ctx, http.StatusOK, gin.H{
 		"jwt_token": newJWT,
 	})
 }
@@ -99,5 +104,5 @@ func RefreshTokenHandler(ctx *gin.Context) {
 // @Failure      401 {object} map[string]string
 // @Router       /api/v1/auth/logout [post]
 func LogoutHandler(ctx *gin.Context) {
-	sendSuccess(ctx, "Logout!")
+	sendSuccess(ctx, http.StatusOK, "Logout!")
 }
