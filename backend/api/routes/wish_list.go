@@ -2,18 +2,15 @@ package routes
 
 import (
 	"github.com/ExtraProjects860/Project-Device-Mobile/handler"
-	"github.com/ExtraProjects860/Project-Device-Mobile/repository"
-
 	"github.com/gin-gonic/gin"
 )
 
-func registerWishListRoutes(rg *gin.RouterGroup, repo repository.WishListRepository) {
-	wishlistHandler := handler.NewWishListHandler(repo)
+func registerWishListRoutes(rg *gin.RouterGroup) {
 	{
-		rg.GET("/wishlist", wishlistHandler.GetWishListByUserIDHandler)
+		rg.GET("/wishlist", handler.GetWishListByUserIDHandler)
 
-		rg.POST("/wishlist", wishlistHandler.AddInWishListHandler)
+		rg.POST("/wishlist", handler.AddInWishListHandler)
 
-		rg.PATCH("/wishlist", wishlistHandler.UpdateWishListHandler)
+		rg.PATCH("/wishlist", handler.UpdateWishListHandler)
 	}
 }
