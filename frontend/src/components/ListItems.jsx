@@ -10,6 +10,7 @@ import PageLoader from "../context/PageLoader.js";
 import Loading from "./ui/Loading.jsx";
 import WarningNotFound from "./ui/WarningNotFound.jsx";
 import { usePagination } from "../hooks/usePagination.js";
+import ModalErrors from "./ModalErrors.jsx";
 
 export default function ListItems({ callbackFetch, CardListRender }) {
   const {
@@ -19,17 +20,18 @@ export default function ListItems({ callbackFetch, CardListRender }) {
     flatListRef,
     totalResult,
     allItemsLoaded,
+    error,
     initialLoad,
     loadMore,
     handleRefresh,
     scrollToTop,
+    clearError,
   } = usePagination(callbackFetch);
 
   const renderInFooter = () => {
     if (isLoadingMore) {
       return <Loading />;
     }
-
     if (allItemsLoaded) {
       return (
         <View className="w-full items-center">
@@ -44,12 +46,18 @@ export default function ListItems({ callbackFetch, CardListRender }) {
         </View>
       );
     }
-
     return null;
   };
 
   return (
     <PageLoader fetchData={initialLoad}>
+      <ModalErrors
+        visible={!!error}
+        message={error}
+        onClose={clearError}
+        onRetry={handleRefresh}
+      />
+
       {isRefreshing && listItems.length > 0 ? (
         <Loading />
       ) : (
@@ -77,7 +85,7 @@ export default function ListItems({ callbackFetch, CardListRender }) {
               />
             }
             ListEmptyComponent={
-              <WarningNotFound message={"Nenhum item encontrado"} />
+              !error && <WarningNotFound message={"Nenhum item encontrado"} />
             }
           />
         </View>
