@@ -4,17 +4,11 @@ import (
 	"errors"
 	"net/http"
 
+	"github.com/ExtraProjects860/Project-Device-Mobile/config"
 	"github.com/ExtraProjects860/Project-Device-Mobile/repository"
+	"github.com/ExtraProjects860/Project-Device-Mobile/service"
 	"github.com/gin-gonic/gin"
 )
-
-type UserHandler struct {
-	repo repository.UserRepository
-}
-
-func NewUserHandler(repo repository.UserRepository) *UserHandler {
-	return &UserHandler{repo: repo}
-}
 
 // @Summary      Create User
 // @Description  Creates a new user
@@ -22,7 +16,7 @@ func NewUserHandler(repo repository.UserRepository) *UserHandler {
 // @Produce      json
 // @Success      200 {object} map[string]string
 // @Router       /api/v1/user [post]
-func (h *UserHandler) CreateUserHandler(ctx *gin.Context) {
+func CreateUserHandler(ctx *gin.Context) {
 	sendSuccess(ctx, http.StatusCreated, "Create User!")
 }
 
@@ -33,7 +27,7 @@ func (h *UserHandler) CreateUserHandler(ctx *gin.Context) {
 // @Produce      json
 // @Success      200 {object} map[string]string
 // @Router       /api/v1/user [get]
-func (h *UserHandler) GetInfoUserHandler(ctx *gin.Context) {
+func GetInfoUserHandler(ctx *gin.Context) {
 	sendSuccess(ctx, http.StatusOK, "Get Info User!")
 }
 
@@ -47,7 +41,7 @@ func (h *UserHandler) GetInfoUserHandler(ctx *gin.Context) {
 // @Failure      400 {object} ErrResponse
 // @Failure      500 {object} ErrResponse
 // @Router       /api/v1/users [get]
-func (h *UserHandler) GetUsersHandler(ctx *gin.Context) {
+func GetUsersHandler(ctx *gin.Context) {
 	itemsPerPage, currentPage, err := getPaginationData(ctx)
 	if err != nil {
 		logger.Error(err.Error())
@@ -55,10 +49,14 @@ func (h *UserHandler) GetUsersHandler(ctx *gin.Context) {
 		return
 	}
 
-	users, err := h.repo.GetUsers(ctx, itemsPerPage, currentPage)
+	userService := service.NewUserService(
+		repository.NewPostgresUserRepository(config.GetDB()),
+	)
+
+	users, err := userService.GetAll(ctx, itemsPerPage, currentPage)
 	if err != nil {
 		logger.Error(err.Error())
-		sendErr(ctx, http.StatusInternalServerError, errors.New("error to get users in database"))
+		sendErr(ctx, http.StatusInternalServerError, errors.New("error to process get users"))
 		return
 	}
 
@@ -72,6 +70,6 @@ func (h *UserHandler) GetUsersHandler(ctx *gin.Context) {
 // @Produce      json
 // @Success      200 {object} map[string]string
 // @Router       /api/v1/user [patch]
-func (h *UserHandler) UpdateUserHandler(ctx *gin.Context) {
+func UpdateUserHandler(ctx *gin.Context) {
 	sendSuccess(ctx, http.StatusOK, gin.H{"message": "Updated User!"})
 }

@@ -4,17 +4,11 @@ import (
 	"errors"
 	"net/http"
 
+	"github.com/ExtraProjects860/Project-Device-Mobile/config"
 	"github.com/ExtraProjects860/Project-Device-Mobile/repository"
+	"github.com/ExtraProjects860/Project-Device-Mobile/service"
 	"github.com/gin-gonic/gin"
 )
-
-type ProductHandler struct {
-	repo repository.ProductRepository
-}
-
-func NewProductHandler(repo repository.ProductRepository) *ProductHandler {
-	return &ProductHandler{repo: repo}
-}
 
 // @Summary      Create Product
 // @Description  Creates a new product
@@ -22,7 +16,7 @@ func NewProductHandler(repo repository.ProductRepository) *ProductHandler {
 // @Produce      json
 // @Success      200 {object} map[string]string
 // @Router       /api/v1/product [post]
-func (h *ProductHandler) CreateProductHandler(ctx *gin.Context) {
+func CreateProductHandler(ctx *gin.Context) {
 	sendSuccess(ctx, http.StatusCreated, gin.H{"message": "Add Promotion Product!"})
 }
 
@@ -33,7 +27,7 @@ func (h *ProductHandler) CreateProductHandler(ctx *gin.Context) {
 // @Produce      json
 // @Success      200 {object} map[string]string
 // @Router       /api/v1/product [patch]
-func (h *ProductHandler) UpdateProductHandler(ctx *gin.Context) {
+func UpdateProductHandler(ctx *gin.Context) {
 	sendSuccess(ctx, http.StatusOK, gin.H{"message": "Update Promotion Product!"})
 }
 
@@ -47,7 +41,7 @@ func (h *ProductHandler) UpdateProductHandler(ctx *gin.Context) {
 // @Failure      400 {object} ErrResponse
 // @Failure      500 {object} ErrResponse
 // @Router       /api/v1/products [get]
-func (h *ProductHandler) GetProductsHandler(ctx *gin.Context) {
+func GetProductsHandler(ctx *gin.Context) {
 	itemsPerPage, currentPage, err := getPaginationData(ctx)
 	if err != nil {
 		logger.Error(err.Error())
@@ -55,7 +49,11 @@ func (h *ProductHandler) GetProductsHandler(ctx *gin.Context) {
 		return
 	}
 
-	products, err := h.repo.GetProducts(ctx, itemsPerPage, currentPage)
+	productService := service.NewProductService(
+		repository.NewPostgresProductRepository(config.GetDB()),
+	)
+
+	products, err := productService.GetAll(ctx, itemsPerPage, currentPage)
 	if err != nil {
 		logger.Error(err.Error())
 		sendErr(ctx, http.StatusInternalServerError, errors.New("error to get products in database"))
