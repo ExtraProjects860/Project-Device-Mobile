@@ -21,13 +21,20 @@ func makeTokenPasswordOutput(token schemas.TokenPassword) *TokenPasswordDTO {
 	}
 }
 
-func (r *postgresTokenPasswordRepository) CreateToken(ctx context.Context, token schemas.TokenPassword) error {
-	return create(ctx, r.db, &token)
+func (r *postgresTokenPasswordRepository) CreateToken(ctx context.Context, token schemas.TokenPassword) (*TokenPasswordDTO, error) {
+	err := create(ctx, r.db, &token)
+	if err != nil {
+		return nil, err
+	}
+	return makeTokenPasswordOutput(token), nil
 }
 
-func (r *postgresTokenPasswordRepository) UpdateToken(ctx context.Context, id uint, token schemas.TokenPassword) (schemas.TokenPassword, error) {
+func (r *postgresTokenPasswordRepository) UpdateToken(ctx context.Context, id uint, token schemas.TokenPassword) (*TokenPasswordDTO, error) {
 	err := update(ctx, r.db, id, &token)
-	return token, err
+	if err != nil {
+		return nil, err
+	}
+	return makeTokenPasswordOutput(token), nil
 }
 
 func (r *postgresTokenPasswordRepository) GetToken(ctx context.Context, id uint) (*TokenPasswordDTO, error) {

@@ -23,16 +23,20 @@ func makeEnterpriseOutput(enterprise schemas.Enterprise) *EnterpriseDTO {
 	}
 }
 
-func (r *postgresEnterpriseRepository) CreateEnterprise(ctx context.Context, enterprise schemas.Enterprise) error {
-	return create(ctx, r.db, &enterprise)
+func (r *postgresEnterpriseRepository) CreateEnterprise(ctx context.Context, enterprise schemas.Enterprise) (*EnterpriseDTO, error) {
+	err := create(ctx, r.db, &enterprise)
+	if err != nil {
+		return nil, err
+	}
+	return makeEnterpriseOutput(enterprise), nil
 }
 
-func (r *postgresEnterpriseRepository) GetEnterprises(ctx context.Context, itemsPerPage uint, currentPage uint) (PaginationDTO, error) {
+func (r *postgresEnterpriseRepository) GetEnterprises(ctx context.Context, itemsPerPage uint, currentPage uint) (*PaginationDTO, error) {
 	query := r.db.WithContext(ctx).Model(&schemas.Enterprise{})
 
 	enterprises, totalPages, totalItems, err := getByPagination[schemas.Enterprise](query, itemsPerPage, currentPage)
 	if err != nil {
-		return PaginationDTO{}, err
+		return nil, err
 	}
 
 	var enterprisesDTO []EnterpriseDTO
@@ -40,7 +44,7 @@ func (r *postgresEnterpriseRepository) GetEnterprises(ctx context.Context, items
 		enterprisesDTO = append(enterprisesDTO, *makeEnterpriseOutput(enterprise))
 	}
 
-	return PaginationDTO{
+	return &PaginationDTO{
 		Data:        enterprisesDTO,
 		CurrentPage: currentPage,
 		TotalPages:  totalPages,
@@ -48,7 +52,10 @@ func (r *postgresEnterpriseRepository) GetEnterprises(ctx context.Context, items
 	}, nil
 }
 
-func (r *postgresEnterpriseRepository) UpdateEnterprise(ctx context.Context, id uint, enterprise schemas.Enterprise) (schemas.Enterprise, error) {
+func (r *postgresEnterpriseRepository) UpdateEnterprise(ctx context.Context, id uint, enterprise schemas.Enterprise) (*EnterpriseDTO, error) {
 	err := update(ctx, r.db, id, &enterprise)
-	return enterprise, err
+	if err != nil {
+		return nil, err
+	}
+	return makeEnterpriseOutput(enterprise), nil
 }

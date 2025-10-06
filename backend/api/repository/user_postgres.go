@@ -40,8 +40,12 @@ func makeUserOutput(user schemas.User) *UserDTO {
 	}
 }
 
-func (r *postgresUserRepository) CreateUser(ctx context.Context, user schemas.User) error {
-	return create(ctx, r.db, &user)
+func (r *postgresUserRepository) CreateUser(ctx context.Context, user schemas.User) (*UserDTO, error) {
+	err := create(ctx, r.db, &user)
+	if err != nil {
+		return nil, err
+	}
+	return makeUserOutput(user), nil
 }
 
 func (r *postgresUserRepository) GetInfoUser(ctx context.Context, id uint) (*UserDTO, error) {
@@ -54,17 +58,21 @@ func (r *postgresUserRepository) GetInfoUser(ctx context.Context, id uint) (*Use
 	return makeUserOutput(*user), nil
 }
 
-func (r *postgresUserRepository) UpdateUser(ctx context.Context, id uint, user schemas.User) (schemas.User, error) {
+func (r *postgresUserRepository) UpdateUser(ctx context.Context, id uint, user schemas.User) (*UserDTO, error) {
 	err := update(ctx, r.db, id, &user)
-	return user, err
+
+	if err != nil {
+		return nil, err
+	}
+	return makeUserOutput(user), nil
 }
 
-func (r *postgresUserRepository) GetUsers(ctx context.Context, itemsPerPage uint, currentPage uint) (PaginationDTO, error) {
+func (r *postgresUserRepository) GetUsers(ctx context.Context, itemsPerPage uint, currentPage uint) (*PaginationDTO, error) {
 	query := r.db.WithContext(ctx).Model(&schemas.User{}).Preload("Role").Preload("Enterprise")
 
 	users, totalPages, totalItems, err := getByPagination[schemas.User](query, itemsPerPage, currentPage)
 	if err != nil {
-		return PaginationDTO{}, err
+		return nil, err
 	}
 
 	var usersDTO []UserDTO
@@ -72,7 +80,7 @@ func (r *postgresUserRepository) GetUsers(ctx context.Context, itemsPerPage uint
 		usersDTO = append(usersDTO, *makeUserOutput(user))
 	}
 
-	return PaginationDTO{
+	return &PaginationDTO{
 		Data:        usersDTO,
 		CurrentPage: currentPage,
 		TotalPages:  totalPages,
