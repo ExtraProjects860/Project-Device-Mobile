@@ -25,5 +25,5 @@ func main() {
 		panic(err)
 	}
 
-	router.InitializeRouter(config.GetDB())
+	router.InitializeRouter()
 }
