@@ -2,20 +2,18 @@ package routes
 
 import (
 	"github.com/ExtraProjects860/Project-Device-Mobile/handler"
-	"github.com/ExtraProjects860/Project-Device-Mobile/repository"
 	"github.com/gin-gonic/gin"
 )
 
 // TODO colocar middlewares dps
-func registerUserRoutes(rg *gin.RouterGroup, repo repository.UserRepository) {
-	userHandler := handler.NewUserHandler(repo)
+func registerUserRoutes(rg *gin.RouterGroup) {
 	{
-		rg.GET("/users", userHandler.GetUsersHandler)
+		rg.GET("/users", handler.GetUsersHandler)
 
-		rg.GET("/user", userHandler.GetInfoUserHandler)
+		rg.GET("/user", handler.GetInfoUserHandler)
 
-		rg.POST("/user", userHandler.CreateUserHandler)
+		rg.POST("/user", handler.CreateUserHandler)
 
-		rg.PATCH("/user", userHandler.UpdateUserHandler)
+		rg.PATCH("/user", handler.UpdateUserHandler)
 	}
 }

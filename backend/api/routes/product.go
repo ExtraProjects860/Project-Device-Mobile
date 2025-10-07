@@ -2,17 +2,15 @@ package routes
 
 import (
 	"github.com/ExtraProjects860/Project-Device-Mobile/handler"
-	"github.com/ExtraProjects860/Project-Device-Mobile/repository"
 	"github.com/gin-gonic/gin"
 )
 
-func registerProductRoutes(rg *gin.RouterGroup, repo repository.ProductRepository) {
-	productHandler := handler.NewProductHandler(repo)
+func registerProductRoutes(rg *gin.RouterGroup) {
 	{
-		rg.GET("/products", productHandler.GetProductsHandler)
+		rg.GET("/products", handler.GetProductsHandler)
 
-		rg.POST("/product", productHandler.CreateProductHandler)
+		rg.POST("/product", handler.CreateProductHandler)
 
-		rg.PATCH("/product", productHandler.UpdateProductHandler)
+		rg.PATCH("/product", handler.UpdateProductHandler)
 	}
 }
