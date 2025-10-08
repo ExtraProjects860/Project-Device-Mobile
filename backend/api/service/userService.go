@@ -19,7 +19,7 @@ func NewUserService(repo repository.PostgresUserRepository) UserService {
 	return UserService{repo: repo}
 }
 
-func (u *UserService) Create(ctx context.Context, input request.UserCreateRequest) (*dto.UserDTO, error) {
+func (u *UserService) Create(ctx context.Context, input request.UserRequest) (*dto.UserDTO, error) {
 	hashedPassword, err := utils.GenerateHashPassword(input.Password)
 	if err != nil {
 		return nil, err

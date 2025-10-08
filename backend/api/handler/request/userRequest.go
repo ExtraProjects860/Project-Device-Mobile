@@ -1,14 +1,13 @@
 package request
 
 import (
-	"context"
 	"fmt"
 	"strings"
 
 	"github.com/go-playground/validator/v10"
 )
 
-type UserCreateRequest struct {
+type UserRequest struct {
 	RoleID         uint    `json:"role_id" binding:"required"`
 	EnterpriseID   *uint   `json:"enterprise_id"`
 	Name           string  `json:"name" binding:"required"`
@@ -21,7 +20,7 @@ type UserCreateRequest struct {
 
 // Pra que esse s de parametro? Tava já em outro lugar movi pra cá e ficou s de sexo
 
-func (s *UserCreateRequest) Validate(ctx context.Context, validate *validator.Validate) error {
+func (s *UserRequest) Validate(validate *validator.Validate) error {
 	if err := validate.Var(s.Name, "required,min=3"); err != nil {
 		return fmt.Errorf("name: %v", err)
 	}
@@ -49,7 +48,7 @@ func (s *UserCreateRequest) Validate(ctx context.Context, validate *validator.Va
 	return nil
 }
 
-func (s *UserCreateRequest) ValidateUpdate(validate *validator.Validate) error {
+func (s *UserRequest) ValidateUpdate(validate *validator.Validate) error {
 	if s.Name != "" {
 		if err := validate.Var(s.Name, "min=3"); err != nil {
 			return fmt.Errorf("name: %v", err)
@@ -95,7 +94,7 @@ func (s *UserCreateRequest) ValidateUpdate(validate *validator.Validate) error {
 	return nil
 }
 
-func (s *UserCreateRequest) Format() {
+func (s *UserRequest) Format() {
 	if s.Name != "" {
 		s.Name = strings.ToUpper(strings.TrimSpace(s.Name))
 	}

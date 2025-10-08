@@ -18,13 +18,13 @@ import (
 // @Tags         users
 // @Accept       json
 // @Produce      json
-// @Param        user body dto.UserCreateRequest true "User info"
+// @Param        user body request.UserRequest true "User info"
 // @Success      201 {object} dto.UserDTO
-// @Failure      400 {object} ErrResponse
-// @Failure      500 {object} ErrResponse
+// @Failure      400 {object} response.ErrResponse
+// @Failure      500 {object} response.ErrResponse
 // @Router       /api/v1/user [post]
 func CreateUserHandler(ctx *gin.Context) {
-	var input request.UserCreateRequest
+	var input request.UserRequest
 
 	if err := ctx.ShouldBindJSON(&input); err != nil {
 		logger.Error(err.Error())
@@ -32,12 +32,11 @@ func CreateUserHandler(ctx *gin.Context) {
 		return
 	}
 
-	if err := input.Validate(ctx, utils.GetValidate()); err != nil {
+	if err := request.ValidateBodyReq(&input, utils.GetValidate()); err != nil {
 		logger.Error(err.Error())
 		response.SendErr(ctx, http.StatusBadRequest, err)
 		return
 	}
-	input.Format()
 
 	userService := service.NewUserService(
 		*repository.NewPostgresUserRepository(config.GetDB()),
@@ -58,9 +57,9 @@ func CreateUserHandler(ctx *gin.Context) {
 // @Tags         users
 // @Param 		 id query string true "User ID"
 // @Produce      json
-// @Success      200 {array}  dto.UserDTO
-// @Failure      400 {object} ErrResponse
-// @Failure      500 {object} ErrResponse
+// @Success      200 {object} dto.UserDTO
+// @Failure      400 {object} response.ErrResponse
+// @Failure      500 {object} response.ErrResponse
 // @Router       /api/v1/user [get]
 func GetInfoUserHandler(ctx *gin.Context) {
 	id, err := request.GetIdQuery(ctx)
@@ -91,8 +90,8 @@ func GetInfoUserHandler(ctx *gin.Context) {
 // @Param        itemsPerPage query string true "Pagination Items"
 // @Param        currentPage query string true "Pagination Current Page"
 // @Success      200 {array}  dto.UserDTO
-// @Failure      400 {object} ErrResponse
-// @Failure      500 {object} ErrResponse
+// @Failure      400 {object} response.ErrResponse
+// @Failure      500 {object} response.ErrResponse
 // @Router       /api/v1/users [get]
 func GetUsersHandler(ctx *gin.Context) {
 	itemsPerPage, currentPage, err := request.GetPaginationData(ctx)
@@ -119,9 +118,13 @@ func GetUsersHandler(ctx *gin.Context) {
 // @Summary      Update User
 // @Description  Updates an existing user
 // @Tags         users
-// @Param 		 id query string true "User ID"
+// @Accept       json
 // @Produce      json
+// @Param 		 id query string true "User ID"
+// @Param        user body request.UserRequest true "User info to update"
 // @Success      200 {object} map[string]string
+// @Failure      400 {object} response.ErrResponse
+// @Failure      500 {object} response.ErrResponse
 // @Router       /api/v1/user [patch]
 func UpdateUserHandler(ctx *gin.Context) {
 	response.SendSuccess(ctx, http.StatusOK, gin.H{"message": "Updated User!"})
