@@ -1,18 +1,6 @@
 basePath: /
 definitions:
-  handler.ErrResponse:
-    properties:
-      error:
-        type: string
-    type: object
-  handler.LoginRequest:
-    properties:
-      email:
-        type: string
-      password:
-        type: string
-    type: object
-  repository.ProductDTO:
+  dto.ProductDTO:
     properties:
       created_at:
         type: string
@@ -37,7 +25,34 @@ definitions:
       value:
         type: number
     type: object
-  repository.UserDTO:
+  dto.UserCreateRequest:
+    properties:
+      cpf:
+        type: string
+      email:
+        type: string
+      enterprise_id:
+        type: integer
+      name:
+        type: string
+      password:
+        minLength: 6
+        type: string
+      photo_url:
+        type: string
+      register_number:
+        type: integer
+      role_id:
+        type: integer
+    required:
+    - cpf
+    - email
+    - name
+    - password
+    - register_number
+    - role_id
+    type: object
+  dto.UserDTO:
     properties:
       cpf:
         type: string
@@ -60,7 +75,7 @@ definitions:
       updated_at:
         type: string
     type: object
-  repository.WishListDTO:
+  dto.WishListDTO:
     properties:
       id:
         type: integer
@@ -68,8 +83,20 @@ definitions:
         type: integer
       products:
         items:
-          $ref: '#/definitions/repository.ProductDTO'
+          $ref: '#/definitions/dto.ProductDTO'
         type: array
+    type: object
+  handler.ErrResponse:
+    properties:
+      error:
+        type: string
+    type: object
+  handler.LoginRequest:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
     type: object
 host: localhost:5050
 info:
@@ -245,7 +272,7 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/repository.ProductDTO'
+              $ref: '#/definitions/dto.ProductDTO'
             type: array
         "400":
           description: Bad Request
@@ -273,9 +300,17 @@ paths:
         "200":
           description: OK
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            items:
+              $ref: '#/definitions/dto.UserDTO'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.ErrResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.ErrResponse'
       summary: Get User Info
       tags:
       - users
@@ -300,16 +335,31 @@ paths:
       tags:
       - users
     post:
+      consumes:
+      - application/json
       description: Creates a new user
+      parameters:
+      - description: User info
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UserCreateRequest'
       produces:
       - application/json
       responses:
-        "200":
-          description: OK
+        "201":
+          description: Created
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/dto.UserDTO'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.ErrResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.ErrResponse'
       summary: Create User
       tags:
       - users
@@ -334,7 +384,7 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/repository.UserDTO'
+              $ref: '#/definitions/dto.UserDTO'
             type: array
         "400":
           description: Bad Request
@@ -373,7 +423,7 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/repository.WishListDTO'
+              $ref: '#/definitions/dto.WishListDTO'
             type: array
         "400":
           description: Bad Request

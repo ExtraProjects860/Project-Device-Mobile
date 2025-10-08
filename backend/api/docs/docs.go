@@ -268,7 +268,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/repository.ProductDTO"
+                                "$ref": "#/definitions/dto.ProductDTO"
                             }
                         }
                     },
@@ -310,16 +310,31 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/dto.UserDTO"
                             }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/handler.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/handler.ErrResponse"
                         }
                     }
                 }
             },
             "post": {
                 "description": "Creates a new user",
+                "consumes": [
+                    "application/json"
+                ],
                 "produces": [
                     "application/json"
                 ],
@@ -327,14 +342,34 @@ const docTemplate = `{
                     "users"
                 ],
                 "summary": "Create User",
-                "responses": {
-                    "200": {
-                        "description": "OK",
+                "parameters": [
+                    {
+                        "description": "User info",
+                        "name": "user",
+                        "in": "body",
+                        "required": true,
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/dto.UserCreateRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/dto.UserDTO"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/handler.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/handler.ErrResponse"
                         }
                     }
                 }
@@ -402,7 +437,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/repository.UserDTO"
+                                "$ref": "#/definitions/dto.UserDTO"
                             }
                         }
                     },
@@ -460,7 +495,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/repository.WishListDTO"
+                                "$ref": "#/definitions/dto.WishListDTO"
                             }
                         }
                     },
@@ -619,26 +654,7 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "handler.ErrResponse": {
-            "type": "object",
-            "properties": {
-                "error": {
-                    "type": "string"
-                }
-            }
-        },
-        "handler.LoginRequest": {
-            "type": "object",
-            "properties": {
-                "email": {
-                    "type": "string"
-                },
-                "password": {
-                    "type": "string"
-                }
-            }
-        },
-        "repository.ProductDTO": {
+        "dto.ProductDTO": {
             "type": "object",
             "properties": {
                 "created_at": {
@@ -676,7 +692,45 @@ const docTemplate = `{
                 }
             }
         },
-        "repository.UserDTO": {
+        "dto.UserCreateRequest": {
+            "type": "object",
+            "required": [
+                "cpf",
+                "email",
+                "name",
+                "password",
+                "register_number",
+                "role_id"
+            ],
+            "properties": {
+                "cpf": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "enterprise_id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string",
+                    "minLength": 6
+                },
+                "photo_url": {
+                    "type": "string"
+                },
+                "register_number": {
+                    "type": "integer"
+                },
+                "role_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.UserDTO": {
             "type": "object",
             "properties": {
                 "cpf": {
@@ -711,7 +765,7 @@ const docTemplate = `{
                 }
             }
         },
-        "repository.WishListDTO": {
+        "dto.WishListDTO": {
             "type": "object",
             "properties": {
                 "id": {
@@ -723,8 +777,27 @@ const docTemplate = `{
                 "products": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/repository.ProductDTO"
+                        "$ref": "#/definitions/dto.ProductDTO"
                     }
+                }
+            }
+        },
+        "handler.ErrResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string"
+                }
+            }
+        },
+        "handler.LoginRequest": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
                 }
             }
         }

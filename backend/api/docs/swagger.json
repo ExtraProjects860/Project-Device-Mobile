@@ -262,7 +262,7 @@
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/repository.ProductDTO"
+                                "$ref": "#/definitions/dto.ProductDTO"
                             }
                         }
                     },
@@ -304,16 +304,31 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/dto.UserDTO"
                             }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/handler.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/handler.ErrResponse"
                         }
                     }
                 }
             },
             "post": {
                 "description": "Creates a new user",
+                "consumes": [
+                    "application/json"
+                ],
                 "produces": [
                     "application/json"
                 ],
@@ -321,14 +336,34 @@
                     "users"
                 ],
                 "summary": "Create User",
-                "responses": {
-                    "200": {
-                        "description": "OK",
+                "parameters": [
+                    {
+                        "description": "User info",
+                        "name": "user",
+                        "in": "body",
+                        "required": true,
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/dto.UserCreateRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/dto.UserDTO"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/handler.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/handler.ErrResponse"
                         }
                     }
                 }
@@ -396,7 +431,7 @@
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/repository.UserDTO"
+                                "$ref": "#/definitions/dto.UserDTO"
                             }
                         }
                     },
@@ -454,7 +489,7 @@
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/repository.WishListDTO"
+                                "$ref": "#/definitions/dto.WishListDTO"
                             }
                         }
                     },
@@ -613,26 +648,7 @@
         }
     },
     "definitions": {
-        "handler.ErrResponse": {
-            "type": "object",
-            "properties": {
-                "error": {
-                    "type": "string"
-                }
-            }
-        },
-        "handler.LoginRequest": {
-            "type": "object",
-            "properties": {
-                "email": {
-                    "type": "string"
-                },
-                "password": {
-                    "type": "string"
-                }
-            }
-        },
-        "repository.ProductDTO": {
+        "dto.ProductDTO": {
             "type": "object",
             "properties": {
                 "created_at": {
@@ -670,7 +686,45 @@
                 }
             }
         },
-        "repository.UserDTO": {
+        "dto.UserCreateRequest": {
+            "type": "object",
+            "required": [
+                "cpf",
+                "email",
+                "name",
+                "password",
+                "register_number",
+                "role_id"
+            ],
+            "properties": {
+                "cpf": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "enterprise_id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string",
+                    "minLength": 6
+                },
+                "photo_url": {
+                    "type": "string"
+                },
+                "register_number": {
+                    "type": "integer"
+                },
+                "role_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.UserDTO": {
             "type": "object",
             "properties": {
                 "cpf": {
@@ -705,7 +759,7 @@
                 }
             }
         },
-        "repository.WishListDTO": {
+        "dto.WishListDTO": {
             "type": "object",
             "properties": {
                 "id": {
@@ -717,8 +771,27 @@
                 "products": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/repository.ProductDTO"
+                        "$ref": "#/definitions/dto.ProductDTO"
                     }
+                }
+            }
+        },
+        "handler.ErrResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string"
+                }
+            }
+        },
+        "handler.LoginRequest": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
                 }
             }
         }
