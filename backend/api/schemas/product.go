@@ -1,10 +1,6 @@
 package schemas
 
 import (
-	"context"
-	"strings"
-
-	"github.com/go-playground/validator/v10"
 	"gorm.io/gorm"
 )
 
@@ -20,18 +16,4 @@ type Product struct {
 	IsAvaible          bool `gorm:"default:true;not null"`
 
 	WishListEntries []WishList `gorm:"foreignKey:ProductID"`
-}
-
-func (s *Product) Validate(ctx context.Context, validate *validator.Validate) error {
-	return validate.StructCtx(ctx, s)
-}
-
-func (s *Product) Format() {
-	s.Name = strings.ToUpper(strings.TrimSpace(s.Name))
-	s.Description = strings.TrimSpace(s.Description)
-
-	if s.PhotoUrl != nil {
-		photo := strings.TrimSpace(*s.PhotoUrl)
-		s.PhotoUrl = &photo
-	}
 }
