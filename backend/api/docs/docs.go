@@ -35,7 +35,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/handler.LoginRequest"
+                            "$ref": "#/definitions/request.LoginRequest"
                         }
                     }
                 ],
@@ -52,10 +52,7 @@ const docTemplate = `{
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/response.ErrResponse"
                         }
                     }
                 }
@@ -186,6 +183,9 @@ const docTemplate = `{
         "/api/v1/product": {
             "post": {
                 "description": "Creates a new product",
+                "consumes": [
+                    "application/json"
+                ],
                 "produces": [
                     "application/json"
                 ],
@@ -193,20 +193,43 @@ const docTemplate = `{
                     "products"
                 ],
                 "summary": "Create Product",
-                "responses": {
-                    "200": {
-                        "description": "OK",
+                "parameters": [
+                    {
+                        "description": "Product info",
+                        "name": "product",
+                        "in": "body",
+                        "required": true,
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/request.ProductRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ProductDTO"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrResponse"
                         }
                     }
                 }
             },
             "patch": {
                 "description": "Updates an existing product",
+                "consumes": [
+                    "application/json"
+                ],
                 "produces": [
                     "application/json"
                 ],
@@ -221,16 +244,34 @@ const docTemplate = `{
                         "name": "id",
                         "in": "query",
                         "required": true
+                    },
+                    {
+                        "description": "Product info to update",
+                        "name": "product",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request.ProductRequest"
+                        }
                     }
                 ],
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/dto.ProductDTO"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrResponse"
                         }
                     }
                 }
@@ -275,13 +316,13 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/handler.ErrResponse"
+                            "$ref": "#/definitions/response.ErrResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/handler.ErrResponse"
+                            "$ref": "#/definitions/response.ErrResponse"
                         }
                     }
                 }
@@ -310,22 +351,19 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/dto.UserDTO"
-                            }
+                            "$ref": "#/definitions/dto.UserDTO"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/handler.ErrResponse"
+                            "$ref": "#/definitions/response.ErrResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/handler.ErrResponse"
+                            "$ref": "#/definitions/response.ErrResponse"
                         }
                     }
                 }
@@ -349,7 +387,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/dto.UserCreateRequest"
+                            "$ref": "#/definitions/request.UserRequest"
                         }
                     }
                 ],
@@ -363,19 +401,22 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/handler.ErrResponse"
+                            "$ref": "#/definitions/response.ErrResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/handler.ErrResponse"
+                            "$ref": "#/definitions/response.ErrResponse"
                         }
                     }
                 }
             },
             "patch": {
                 "description": "Updates an existing user",
+                "consumes": [
+                    "application/json"
+                ],
                 "produces": [
                     "application/json"
                 ],
@@ -390,6 +431,15 @@ const docTemplate = `{
                         "name": "id",
                         "in": "query",
                         "required": true
+                    },
+                    {
+                        "description": "User info to update",
+                        "name": "user",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request.UserRequest"
+                        }
                     }
                 ],
                 "responses": {
@@ -400,6 +450,18 @@ const docTemplate = `{
                             "additionalProperties": {
                                 "type": "string"
                             }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrResponse"
                         }
                     }
                 }
@@ -444,13 +506,13 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/handler.ErrResponse"
+                            "$ref": "#/definitions/response.ErrResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/handler.ErrResponse"
+                            "$ref": "#/definitions/response.ErrResponse"
                         }
                     }
                 }
@@ -502,19 +564,22 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/handler.ErrResponse"
+                            "$ref": "#/definitions/response.ErrResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/handler.ErrResponse"
+                            "$ref": "#/definitions/response.ErrResponse"
                         }
                     }
                 }
             },
             "post": {
                 "description": "Adds a product to the user wish list",
+                "consumes": [
+                    "application/json"
+                ],
                 "produces": [
                     "application/json"
                 ],
@@ -522,32 +587,59 @@ const docTemplate = `{
                     "wishlist"
                 ],
                 "summary": "Add Product to Wish List",
-                "responses": {
-                    "200": {
-                        "description": "OK",
+                "parameters": [
+                    {
+                        "description": "WishList info",
+                        "name": "wishlist",
+                        "in": "body",
+                        "required": true,
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/request.WishListRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/dto.WishListDTO"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrResponse"
                         }
                     }
                 }
             },
-            "patch": {
-                "description": "Update a product from the user wish list",
+            "delete": {
+                "description": "Delete a product from the user wish list",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
                     "wishlist"
                 ],
-                "summary": "Update Product from Wish List",
+                "summary": "Delete Product from Wish List",
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "WishList ID",
-                        "name": "id",
+                        "description": "User ID",
+                        "name": "user_id",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Product ID",
+                        "name": "product_id",
                         "in": "query",
                         "required": true
                     }
@@ -560,6 +652,18 @@ const docTemplate = `{
                             "additionalProperties": {
                                 "type": "string"
                             }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrResponse"
                         }
                     }
                 }
@@ -692,44 +796,6 @@ const docTemplate = `{
                 }
             }
         },
-        "dto.UserCreateRequest": {
-            "type": "object",
-            "required": [
-                "cpf",
-                "email",
-                "name",
-                "password",
-                "register_number",
-                "role_id"
-            ],
-            "properties": {
-                "cpf": {
-                    "type": "string"
-                },
-                "email": {
-                    "type": "string"
-                },
-                "enterprise_id": {
-                    "type": "integer"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "password": {
-                    "type": "string",
-                    "minLength": 6
-                },
-                "photo_url": {
-                    "type": "string"
-                },
-                "register_number": {
-                    "type": "integer"
-                },
-                "role_id": {
-                    "type": "integer"
-                }
-            }
-        },
         "dto.UserDTO": {
             "type": "object",
             "properties": {
@@ -782,21 +848,109 @@ const docTemplate = `{
                 }
             }
         },
-        "handler.ErrResponse": {
-            "type": "object",
-            "properties": {
-                "error": {
-                    "type": "string"
-                }
-            }
-        },
-        "handler.LoginRequest": {
+        "request.LoginRequest": {
             "type": "object",
             "properties": {
                 "email": {
                     "type": "string"
                 },
                 "password": {
+                    "type": "string"
+                }
+            }
+        },
+        "request.ProductRequest": {
+            "type": "object",
+            "required": [
+                "description",
+                "name",
+                "quantity",
+                "value"
+            ],
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "discount": {
+                    "type": "number"
+                },
+                "is_avaible": {
+                    "type": "boolean"
+                },
+                "is_promotion_avaible": {
+                    "type": "boolean"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "photo_url": {
+                    "type": "string"
+                },
+                "quantity": {
+                    "type": "integer"
+                },
+                "value": {
+                    "type": "number"
+                }
+            }
+        },
+        "request.UserRequest": {
+            "type": "object",
+            "required": [
+                "cpf",
+                "email",
+                "name",
+                "password",
+                "register_number",
+                "role_id"
+            ],
+            "properties": {
+                "cpf": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "enterprise_id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string",
+                    "minLength": 6
+                },
+                "photo_url": {
+                    "type": "string"
+                },
+                "register_number": {
+                    "type": "integer"
+                },
+                "role_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "request.WishListRequest": {
+            "type": "object",
+            "required": [
+                "product_id",
+                "user_id"
+            ],
+            "properties": {
+                "product_id": {
+                    "type": "integer"
+                },
+                "user_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "response.ErrResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
                     "type": "string"
                 }
             }

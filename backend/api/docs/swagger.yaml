@@ -25,33 +25,6 @@ definitions:
       value:
         type: number
     type: object
-  dto.UserCreateRequest:
-    properties:
-      cpf:
-        type: string
-      email:
-        type: string
-      enterprise_id:
-        type: integer
-      name:
-        type: string
-      password:
-        minLength: 6
-        type: string
-      photo_url:
-        type: string
-      register_number:
-        type: integer
-      role_id:
-        type: integer
-    required:
-    - cpf
-    - email
-    - name
-    - password
-    - register_number
-    - role_id
-    type: object
   dto.UserDTO:
     properties:
       cpf:
@@ -86,16 +59,77 @@ definitions:
           $ref: '#/definitions/dto.ProductDTO'
         type: array
     type: object
-  handler.ErrResponse:
-    properties:
-      error:
-        type: string
-    type: object
-  handler.LoginRequest:
+  request.LoginRequest:
     properties:
       email:
         type: string
       password:
+        type: string
+    type: object
+  request.ProductRequest:
+    properties:
+      description:
+        type: string
+      discount:
+        type: number
+      is_avaible:
+        type: boolean
+      is_promotion_avaible:
+        type: boolean
+      name:
+        type: string
+      photo_url:
+        type: string
+      quantity:
+        type: integer
+      value:
+        type: number
+    required:
+    - description
+    - name
+    - quantity
+    - value
+    type: object
+  request.UserRequest:
+    properties:
+      cpf:
+        type: string
+      email:
+        type: string
+      enterprise_id:
+        type: integer
+      name:
+        type: string
+      password:
+        minLength: 6
+        type: string
+      photo_url:
+        type: string
+      register_number:
+        type: integer
+      role_id:
+        type: integer
+    required:
+    - cpf
+    - email
+    - name
+    - password
+    - register_number
+    - role_id
+    type: object
+  request.WishListRequest:
+    properties:
+      product_id:
+        type: integer
+      user_id:
+        type: integer
+    required:
+    - product_id
+    - user_id
+    type: object
+  response.ErrResponse:
+    properties:
+      error:
         type: string
     type: object
 host: localhost:5050
@@ -117,7 +151,7 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/handler.LoginRequest'
+          $ref: '#/definitions/request.LoginRequest'
       produces:
       - application/json
       responses:
@@ -130,9 +164,7 @@ paths:
         "401":
           description: Unauthorized
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/response.ErrResponse'
       summary: User Login
       tags:
       - auth
@@ -218,6 +250,8 @@ paths:
       - auth
   /api/v1/product:
     patch:
+      consumes:
+      - application/json
       description: Updates an existing product
       parameters:
       - description: Product ID
@@ -225,29 +259,56 @@ paths:
         name: id
         required: true
         type: string
+      - description: Product info to update
+        in: body
+        name: product
+        required: true
+        schema:
+          $ref: '#/definitions/request.ProductRequest'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/dto.ProductDTO'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrResponse'
       summary: Update Product
       tags:
       - products
     post:
+      consumes:
+      - application/json
       description: Creates a new product
+      parameters:
+      - description: Product info
+        in: body
+        name: product
+        required: true
+        schema:
+          $ref: '#/definitions/request.ProductRequest'
       produces:
       - application/json
       responses:
-        "200":
-          description: OK
+        "201":
+          description: Created
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/dto.ProductDTO'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrResponse'
       summary: Create Product
       tags:
       - products
@@ -277,11 +338,11 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/handler.ErrResponse'
+            $ref: '#/definitions/response.ErrResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/handler.ErrResponse'
+            $ref: '#/definitions/response.ErrResponse'
       summary: Get Products
       tags:
       - products
@@ -300,21 +361,21 @@ paths:
         "200":
           description: OK
           schema:
-            items:
-              $ref: '#/definitions/dto.UserDTO'
-            type: array
+            $ref: '#/definitions/dto.UserDTO'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/handler.ErrResponse'
+            $ref: '#/definitions/response.ErrResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/handler.ErrResponse'
+            $ref: '#/definitions/response.ErrResponse'
       summary: Get User Info
       tags:
       - users
     patch:
+      consumes:
+      - application/json
       description: Updates an existing user
       parameters:
       - description: User ID
@@ -322,6 +383,12 @@ paths:
         name: id
         required: true
         type: string
+      - description: User info to update
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/request.UserRequest'
       produces:
       - application/json
       responses:
@@ -331,6 +398,14 @@ paths:
             additionalProperties:
               type: string
             type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrResponse'
       summary: Update User
       tags:
       - users
@@ -344,7 +419,7 @@ paths:
         name: user
         required: true
         schema:
-          $ref: '#/definitions/dto.UserCreateRequest'
+          $ref: '#/definitions/request.UserRequest'
       produces:
       - application/json
       responses:
@@ -355,11 +430,11 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/handler.ErrResponse'
+            $ref: '#/definitions/response.ErrResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/handler.ErrResponse'
+            $ref: '#/definitions/response.ErrResponse'
       summary: Create User
       tags:
       - users
@@ -389,15 +464,48 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/handler.ErrResponse'
+            $ref: '#/definitions/response.ErrResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/handler.ErrResponse'
+            $ref: '#/definitions/response.ErrResponse'
       summary: Get Users
       tags:
       - users
   /api/v1/wishlist:
+    delete:
+      description: Delete a product from the user wish list
+      parameters:
+      - description: User ID
+        in: query
+        name: user_id
+        required: true
+        type: string
+      - description: Product ID
+        in: query
+        name: product_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrResponse'
+      summary: Delete Product from Wish List
+      tags:
+      - wishlist
     get:
       description: Returns all products in the user wish list
       parameters:
@@ -428,45 +536,40 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/handler.ErrResponse'
+            $ref: '#/definitions/response.ErrResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/handler.ErrResponse'
+            $ref: '#/definitions/response.ErrResponse'
       summary: Get Wish List Items
       tags:
       - wishlist
-    patch:
-      description: Update a product from the user wish list
-      parameters:
-      - description: WishList ID
-        in: query
-        name: id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            additionalProperties:
-              type: string
-            type: object
-      summary: Update Product from Wish List
-      tags:
-      - wishlist
     post:
+      consumes:
+      - application/json
       description: Adds a product to the user wish list
+      parameters:
+      - description: WishList info
+        in: body
+        name: wishlist
+        required: true
+        schema:
+          $ref: '#/definitions/request.WishListRequest'
       produces:
       - application/json
       responses:
-        "200":
-          description: OK
+        "201":
+          description: Created
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/dto.WishListDTO'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrResponse'
       summary: Add Product to Wish List
       tags:
       - wishlist
