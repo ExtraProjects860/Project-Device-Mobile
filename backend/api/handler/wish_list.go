@@ -5,6 +5,8 @@ import (
 	"net/http"
 
 	"github.com/ExtraProjects860/Project-Device-Mobile/config"
+	"github.com/ExtraProjects860/Project-Device-Mobile/handler/request"
+	"github.com/ExtraProjects860/Project-Device-Mobile/handler/response"
 	"github.com/ExtraProjects860/Project-Device-Mobile/repository"
 	"github.com/ExtraProjects860/Project-Device-Mobile/service"
 	"github.com/gin-gonic/gin"
@@ -17,7 +19,7 @@ import (
 // @Success      200 {object} map[string]string
 // @Router       /api/v1/wishlist [post]
 func AddInWishListHandler(ctx *gin.Context) {
-	sendSuccess(ctx, http.StatusCreated, "Add Product in Wish List!")
+	response.SendSuccess(ctx, http.StatusCreated, "Add Product in Wish List!")
 }
 
 // @Summary      Update Product from Wish List
@@ -28,7 +30,7 @@ func AddInWishListHandler(ctx *gin.Context) {
 // @Success      200 {object} map[string]string
 // @Router       /api/v1/wishlist [patch]
 func UpdateWishListHandler(ctx *gin.Context) {
-	sendSuccess(ctx, http.StatusOK, "Delete Product in Wish List!")
+	response.SendSuccess(ctx, http.StatusOK, "Delete Product in Wish List!")
 }
 
 // @Summary      Get Wish List Items
@@ -38,35 +40,35 @@ func UpdateWishListHandler(ctx *gin.Context) {
 // @Param 		 id query string true "User ID"
 // @Param        itemsPerPage query string true "Pagination Items"
 // @Param        currentPage query string true "Pagination Current Page"
-// @Success      200 {array}  repository.WishListDTO
+// @Success      200 {array}  dto.WishListDTO
 // @Failure      400 {object} ErrResponse
 // @Failure      500 {object} ErrResponse
 // @Router       /api/v1/wishlist [get]
 func GetWishListByUserIDHandler(ctx *gin.Context) {
-	userId, err := getIdQuery(ctx)
+	userId, err := request.GetIdQuery(ctx)
 	if err != nil {
 		logger.Error(err.Error())
-		sendErr(ctx, http.StatusBadRequest, err)
+		response.SendErr(ctx, http.StatusBadRequest, err)
 		return
 	}
 
-	itemsPerPage, currentPage, err := getPaginationData(ctx)
+	itemsPerPage, currentPage, err := request.GetPaginationData(ctx)
 	if err != nil {
 		logger.Error(err.Error())
-		sendErr(ctx, http.StatusBadRequest, err)
+		response.SendErr(ctx, http.StatusBadRequest, err)
 		return
 	}
 
 	wishlistService := service.NewWishListService(
-		repository.NewPostgresWishListRepository(config.GetDB()),
+		*repository.NewPostgresWishListRepository(config.GetDB()),
 	)
 
 	wishlistEntries, err := wishlistService.GetAll(ctx, userId, itemsPerPage, currentPage)
 	if err != nil {
 		logger.Error(err.Error())
-		sendErr(ctx, http.StatusInternalServerError, errors.New("error to get wishlist in database"))
+		response.SendErr(ctx, http.StatusInternalServerError, errors.New("error to get wishlist in database"))
 		return
 	}
 
-	sendSuccess(ctx, http.StatusOK, wishlistEntries)
+	response.SendSuccess(ctx, http.StatusOK, wishlistEntries)
 }

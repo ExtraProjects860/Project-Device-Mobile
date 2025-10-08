@@ -5,6 +5,8 @@ import (
 	"net/http"
 
 	"github.com/ExtraProjects860/Project-Device-Mobile/config"
+	"github.com/ExtraProjects860/Project-Device-Mobile/handler/request"
+	"github.com/ExtraProjects860/Project-Device-Mobile/handler/response"
 	"github.com/ExtraProjects860/Project-Device-Mobile/repository"
 	"github.com/ExtraProjects860/Project-Device-Mobile/service"
 	"github.com/gin-gonic/gin"
@@ -17,7 +19,7 @@ import (
 // @Success      200 {object} map[string]string
 // @Router       /api/v1/product [post]
 func CreateProductHandler(ctx *gin.Context) {
-	sendSuccess(ctx, http.StatusCreated, gin.H{"message": "Add Promotion Product!"})
+	response.SendSuccess(ctx, http.StatusCreated, gin.H{"message": "Add Promotion Product!"})
 }
 
 // @Summary      Update Product
@@ -28,7 +30,7 @@ func CreateProductHandler(ctx *gin.Context) {
 // @Success      200 {object} map[string]string
 // @Router       /api/v1/product [patch]
 func UpdateProductHandler(ctx *gin.Context) {
-	sendSuccess(ctx, http.StatusOK, gin.H{"message": "Update Promotion Product!"})
+	response.SendSuccess(ctx, http.StatusOK, gin.H{"message": "Update Promotion Product!"})
 }
 
 // @Summary      Get Products
@@ -37,28 +39,28 @@ func UpdateProductHandler(ctx *gin.Context) {
 // @Produce      json
 // @Param        itemsPerPage query string true "Pagination Items"
 // @Param        currentPage query string true "Pagination Current Page"
-// @Success      200 {array}  repository.ProductDTO
+// @Success      200 {array}  dto.ProductDTO
 // @Failure      400 {object} ErrResponse
 // @Failure      500 {object} ErrResponse
 // @Router       /api/v1/products [get]
 func GetProductsHandler(ctx *gin.Context) {
-	itemsPerPage, currentPage, err := getPaginationData(ctx)
+	itemsPerPage, currentPage, err := request.GetPaginationData(ctx)
 	if err != nil {
 		logger.Error(err.Error())
-		sendErr(ctx, http.StatusBadRequest, err)
+		response.SendErr(ctx, http.StatusBadRequest, err)
 		return
 	}
 
 	productService := service.NewProductService(
-		repository.NewPostgresProductRepository(config.GetDB()),
+		*repository.NewPostgresProductRepository(config.GetDB()),
 	)
 
 	products, err := productService.GetAll(ctx, itemsPerPage, currentPage)
 	if err != nil {
 		logger.Error(err.Error())
-		sendErr(ctx, http.StatusInternalServerError, errors.New("error to get products in database"))
+		response.SendErr(ctx, http.StatusInternalServerError, errors.New("error to get products in database"))
 		return
 	}
 
-	sendSuccess(ctx, http.StatusOK, products)
+	response.SendSuccess(ctx, http.StatusOK, products)
 }
