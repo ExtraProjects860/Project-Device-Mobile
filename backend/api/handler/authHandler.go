@@ -37,9 +37,9 @@ func ResetPasswordHandler(ctx *gin.Context) {
 // @Tags         auth
 // @Accept       json
 // @Produce      json
-// @Param request body LoginRequest true "Request body"
+// @Param request body request.LoginRequest true "Request body"
 // @Success      200 {object} map[string]string
-// @Failure      401 {object} map[string]string
+// @Failure      401 {object} response.ErrResponse
 // @Router       /api/v1/auth/login [post]
 func LoginHandler(ctx *gin.Context) {
 	var loginRequest request.LoginRequest
