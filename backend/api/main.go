@@ -2,7 +2,7 @@ package main
 
 import (
 	"github.com/ExtraProjects860/Project-Device-Mobile/config"
-	"github.com/ExtraProjects860/Project-Device-Mobile/router"
+	"github.com/ExtraProjects860/Project-Device-Mobile/routes"
 )
 
 // @title Project Device Mobile API
@@ -25,5 +25,5 @@ func main() {
 		panic(err)
 	}
 
-	router.InitializeRouter()
+	routes.InitializeRouter()
 }

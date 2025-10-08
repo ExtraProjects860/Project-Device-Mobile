@@ -1,10 +1,9 @@
-package router
+package routes
 
 import (
 	"fmt"
 
 	"github.com/ExtraProjects860/Project-Device-Mobile/config"
-	"github.com/ExtraProjects860/Project-Device-Mobile/routes"
 	"github.com/gin-gonic/gin"
 )
 
@@ -18,9 +17,9 @@ func InitializeRouter() {
 
 	configureNetwork(router)
 
-	routes.InitHealthCheckRoutes(router)
-	routes.InitRoutesApiV1(router)
-	routes.InitSwaggerRoute(router)
+	InitHealthCheckRoutes(router)
+	InitRoutesApiV1(router)
+	InitSwaggerRoute(router)
 
 	port := config.GetEnv().API.Port
 	router.Run(fmt.Sprintf(":%v", port))
