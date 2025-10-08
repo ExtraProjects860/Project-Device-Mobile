@@ -15,8 +15,12 @@ import (
 // @Summary      Create Product
 // @Description  Creates a new product
 // @Tags         products
+// @Accept       json
 // @Produce      json
-// @Success      200 {object} map[string]string
+// @Param        product body request.ProductRequest true "Product info"
+// @Success      201 {object} dto.ProductDTO
+// @Failure      400 {object} response.ErrResponse
+// @Failure      500 {object} response.ErrResponse
 // @Router       /api/v1/product [post]
 func CreateProductHandler(ctx *gin.Context) {
 	response.SendSuccess(ctx, http.StatusCreated, gin.H{"message": "Add Promotion Product!"})
@@ -25,9 +29,13 @@ func CreateProductHandler(ctx *gin.Context) {
 // @Summary      Update Product
 // @Description  Updates an existing product
 // @Tags         products
-// @Param 		 id query string true "Product ID"
+// @Accept       json
 // @Produce      json
-// @Success      200 {object} map[string]string
+// @Param 		 id query string true "Product ID"
+// @Param        product body request.ProductRequest true "Product info to update"
+// @Success      200 {object} dto.ProductDTO
+// @Failure      400 {object} response.ErrResponse
+// @Failure      500 {object} response.ErrResponse
 // @Router       /api/v1/product [patch]
 func UpdateProductHandler(ctx *gin.Context) {
 	response.SendSuccess(ctx, http.StatusOK, gin.H{"message": "Update Promotion Product!"})
@@ -40,8 +48,8 @@ func UpdateProductHandler(ctx *gin.Context) {
 // @Param        itemsPerPage query string true "Pagination Items"
 // @Param        currentPage query string true "Pagination Current Page"
 // @Success      200 {array}  dto.ProductDTO
-// @Failure      400 {object} ErrResponse
-// @Failure      500 {object} ErrResponse
+// @Failure      400 {object} response.ErrResponse
+// @Failure      500 {object} response.ErrResponse
 // @Router       /api/v1/products [get]
 func GetProductsHandler(ctx *gin.Context) {
 	itemsPerPage, currentPage, err := request.GetPaginationData(ctx)
