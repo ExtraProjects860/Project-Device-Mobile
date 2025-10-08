@@ -11,6 +11,6 @@ func registerWishListRoutes(rg *gin.RouterGroup) {
 
 		rg.POST("/wishlist", handler.AddInWishListHandler)
 
-		rg.PATCH("/wishlist", handler.UpdateWishListHandler)
+		rg.DELETE("/wishlist", handler.DeleteInWishListHandler)
 	}
 }
