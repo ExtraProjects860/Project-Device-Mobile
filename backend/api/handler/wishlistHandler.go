@@ -15,21 +15,28 @@ import (
 // @Summary      Add Product to Wish List
 // @Description  Adds a product to the user wish list
 // @Tags         wishlist
+// @Accept       json
 // @Produce      json
-// @Success      200 {object} map[string]string
+// @Param        wishlist body request.WishListRequest true "WishList info"
+// @Success      201 {object} dto.WishListDTO
+// @Failure      400 {object} response.ErrResponse
+// @Failure      500 {object} response.ErrResponse
 // @Router       /api/v1/wishlist [post]
 func AddInWishListHandler(ctx *gin.Context) {
 	response.SendSuccess(ctx, http.StatusCreated, "Add Product in Wish List!")
 }
 
-// @Summary      Update Product from Wish List
-// @Description  Update a product from the user wish list
+// @Summary      Delete Product from Wish List
+// @Description  Delete a product from the user wish list
 // @Tags         wishlist
-// @Param 		 id query string true "WishList ID"
 // @Produce      json
+// @Param 		 user_id query string true "User ID"
+// @Param 		 product_id query string true "Product ID"
 // @Success      200 {object} map[string]string
-// @Router       /api/v1/wishlist [patch]
-func UpdateWishListHandler(ctx *gin.Context) {
+// @Failure      400 {object} response.ErrResponse
+// @Failure      500 {object} response.ErrResponse
+// @Router       /api/v1/wishlist [delete]
+func DeleteInWishListHandler(ctx *gin.Context) {
 	response.SendSuccess(ctx, http.StatusOK, "Delete Product in Wish List!")
 }
 
@@ -41,8 +48,8 @@ func UpdateWishListHandler(ctx *gin.Context) {
 // @Param        itemsPerPage query string true "Pagination Items"
 // @Param        currentPage query string true "Pagination Current Page"
 // @Success      200 {array}  dto.WishListDTO
-// @Failure      400 {object} ErrResponse
-// @Failure      500 {object} ErrResponse
+// @Failure      400 {object} response.ErrResponse
+// @Failure      500 {object} response.ErrResponse
 // @Router       /api/v1/wishlist [get]
 func GetWishListByUserIDHandler(ctx *gin.Context) {
 	userId, err := request.GetIdQuery(ctx)
