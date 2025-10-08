@@ -7,10 +7,10 @@ import (
 )
 
 type WishListService struct {
-	repo repository.WishListRepository
+	repo repository.PostgresWishListRepository
 }
 
-func NewWishListService(repo repository.WishListRepository) WishListService {
+func NewWishListService(repo repository.PostgresWishListRepository) WishListService {
 	return WishListService{repo: repo}
 }
 
