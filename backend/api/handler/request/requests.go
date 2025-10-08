@@ -5,13 +5,31 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
+	"github.com/go-playground/validator/v10"
 )
 
+type ValidateModel interface {
+	Format()
+	Validate(v *validator.Validate) error
+	ValidateUpdate(v *validator.Validate) error
+}
 
+func ValidateBodyReq(v ValidateModel, val *validator.Validate) error {
+	err := v.Validate(val)
+	v.Format()
+	return err
+}
+
+func ValidateUpdateBodyReq(v ValidateModel, val *validator.Validate) error {
+	err := v.ValidateUpdate(val)
+	v.Format()
+	return err
+}
 
 func ErrParamIsRequired(name string, typ string) error {
 	return fmt.Errorf("param: %s (type: %s) is required", name, typ)
 }
+
 func GetIdQuery(ctx *gin.Context) (uint, error) {
 	id := ctx.Query("id")
 	if id == "" {
