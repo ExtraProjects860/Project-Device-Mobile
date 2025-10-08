@@ -6,7 +6,7 @@ import (
 	"github.com/ExtraProjects860/Project-Device-Mobile/schemas"
 )
 
-func (r *postgresWishListRepository) GetWishListByUserID(ctx context.Context, userID uint, itemsPerPage uint, currentPage uint) ([]schemas.WishList, uint, uint, error) {
+func (r *PostgresWishListRepository) GetWishListByUserID(ctx context.Context, userID uint, itemsPerPage uint, currentPage uint) ([]schemas.WishList, uint, uint, error) {
 	query := r.db.WithContext(ctx).Where("user_id = ?", userID).Model(&schemas.WishList{}).Preload("Product")
 
 	wishListEntries, totalPages, totalItems, err := getByPagination[schemas.WishList](query, itemsPerPage, currentPage)

@@ -4,50 +4,50 @@ import (
 	"gorm.io/gorm"
 )
 
-type postgresUserRepository struct {
+type PostgresUserRepository struct {
 	db *gorm.DB
 }
 
-func NewPostgresUserRepository(db *gorm.DB) UserRepository {
-	return &postgresUserRepository{db: db}
+func NewPostgresUserRepository(db *gorm.DB) *PostgresUserRepository{
+	return &PostgresUserRepository{db: db}
 }
 
-type postgresProductRepository struct {
+type PostgresProductRepository struct {
 	db *gorm.DB
 }
 
-func NewPostgresProductRepository(db *gorm.DB) ProductRepository {
-	return &postgresProductRepository{db: db}
+func NewPostgresProductRepository(db *gorm.DB) *PostgresProductRepository {
+	return &PostgresProductRepository{db: db}
 }
 
-type postgresWishListRepository struct {
+type PostgresWishListRepository struct {
 	db *gorm.DB
 }
 
-func NewPostgresWishListRepository(db *gorm.DB) WishListRepository {
-	return &postgresWishListRepository{db: db}
+func NewPostgresWishListRepository(db *gorm.DB) *PostgresWishListRepository {
+	return &PostgresWishListRepository{db: db}
 }
 
-type postgresEnterpriseRepository struct {
+type PostgresEnterpriseRepository struct {
 	db *gorm.DB
 }
 
-func NewPostgresEnterpriseRepository(db *gorm.DB) EnterpriseRepository {
-	return &postgresEnterpriseRepository{db: db}
+func NewPostgresEnterpriseRepository(db *gorm.DB) *PostgresEnterpriseRepository {
+	return &PostgresEnterpriseRepository{db: db}
 }
 
-type postgresRoleRepository struct {
+type PostgresRoleRepository struct {
 	db *gorm.DB
 }
 
-func NewPostgresRoleRepository(db *gorm.DB) RoleRepository {
-	return &postgresRoleRepository{db: db}
+func NewPostgresRoleRepository(db *gorm.DB) *PostgresRoleRepository {
+	return &PostgresRoleRepository{db: db}
 }
 
-type postgresTokenPasswordRepository struct {
+type PostgresTokenPasswordRepository struct {
 	db *gorm.DB
 }
 
-func NewPostgresTokenPasswordRepository(db *gorm.DB) TokenPasswordRepository {
-	return &postgresTokenPasswordRepository{db: db}
+func NewPostgresTokenPasswordRepository(db *gorm.DB) *PostgresTokenPasswordRepository {
+	return &PostgresTokenPasswordRepository{db: db}
 }
