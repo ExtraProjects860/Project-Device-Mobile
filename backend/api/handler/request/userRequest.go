@@ -8,13 +8,13 @@ import (
 )
 
 type UserRequest struct {
-	RoleID         uint    `json:"role_id" binding:"required"`
+	RoleID         uint    `json:"role_id" `
 	EnterpriseID   *uint   `json:"enterprise_id"`
-	Name           string  `json:"name" binding:"required"`
-	Email          string  `json:"email" binding:"required,email"`
-	Password       string  `json:"password" binding:"required,min=6"`
-	Cpf            string  `json:"cpf" binding:"required"`
-	RegisterNumber uint    `json:"register_number" binding:"required"`
+	Name           string  `json:"name" `
+	Email          string  `json:"email" `
+	Password       string  `json:"password" `
+	Cpf            string  `json:"cpf" `
+	RegisterNumber uint    `json:"register_number" `
 	PhotoUrl       *string `json:"photo_url"`
 }
 
@@ -48,69 +48,43 @@ func (s *UserRequest) Validate(validate *validator.Validate) error {
 	return nil
 }
 
-func (s *UserRequest) ValidateUpdate(validate *validator.Validate) error {
-	if s.Name != "" {
-		if err := validate.Var(s.Name, "min=3"); err != nil {
-			return fmt.Errorf("name: %v", err)
-		}
-	}
+func (s *UserRequest) ValidateUpdate() error {
+	hasAtLeastOne := s.Name != "" ||
+		s.Email != "" ||
+		s.Password != "" ||
+		s.Cpf != "" ||
+		s.RegisterNumber != 0 ||
+		s.RoleID != 0 ||
+		s.EnterpriseID != nil ||
+		s.PhotoUrl != nil
 
-	if s.Email != "" {
-		if err := validate.Var(s.Email, "email"); err != nil {
-			return fmt.Errorf("email: %v", err)
-		}
+	if !hasAtLeastOne {
+		return fmt.Errorf("at least one valid field must be provided")
 	}
-
-	if s.Password != "" {
-		if err := validate.Var(s.Password, "min=6"); err != nil {
-			return fmt.Errorf("password: %v", err)
-		}
-	}
-
-	if s.Cpf != "" {
-		if err := validate.Var(s.Cpf, "len=11,numeric,cpf"); err != nil {
-			return fmt.Errorf("cpf: %v", err)
-		}
-	}
-
-	if s.RegisterNumber != 0 {
-		if err := validate.Var(s.RegisterNumber, "gt=0"); err != nil {
-			return fmt.Errorf("register_number: %v", err)
-		}
-	}
-
-	if s.RoleID != 0 {
-		if err := validate.Var(s.RoleID, "gt=0"); err != nil {
-			return fmt.Errorf("role_id: %v", err)
-		}
-	}
-
-	if s.EnterpriseID != nil && *s.EnterpriseID != 0 {
-		if err := validate.Var(*s.EnterpriseID, "gt=0"); err != nil {
-			return fmt.Errorf("enterprise_id: %v", err)
-		}
-	}
-
 	return nil
 }
 
 func (s *UserRequest) Format() {
 	if s.Name != "" {
-		s.Name = strings.ToUpper(strings.TrimSpace(s.Name))
+		name := strings.ToUpper(strings.TrimSpace(s.Name))
+		s.Name = name
 	}
 
 	if s.Email != "" {
-		s.Email = strings.ToLower(strings.TrimSpace(s.Email))
+		email := strings.ToLower(strings.TrimSpace(s.Email))
+		s.Email = email
 	}
 
 	if s.Cpf != "" {
-		s.Cpf = strings.ReplaceAll(s.Cpf, ".", "")
-		s.Cpf = strings.ReplaceAll(s.Cpf, "-", "")
-		s.Cpf = strings.TrimSpace(s.Cpf)
+		cpf := strings.ReplaceAll(s.Cpf, ".", "")
+		cpf = strings.ReplaceAll(cpf, "-", "")
+		cpf = strings.TrimSpace(cpf)
+		s.Cpf = cpf
 	}
 
 	if s.Password != "" {
-		s.Password = strings.TrimSpace(s.Password)
+		password := strings.TrimSpace(s.Password)
+		s.Password = password
 	}
 
 	if s.PhotoUrl != nil {
