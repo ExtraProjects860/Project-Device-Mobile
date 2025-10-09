@@ -10,8 +10,8 @@ import (
 
 type ValidateModel interface {
 	Format()
-	Validate(v *validator.Validate) error
-	ValidateUpdate(v *validator.Validate) error
+	Validate(val *validator.Validate) error
+	ValidateUpdate() error
 }
 
 func ValidateBodyReq(v ValidateModel, val *validator.Validate) error {
@@ -20,8 +20,8 @@ func ValidateBodyReq(v ValidateModel, val *validator.Validate) error {
 	return err
 }
 
-func ValidateUpdateBodyReq(v ValidateModel, val *validator.Validate) error {
-	err := v.ValidateUpdate(val)
+func ValidateUpdateBodyReq(v ValidateModel) (error) {
+	err := v.ValidateUpdate()
 	v.Format()
 	return err
 }
