@@ -121,11 +121,42 @@ func GetUsersHandler(ctx *gin.Context) {
 // @Accept       json
 // @Produce      json
 // @Param 		 id query string true "User ID"
-// @Param        user body request.UserRequest true "User info to update"
-// @Success      200 {object} map[string]string
+// @Param        user body request.UserRequest false "User info to update"
+// @Success      200 {object} dto.UserDTO
 // @Failure      400 {object} response.ErrResponse
 // @Failure      500 {object} response.ErrResponse
 // @Router       /api/v1/user [patch]
 func UpdateUserHandler(ctx *gin.Context) {
-	response.SendSuccess(ctx, http.StatusOK, gin.H{"message": "Updated User!"})
+	id, err := request.GetIdQuery(ctx)
+	if err != nil {
+		logger.Error(err.Error())
+		response.SendErr(ctx, http.StatusBadRequest, err)
+		return
+	}
+
+	var input request.UserRequest
+	if err := ctx.ShouldBindJSON(&input); err != nil {
+		logger.Error(err.Error())
+		response.SendErr(ctx, http.StatusBadRequest, err)
+		return
+	}
+
+	if err := request.ValidateUpdateBodyReq(&input); err != nil {
+		logger.Error(err.Error())
+		response.SendErr(ctx, http.StatusBadRequest, err)
+		return
+	}
+
+	userService := service.NewUserService(
+		*repository.NewPostgresUserRepository(config.GetDB()),
+	)
+
+	user, err := userService.Update(ctx, id, input)
+	if err != nil {
+		logger.Error(err.Error())
+		response.SendErr(ctx, http.StatusInternalServerError, errors.New("error to update user"))
+		return
+	}
+
+	response.SendSuccess(ctx, http.StatusOK, user)
 }
