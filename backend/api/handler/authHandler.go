@@ -32,6 +32,17 @@ func ResetPasswordHandler(ctx *gin.Context) {
 	response.SendSuccess(ctx, http.StatusOK, "Change Password!")
 }
 
+// @Summary      Reset Password Log In
+// @Description  Resets user password log in system
+// @Tags         auth
+// @Accept       json
+// @Produce      json
+// @Success      200 {object} map[string]string
+// @Router       /api/v1/auth/reset-pass-log-in [post]
+func ResetPasswordLogInHandler(ctx *gin.Context) {
+	response.SendSuccess(ctx, http.StatusOK, "Change Password!")
+}
+
 // @Summary      User Login
 // @Description  Authenticates user and returns access token
 // @Tags         auth
@@ -95,16 +106,4 @@ func RefreshTokenHandler(ctx *gin.Context) {
 	response.SendSuccess(ctx, http.StatusOK, gin.H{
 		"jwt_token": newJWT,
 	})
-}
-
-// @Summary      User Logout
-// @Description  Logs out the user and invalidates token
-// @Tags         auth
-// @Accept       json
-// @Produce      json
-// @Success      200 {object} map[string]string
-// @Failure      401 {object} map[string]string
-// @Router       /api/v1/auth/logout [post]
-func LogoutHandler(ctx *gin.Context) {
-	response.SendSuccess(ctx, http.StatusOK, "Logout!")
 }
