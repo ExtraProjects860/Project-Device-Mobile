@@ -8,10 +8,10 @@ import (
 )
 
 type ProductRequest struct {
-	Name               string   `json:"name" binding:"required"`
-	Description        string   `json:"description" binding:"required"`
-	Value              float64  `json:"value" binding:"required"`
-	Quantity           int      `json:"quantity" binding:"required"`
+	Name               string   `json:"name"`
+	Description        string   `json:"description"`
+	Value              float64  `json:"value"`
+	Quantity           int      `json:"quantity"`
 	IsPromotionAvaible bool     `json:"is_promotion_avaible"`
 	Discount           *float64 `json:"discount"`
 	PhotoUrl           *string  `json:"photo_url"`

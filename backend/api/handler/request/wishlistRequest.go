@@ -7,8 +7,8 @@ import (
 )
 
 type WishListRequest struct {
-	UserID    uint `json:"user_id" binding:"required"`
-	ProductID uint `json:"product_id" binding:"required"`
+	UserID    uint `json:"user_id"`
+	ProductID uint `json:"product_id"`
 }
 
 func (w *WishListRequest) Validate(validate *validator.Validate) error {

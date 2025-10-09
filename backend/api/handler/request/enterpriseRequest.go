@@ -8,7 +8,7 @@ import (
 )
 
 type EnterpriseRequest struct {
-	Name string `json:"name" binding:"required"`
+	Name string `json:"name"`
 }
 
 func (e *EnterpriseRequest) Validate(validate *validator.Validate) error {

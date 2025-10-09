@@ -8,7 +8,7 @@ import (
 )
 
 type RoleRequest struct {
-	Name string `json:"name" binding:"required"`
+	Name string `json:"name"`
 }
 
 func (r *RoleRequest) Validate(validate *validator.Validate) error {
