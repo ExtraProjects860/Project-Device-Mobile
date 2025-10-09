@@ -84,11 +84,6 @@ definitions:
         type: integer
       value:
         type: number
-    required:
-    - description
-    - name
-    - quantity
-    - value
     type: object
   request.UserRequest:
     properties:
@@ -101,7 +96,6 @@ definitions:
       name:
         type: string
       password:
-        minLength: 6
         type: string
       photo_url:
         type: string
@@ -109,13 +103,6 @@ definitions:
         type: integer
       role_id:
         type: integer
-    required:
-    - cpf
-    - email
-    - name
-    - password
-    - register_number
-    - role_id
     type: object
   request.WishListRequest:
     properties:
@@ -123,9 +110,6 @@ definitions:
         type: integer
       user_id:
         type: integer
-    required:
-    - product_id
-    - user_id
     type: object
   response.ErrResponse:
     properties:
@@ -386,7 +370,6 @@ paths:
       - description: User info to update
         in: body
         name: user
-        required: true
         schema:
           $ref: '#/definitions/request.UserRequest'
       produces:
@@ -395,9 +378,7 @@ paths:
         "200":
           description: OK
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/dto.UserDTO'
         "400":
           description: Bad Request
           schema:

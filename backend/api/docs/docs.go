@@ -436,7 +436,6 @@ const docTemplate = `{
                         "description": "User info to update",
                         "name": "user",
                         "in": "body",
-                        "required": true,
                         "schema": {
                             "$ref": "#/definitions/request.UserRequest"
                         }
@@ -446,10 +445,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/dto.UserDTO"
                         }
                     },
                     "400": {
@@ -861,12 +857,6 @@ const docTemplate = `{
         },
         "request.ProductRequest": {
             "type": "object",
-            "required": [
-                "description",
-                "name",
-                "quantity",
-                "value"
-            ],
             "properties": {
                 "description": {
                     "type": "string"
@@ -896,14 +886,6 @@ const docTemplate = `{
         },
         "request.UserRequest": {
             "type": "object",
-            "required": [
-                "cpf",
-                "email",
-                "name",
-                "password",
-                "register_number",
-                "role_id"
-            ],
             "properties": {
                 "cpf": {
                     "type": "string"
@@ -918,8 +900,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "password": {
-                    "type": "string",
-                    "minLength": 6
+                    "type": "string"
                 },
                 "photo_url": {
                     "type": "string"
@@ -934,10 +915,6 @@ const docTemplate = `{
         },
         "request.WishListRequest": {
             "type": "object",
-            "required": [
-                "product_id",
-                "user_id"
-            ],
             "properties": {
                 "product_id": {
                     "type": "integer"

@@ -430,7 +430,6 @@
                         "description": "User info to update",
                         "name": "user",
                         "in": "body",
-                        "required": true,
                         "schema": {
                             "$ref": "#/definitions/request.UserRequest"
                         }
@@ -440,10 +439,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/dto.UserDTO"
                         }
                     },
                     "400": {
@@ -855,12 +851,6 @@
         },
         "request.ProductRequest": {
             "type": "object",
-            "required": [
-                "description",
-                "name",
-                "quantity",
-                "value"
-            ],
             "properties": {
                 "description": {
                     "type": "string"
@@ -890,14 +880,6 @@
         },
         "request.UserRequest": {
             "type": "object",
-            "required": [
-                "cpf",
-                "email",
-                "name",
-                "password",
-                "register_number",
-                "role_id"
-            ],
             "properties": {
                 "cpf": {
                     "type": "string"
@@ -912,8 +894,7 @@
                     "type": "string"
                 },
                 "password": {
-                    "type": "string",
-                    "minLength": 6
+                    "type": "string"
                 },
                 "photo_url": {
                     "type": "string"
@@ -928,10 +909,6 @@
         },
         "request.WishListRequest": {
             "type": "object",
-            "required": [
-                "product_id",
-                "user_id"
-            ],
             "properties": {
                 "product_id": {
                     "type": "integer"
