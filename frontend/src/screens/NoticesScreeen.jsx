@@ -6,9 +6,8 @@ import { NavBar } from "../components/Navbar";
 import PageLoader from "../context/PageLoader.js";
 
 export default function ProductsScreen() {
-  const fetchNotices = useCallback(async (setData) => {
+  const fetchNotices = useCallback(async () => {
     await new Promise((resolve) => setTimeout(resolve, 1000));
-    setData({});
   }, []);
 
   return (
