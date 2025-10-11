@@ -12,7 +12,7 @@ import {
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import * as ImagePicker from "expo-image-picker";
 
-export default function ModalCreate ({ visible, onClose }) {
+export default function ModalCreate({ visible, onClose }) {
   const [imagemUri, setImagemUri] = useState(null);
   const handleAddProduct = () => {
     console.log("Produto cadastrado com Sucesso!");
@@ -26,11 +26,10 @@ export default function ModalCreate ({ visible, onClose }) {
     }
 
     let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ['images'],
+      mediaTypes: ["images"],
       allowsEditing: true,
-      aspect: [1, 1], 
+      aspect: [1, 1],
       quality: 1,
-
     });
 
     if (!result.canceled) {
@@ -50,7 +49,9 @@ export default function ModalCreate ({ visible, onClose }) {
           {/* Header */}
           <View className="flex-row justify-between items-center mb-6">
             <View className="w-8" />
-            <Text className="text-xl font-bold text-light-text-primary">Cadastrar Produto</Text>
+            <Text className="text-xl font-bold text-light-text-primary">
+              Cadastrar Produto
+            </Text>
             <Pressable onPress={onClose} className="p-1">
               <Icon name="close" size={24} />
             </Pressable>
@@ -70,19 +71,21 @@ export default function ModalCreate ({ visible, onClose }) {
           </View>
 
           {/* Descrição do produto */}
-          <View className="mb-6">
+          <View className="mb-4">
             <View className="flex-row items-center mb-2">
               <Text className="ml-2 text-gray-strong text-xl font-semibold">
                 Descrição do Produto:
               </Text>
             </View>
             <TextInput
-              className="bg-gray-soft rounded-lg p-10 text-base"
+              className="bg-gray-soft rounded-lg p-4 h-24 text-base"
               placeholder="Descrição do Produto"
+              multiline={true}
+              textAlignVertical="top"
             />
           </View>
           {/* Quantidade */}
-          <View className="mb-6">
+          <View className="mb-4">
             <View className="flex-row items-center mb-2">
               <Text className="ml-2 text-gray-strong text-xl font-semibold">
                 Quantidade do Produto:
@@ -94,7 +97,7 @@ export default function ModalCreate ({ visible, onClose }) {
             />
           </View>
           {/* Marca */}
-          <View className="mb-6">
+          <View className="mb-4">
             <View className="flex-row items-center mb-2">
               <Text className="ml-2 text-gray-strong text-xl font-semibold">
                 Marca do Produto:
@@ -106,7 +109,7 @@ export default function ModalCreate ({ visible, onClose }) {
             />
           </View>
           {/*Campo de foto*/}
-          <View className="mb-6">
+          <View className="mb-16">
             <View className="flex-row items-center mb-2">
               <Text className="ml-2 text-gray-strong text-xl font-semibold">
                 Foto:
@@ -117,7 +120,10 @@ export default function ModalCreate ({ visible, onClose }) {
               className="bg-gray-soft h-32 rounded-lg items-center justify-center"
             >
               {imagemUri ? (
-                <Image source={{ uri: imagemUri }} className="w-full h-full rounded-2xl" />
+                <Image
+                  source={{ uri: imagemUri }}
+                  className="w-full h-full rounded-2xl"
+                />
               ) : (
                 <View className="items-center">
                   <Icon name="image-plus" size={40} color="#a0a0a0" />
