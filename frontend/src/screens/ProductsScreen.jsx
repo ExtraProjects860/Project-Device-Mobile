@@ -36,7 +36,7 @@ export default function ProductsScreen() {
 
 
       <View className="items-center mb-2">
-        <SearchBar buttonAdd={<ButtonAdd onPress={() => setCreateProductVisible(true)}/>} />
+        <SearchBar buttonAdd={<ButtonAdd onPress={() => setCreateProductVisible(true)} name={"shopping-outline"}/> } />
       </View>
 
 

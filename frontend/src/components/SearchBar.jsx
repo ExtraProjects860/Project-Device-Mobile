@@ -22,12 +22,8 @@ export default function SearchBar({ buttonAdd }) {
         <TouchableOpacity className="px-2">
           <Icon name="magnify" size={24} />
         </TouchableOpacity>
-
-        {/* TODO ajustar esse krl do botão pq ta todo bugado, precisa fazer outros depois */}
-        <View>
-          {buttonAdd}
-        </View>
       </View>
+      <View>{buttonAdd}</View>
     </View>
   );
 }
