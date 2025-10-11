@@ -12,29 +12,32 @@ import NewPasswordScreen from "./src/screens/NewPasswordScreen";
 import ForgotPasswordScreen from "./src/screens/ForgotPasswordScreen";
 import LoginScreen from "./src/screens/LoginScreen.jsx";
 import "./global.css";
+import { ErrorProvider } from "./src/context/ErrorContext.js";
 
 function AppContent() {
   const { themeClass } = useTheme();
 
   return (
-    <View className={`flex-1 ${themeClass}`}>
-      <NativeRouter
-        future={{ v7_startTransition: true, v7_relativeSplatPath: true }}
-      >
-        <Routes>
-          <Route path="/" element={<LoginScreen />} />
-          <Route path="home" element={<HomeScreen />} />
-          <Route path="products" element={<ProductsScreen />} />
-          <Route path="users" element={<UsersScreen />} />
-          <Route path="wishlist" element={<WishListScreen />} />
-          <Route path="notices" element={<NoticesScreen />} />
-          <Route path="new-password" element={<NewPasswordScreen />} />
-          <Route path="forgot-password" element={<ForgotPasswordScreen />} />
-          <Route />
-          <Route path="*" element={<NotFoundScreen />}></Route>
-        </Routes>
-      </NativeRouter>
-    </View>
+    <ErrorProvider>
+      <View className={`flex-1 ${themeClass}`}>
+        <NativeRouter
+          future={{ v7_startTransition: true, v7_relativeSplatPath: true }}
+        >
+          <Routes>
+            <Route path="/" element={<LoginScreen />} />
+            <Route path="home" element={<HomeScreen />} />
+            <Route path="products" element={<ProductsScreen />} />
+            <Route path="users" element={<UsersScreen />} />
+            <Route path="wishlist" element={<WishListScreen />} />
+            <Route path="notices" element={<NoticesScreen />} />
+            <Route path="new-password" element={<NewPasswordScreen />} />
+            <Route path="forgot-password" element={<ForgotPasswordScreen />} />
+            <Route />
+            <Route path="*" element={<NotFoundScreen />}></Route>
+          </Routes>
+        </NativeRouter>
+      </View>
+    </ErrorProvider>
   );
 }
 

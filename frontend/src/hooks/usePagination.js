@@ -1,4 +1,5 @@
 import { useState, useCallback, useRef } from "react";
+import { useError } from "../context/ErrorContext";
 
 const initialData = {
   data: [],
@@ -16,8 +17,7 @@ export function usePagination(callbackFetch) {
   const [totalResult, setTotalResult] = useState(initialData.totalResult);
   const [isLoadingMore, setIsLoadingMore] = useState(initialData.loadingMore);
   const [isRefreshing, setRefreshing] = useState(initialData.refreshing);
-
-  const [error, setError] = useState(null);
+  const { showErrorModal } = useError();
 
   const isFetchingRef = useRef(false);
   const flatListRef = useRef(null);
@@ -25,7 +25,6 @@ export function usePagination(callbackFetch) {
   const itemsPerPage = 20;
 
   const initialLoad = useCallback(async () => {
-    setError(null);
     try {
       const result = await callbackFetch(itemsPerPage, 1);
       if (result?.data) {
@@ -36,17 +35,19 @@ export function usePagination(callbackFetch) {
       }
     } catch (err) {
       console.error("Erro ao buscar dados iniciais:", err);
-      setError("Não foi possível carregar os itens. Verifique sua conexão.");
+      const message =
+        err.message ||
+        "Não foi possível carregar os itens. Verifique sua conexão.";
+      showErrorModal(message, initialLoad);
     }
-  }, [callbackFetch]);
+  }, [callbackFetch, showErrorModal]);
 
-  const loadMore = async () => {
+  const loadMore = useCallback(async () => {
     if (isLoadingMore || currentPage >= totalPages) return;
 
     try {
       isFetchingRef.current = true;
       setIsLoadingMore(true);
-      setError(null);
 
       const result = await callbackFetch(itemsPerPage, currentPage + 1);
       if (result.data && result.data.length > 0) {
@@ -55,22 +56,18 @@ export function usePagination(callbackFetch) {
       }
     } catch (err) {
       console.error("Erro ao buscar a próxima página:", err);
-      setError("Não foi possível carregar mais itens.");
+      showErrorModal("Não foi possível carregar mais itens.", loadMore);
     } finally {
       isFetchingRef.current = false;
       setIsLoadingMore(false);
     }
-  };
+  }, [isLoadingMore, currentPage, totalPages, callbackFetch, showErrorModal]);
 
   const handleRefresh = useCallback(async () => {
     setRefreshing(true);
     await initialLoad();
     setRefreshing(false);
   }, [initialLoad]);
-
-  const clearError = () => {
-    setError(null);
-  };
 
   const scrollToTop = () => {
     flatListRef.current?.scrollToOffset({ offset: 0, animated: true });
@@ -85,11 +82,9 @@ export function usePagination(callbackFetch) {
     allItemsLoaded,
     isLoadingMore,
     isRefreshing,
-    error,
     initialLoad,
     loadMore,
     handleRefresh,
     scrollToTop,
-    clearError,
   };
 }
