@@ -9,6 +9,7 @@ import (
 	"github.com/ExtraProjects860/Project-Device-Mobile/handler/response"
 	"github.com/ExtraProjects860/Project-Device-Mobile/repository"
 	"github.com/ExtraProjects860/Project-Device-Mobile/service"
+	"github.com/ExtraProjects860/Project-Device-Mobile/utils"
 	"github.com/gin-gonic/gin"
 )
 
@@ -23,7 +24,32 @@ import (
 // @Failure      500 {object} response.ErrResponse
 // @Router       /api/v1/product [post]
 func CreateProductHandler(ctx *gin.Context) {
-	response.SendSuccess(ctx, http.StatusCreated, gin.H{"message": "Add Promotion Product!"})
+	var input request.ProductRequest
+
+	if err := request.ReadBody(ctx, &input); err != nil {
+		logger.Error(err.Error())
+		response.SendErr(ctx, http.StatusBadRequest, err)
+		return
+	}
+
+	if err := request.ValidateBodyReq(&input, utils.GetValidate()); err != nil {
+		logger.Error(err.Error())
+		response.SendErr(ctx, http.StatusBadRequest, err)
+		return
+	}
+
+	productService := service.NewProductService(
+		*repository.NewPostgresProductRepository(config.GetDB()),
+	)
+
+	product, err := productService.Create(ctx, input)
+	if err != nil {
+		logger.Error(err.Error())
+		response.SendErr(ctx, http.StatusInternalServerError, err)
+		return
+	}
+
+	response.SendSuccess(ctx, http.StatusCreated, product)
 }
 
 // @Summary      Update Product
@@ -38,7 +64,38 @@ func CreateProductHandler(ctx *gin.Context) {
 // @Failure      500 {object} response.ErrResponse
 // @Router       /api/v1/product [patch]
 func UpdateProductHandler(ctx *gin.Context) {
-	response.SendSuccess(ctx, http.StatusOK, gin.H{"message": "Update Promotion Product!"})
+	id, err := request.GetIdQuery(ctx)
+	if err != nil {
+		logger.Error(err.Error())
+		response.SendErr(ctx, http.StatusBadRequest, err)
+		return
+	}
+
+	var input request.ProductRequest
+	if err := request.ReadBody(ctx, &input); err != nil {
+		logger.Error(err.Error())
+		response.SendErr(ctx, http.StatusBadRequest, err)
+		return
+	}
+
+	if err := request.ValidateUpdateBodyReq(&input); err != nil {
+		logger.Error(err.Error())
+		response.SendErr(ctx, http.StatusBadRequest, err)
+		return
+	}
+
+	productService := service.NewProductService(
+		*repository.NewPostgresProductRepository(config.GetDB()),
+	)
+
+	user, err := productService.Update(ctx, id, input)
+	if err != nil {
+		logger.Error(err.Error())
+		response.SendErr(ctx, http.StatusInternalServerError, errors.New("error to update user"))
+		return
+	}
+
+	response.SendSuccess(ctx, http.StatusOK, user)
 }
 
 // @Summary      Get Products

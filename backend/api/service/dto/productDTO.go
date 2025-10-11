@@ -12,10 +12,10 @@ type ProductDTO struct {
 	Description        string    `json:"description"`
 	Value              float64   `json:"value"`
 	Quantity           int       `json:"quantity"`
-	IsPromotionAvaible bool      `json:"is_promotion_avaible"`
+	IsPromotionAvaible *bool      `json:"is_promotion_avaible"`
 	Discount           *float64  `json:"discount,omitempty"`
 	PhotoUrl           *string   `json:"photo_url,omitempty"`
-	IsAvaible          bool      `json:"is_avaible"`
+	IsAvaible          *bool      `json:"is_avaible"`
 	CreatedAt          time.Time `json:"created_at"`
 	UpdatedAt          time.Time `json:"updated_at"`
 }
