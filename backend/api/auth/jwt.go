@@ -27,8 +27,8 @@ func generateClaims(id uint, valueTime uint, timeFormat time.Duration) Claims {
 	}
 }
 
-func generateAccessToken(id uint, jwtKey string) (string, error) {
-	claims := generateClaims(id, 15, time.Minute)
+func GenerateAccessToken(id uint, jwtKey string) (string, error) {
+	claims := generateClaims(id, 5, time.Hour)
 
 	JWTtoken := jwt.NewWithClaims(jwt.SigningMethodHS256, &claims)
 	accessToken, err := JWTtoken.SignedString([]byte(jwtKey))
@@ -51,7 +51,6 @@ func GenerateRefreshToken(id uint, refreshKey string) (string, error) {
 	return refreshToken, nil
 }
 
-// TODO daria pra ser uma função só que recebe o parametro da chave, mas preguiça e teria de ficar experto com os imports
 func ValidateAccessToken(tokenStr, jwtKey string) (*jwt.Token, error) {
 	return jwt.Parse(tokenStr, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
@@ -61,7 +60,7 @@ func ValidateAccessToken(tokenStr, jwtKey string) (*jwt.Token, error) {
 	})
 }
 
-func validateRefreshToken(tokenStr string, refreshKey string) (*jwt.Token, error) {
+func ValidateRefreshToken(tokenStr string, refreshKey string) (*jwt.Token, error) {
 	return jwt.Parse(tokenStr, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
@@ -71,7 +70,7 @@ func validateRefreshToken(tokenStr string, refreshKey string) (*jwt.Token, error
 }
 
 func RefreshToken(tokenStr, jwtKey, refreshKey string) (string, error) {
-	token, err := validateRefreshToken(tokenStr, refreshKey)
+	token, err := ValidateRefreshToken(tokenStr, refreshKey)
 	if err != nil || !token.Valid {
 		return "", fmt.Errorf("invalid refresh token")
 	}
@@ -94,7 +93,7 @@ func RefreshToken(tokenStr, jwtKey, refreshKey string) (string, error) {
 }
 
 func GenerateTokens(id uint, jwtKey, refreshKey string) (string, string, error) {
-	accessToken, err := generateAccessToken(id, jwtKey)
+	accessToken, err := GenerateAccessToken(id, jwtKey)
 	if err != nil {
 		return "", "", fmt.Errorf("could not create token: %v", err)
 	}
