@@ -4,33 +4,29 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
 )
 
 type RoleRequest struct {
-	Name string `json:"name"`
+	Name string `json:"name" validate:"required,min=3"`
 }
 
-func (r *RoleRequest) Validate(validate *validator.Validate) error {
-	if err := validate.Var(r.Name, "required,min=3"); err != nil {
-		return fmt.Errorf("name: %v", err)
-	}
+func (s *RoleRequest) Validate(ctx *gin.Context, validate *validator.Validate) error {
+	return validate.StructCtx(ctx, s)
+}
 
+func (s *RoleRequest) ValidateUpdate() error {
+	hasAtLeastOne := s.Name != ""
+	if !hasAtLeastOne {
+		return fmt.Errorf("at least one valid field must be provided")
+	}
 	return nil
 }
 
-func (r *RoleRequest) ValidateUpdate(validate *validator.Validate) error {
-	if r.Name != "" {
-		if err := validate.Var(r.Name, "min=3"); err != nil {
-			return fmt.Errorf("name: %v", err)
-		}
-	}
-
-	return nil
-}
-
-func (r *RoleRequest) Format() {
-	if r.Name != "" {
-		r.Name = strings.ToUpper(strings.TrimSpace(r.Name))
+func (s *RoleRequest) Format() {
+	if s.Name != "" {
+		name := strings.ToUpper(strings.TrimSpace(s.Name))
+		s.Name = name
 	}
 }

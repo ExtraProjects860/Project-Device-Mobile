@@ -10,17 +10,17 @@ import (
 
 type ValidateModel interface {
 	Format()
-	Validate(val *validator.Validate) error
+	Validate(ctx *gin.Context, val *validator.Validate) error
 	ValidateUpdate() error
 }
 
-func ValidateBodyReq(v ValidateModel, val *validator.Validate) error {
-	err := v.Validate(val)
+func ValidateBodyReq(v ValidateModel, ctx *gin.Context, val *validator.Validate) error {
+	err := v.Validate(ctx, val)
 	v.Format()
 	return err
 }
 
-func ValidateUpdateBodyReq(v ValidateModel) (error) {
+func ValidateUpdateBodyReq(v ValidateModel) error {
 	err := v.ValidateUpdate()
 	v.Format()
 	return err
@@ -66,4 +66,12 @@ func GetPaginationData(ctx *gin.Context) (uint, uint, error) {
 	}
 
 	return uint(parsedItemsPerPage), uint(parsedCurrentPage), nil
+}
+
+func ReadBody[T any](ctx *gin.Context, input *T) error {
+	if err := ctx.ShouldBindJSON(&input); err != nil {
+		return fmt.Errorf("error to parsed body to json")
+	}
+
+	return nil
 }

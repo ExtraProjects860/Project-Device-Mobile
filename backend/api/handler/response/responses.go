@@ -32,3 +32,8 @@ type ErrResponse struct {
 type Status struct {
 	Message string `json:"message"`
 }
+
+type TokenResponse struct {
+	Access  string `json:"access_token,omitempty"`
+	Refresh string `json:"refresh_token,omitempty"`
+}

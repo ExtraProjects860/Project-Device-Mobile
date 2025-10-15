@@ -4,48 +4,36 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/ExtraProjects860/Project-Device-Mobile/utils"
+	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
 )
 
 type UserRequest struct {
-	RoleID         uint    `json:"role_id" `
+	RoleID         uint    `json:"role_id" validate:"required,gt=0"`
 	EnterpriseID   *uint   `json:"enterprise_id"`
-	Name           string  `json:"name" `
-	Email          string  `json:"email" `
-	Password       string  `json:"password" `
-	Cpf            string  `json:"cpf" `
-	RegisterNumber uint    `json:"register_number" `
+	Name           string  `json:"name" validate:"required,min=3"`
+	Email          string  `json:"email" validate:"required,email"`
+	Password       string  `json:"password" validate:"required,min=6"`
+	Cpf            string  `json:"cpf" validate:"required"`
+	RegisterNumber uint    `json:"register_number" validate:"required,gt=0"`
 	PhotoUrl       *string `json:"photo_url"`
 }
 
-// Pra que esse s de parametro? Tava já em outro lugar movi pra cá e ficou s de sexo
-
-func (s *UserRequest) Validate(validate *validator.Validate) error {
-	if err := validate.Var(s.Name, "required,min=3"); err != nil {
-		return fmt.Errorf("name: %v", err)
+func (s *UserRequest) Validate(ctx *gin.Context, validate *validator.Validate) error {
+	if !utils.ValidateCPF(s.Cpf) {
+		return fmt.Errorf("invalid cpf. Try other value")
 	}
 
-	if err := validate.Var(s.Email, "required,email"); err != nil {
-		return fmt.Errorf("email: %v", err)
+	if *s.EnterpriseID == 0 {
+		return fmt.Errorf("enterprise can't zero. Try other value")
 	}
 
-	if err := validate.Var(s.Password, "required,min=6"); err != nil {
-		return fmt.Errorf("password: %v", err)
+	if s.PhotoUrl != nil && *s.PhotoUrl == "" {
+		return fmt.Errorf("photo can't be empty")
 	}
 
-	if err := validate.Var(s.Cpf, "required,cpf"); err != nil {
-		return fmt.Errorf("cpf: %v", err)
-	}
-
-	if err := validate.Var(s.RegisterNumber, "required,gt=0"); err != nil {
-		return fmt.Errorf("register_number: %v", err)
-	}
-
-	if err := validate.Var(s.RoleID, "required,gt=0"); err != nil {
-		return fmt.Errorf("role_id: %v", err)
-	}
-
-	return nil
+	return validate.StructCtx(ctx, s)
 }
 
 func (s *UserRequest) ValidateUpdate() error {
@@ -55,8 +43,8 @@ func (s *UserRequest) ValidateUpdate() error {
 		s.Cpf != "" ||
 		s.RegisterNumber != 0 ||
 		s.RoleID != 0 ||
-		s.EnterpriseID != nil ||
-		s.PhotoUrl != nil
+		s.EnterpriseID != nil && *s.EnterpriseID != 0 ||
+		s.PhotoUrl != nil && *s.PhotoUrl != ""
 
 	if !hasAtLeastOne {
 		return fmt.Errorf("at least one valid field must be provided")
@@ -69,25 +57,19 @@ func (s *UserRequest) Format() {
 		name := strings.ToUpper(strings.TrimSpace(s.Name))
 		s.Name = name
 	}
-
 	if s.Email != "" {
 		email := strings.ToLower(strings.TrimSpace(s.Email))
 		s.Email = email
 	}
-
 	if s.Cpf != "" {
-		cpf := strings.ReplaceAll(s.Cpf, ".", "")
-		cpf = strings.ReplaceAll(cpf, "-", "")
-		cpf = strings.TrimSpace(cpf)
+		cpf := utils.UnformatCPF(s.Cpf)
 		s.Cpf = cpf
 	}
-
 	if s.Password != "" {
 		password := strings.TrimSpace(s.Password)
 		s.Password = password
 	}
-
-	if s.PhotoUrl != nil {
+	if s.PhotoUrl != nil && *s.PhotoUrl != "" {
 		photo := strings.TrimSpace(*s.PhotoUrl)
 		s.PhotoUrl = &photo
 	}
