@@ -31,7 +31,7 @@ func (r *PostgresProductRepository) GetProduct(ctx context.Context, id uint) (sc
 }
 
 func (r *PostgresProductRepository) CreateProduct(ctx context.Context, product *schemas.Product) error {
-	err := create(ctx, r.db, &product)
+	err := create(ctx, r.db, product)
 	if err != nil {
 		return verifyProductDuplicated(err)
 	}
@@ -48,7 +48,11 @@ func (r *PostgresProductRepository) CreateProduct(ctx context.Context, product *
 func (r *PostgresProductRepository) GetProducts(ctx context.Context, itemsPerPage uint, currentPage uint) ([]schemas.Product, uint, uint, error) {
 	query := r.db.WithContext(ctx).Model(&schemas.Product{})
 
-	products, totalPages, totalItems, err := getByPagination[schemas.Product](query, itemsPerPage, currentPage)
+	products, totalPages, totalItems, err := getByPagination[schemas.Product](
+		query, 
+		itemsPerPage, 
+		currentPage,
+	)
 	if err != nil {
 		return nil, 0, 0, err
 	}
@@ -57,7 +61,7 @@ func (r *PostgresProductRepository) GetProducts(ctx context.Context, itemsPerPag
 }
 
 func (r *PostgresProductRepository) UpdateProducts(ctx context.Context, id uint, product *schemas.Product) error {
-	if err := update(ctx, r.db, product, id); err != nil {
+	if err := updateByID(ctx, r.db, product, id); err != nil {
 		return verifyProductDuplicated(err)
 	}
 

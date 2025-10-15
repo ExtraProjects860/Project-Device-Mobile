@@ -8,8 +8,10 @@ type PostgresUserRepository struct {
 	db *gorm.DB
 }
 
-func NewPostgresUserRepository(db *gorm.DB) *PostgresUserRepository{
-	return &PostgresUserRepository{db: db}
+func NewPostgresUserRepository(db *gorm.DB) *PostgresUserRepository {
+	return &PostgresUserRepository{
+		db: db,
+	}
 }
 
 type PostgresProductRepository struct {
@@ -17,7 +19,9 @@ type PostgresProductRepository struct {
 }
 
 func NewPostgresProductRepository(db *gorm.DB) *PostgresProductRepository {
-	return &PostgresProductRepository{db: db}
+	return &PostgresProductRepository{
+		db: db,
+	}
 }
 
 type PostgresWishListRepository struct {
@@ -25,7 +29,9 @@ type PostgresWishListRepository struct {
 }
 
 func NewPostgresWishListRepository(db *gorm.DB) *PostgresWishListRepository {
-	return &PostgresWishListRepository{db: db}
+	return &PostgresWishListRepository{
+		db: db,
+	}
 }
 
 type PostgresEnterpriseRepository struct {
@@ -33,7 +39,9 @@ type PostgresEnterpriseRepository struct {
 }
 
 func NewPostgresEnterpriseRepository(db *gorm.DB) *PostgresEnterpriseRepository {
-	return &PostgresEnterpriseRepository{db: db}
+	return &PostgresEnterpriseRepository{
+		db: db,
+	}
 }
 
 type PostgresRoleRepository struct {
@@ -41,13 +49,17 @@ type PostgresRoleRepository struct {
 }
 
 func NewPostgresRoleRepository(db *gorm.DB) *PostgresRoleRepository {
-	return &PostgresRoleRepository{db: db}
+	return &PostgresRoleRepository{
+		db: db,
+	}
 }
 
-type PostgresTokenPasswordRepository struct {
+type PostgresAuthRepository struct {
 	db *gorm.DB
 }
 
-func NewPostgresTokenPasswordRepository(db *gorm.DB) *PostgresTokenPasswordRepository {
-	return &PostgresTokenPasswordRepository{db: db}
+func NewPostgresAuthRepository(db *gorm.DB) *PostgresAuthRepository {
+	return &PostgresAuthRepository{
+		db: db,
+	}
 }
