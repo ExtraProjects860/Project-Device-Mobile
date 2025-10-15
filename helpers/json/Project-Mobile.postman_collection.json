@@ -1,0 +1,529 @@
+{
+	"info": {
+		"_postman_id": "725ddd6b-28e8-4edd-abcf-dcc7ad7a0d01",
+		"name": "Project-Mobile",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "37394175"
+	},
+	"item": [
+		{
+			"name": "API",
+			"item": [
+				{
+					"name": "User",
+					"item": [
+						{
+							"name": "Create-User",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{HOST_API}}{{VERSION_API}}/user",
+									"host": [
+										"{{HOST_API}}{{VERSION_API}}"
+									],
+									"path": [
+										"user"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get-Info-User",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{HOST_API}}{{VERSION_API}}/user",
+									"host": [
+										"{{HOST_API}}{{VERSION_API}}"
+									],
+									"path": [
+										"user"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get-Users",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{HOST_API}}{{VERSION_API}}/users",
+									"host": [
+										"{{HOST_API}}{{VERSION_API}}"
+									],
+									"path": [
+										"users"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update-Partial-User",
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"url": {
+									"raw": "{{HOST_API}}{{VERSION_API}}/user",
+									"host": [
+										"{{HOST_API}}{{VERSION_API}}"
+									],
+									"path": [
+										"user"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Auth",
+					"item": [
+						{
+							"name": "Login",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{HOST_API}}{{VERSION_API}}{{AUTH_ROUTES}}/login",
+									"host": [
+										"{{HOST_API}}{{VERSION_API}}{{AUTH_ROUTES}}"
+									],
+									"path": [
+										"login"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Refresh-Token",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{HOST_API}}{{VERSION_API}}{{AUTH_ROUTES}}/refresh-token",
+									"host": [
+										"{{HOST_API}}{{VERSION_API}}{{AUTH_ROUTES}}"
+									],
+									"path": [
+										"refresh-token"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Reset-Password-Log-in",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{HOST_API}}{{VERSION_API}}{{AUTH_ROUTES}}/reset-pass-log-in",
+									"host": [
+										"{{HOST_API}}{{VERSION_API}}{{AUTH_ROUTES}}"
+									],
+									"path": [
+										"reset-pass-log-in"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Reset-Password",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{HOST_API}}{{VERSION_API}}{{AUTH_ROUTES}}/reset-password",
+									"host": [
+										"{{HOST_API}}{{VERSION_API}}{{AUTH_ROUTES}}"
+									],
+									"path": [
+										"reset-password"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Request-Password-Token",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{HOST_API}}{{VERSION_API}}{{AUTH_ROUTES}}/request-token",
+									"host": [
+										"{{HOST_API}}{{VERSION_API}}{{AUTH_ROUTES}}"
+									],
+									"path": [
+										"request-token"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Enterprise",
+					"item": [
+						{
+							"name": "Create-Enterprise",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{HOST_API}}{{VERSION_API}}/enterprise",
+									"host": [
+										"{{HOST_API}}{{VERSION_API}}"
+									],
+									"path": [
+										"enterprise"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get-Enterprises",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{HOST_API}}{{VERSION_API}}/enterprises",
+									"host": [
+										"{{HOST_API}}{{VERSION_API}}"
+									],
+									"path": [
+										"enterprises"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update-Enterprise",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"url": {
+									"raw": "{{HOST_API}}{{VERSION_API}}/enterprise",
+									"host": [
+										"{{HOST_API}}{{VERSION_API}}"
+									],
+									"path": [
+										"enterprise"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Role",
+					"item": [
+						{
+							"name": "Create-Role",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{HOST_API}}{{VERSION_API}}/role",
+									"host": [
+										"{{HOST_API}}{{VERSION_API}}"
+									],
+									"path": [
+										"role"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get-Roles",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{HOST_API}}{{VERSION_API}}/roles",
+									"host": [
+										"{{HOST_API}}{{VERSION_API}}"
+									],
+									"path": [
+										"roles"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update-Role",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"url": {
+									"raw": "{{HOST_API}}{{VERSION_API}}/role",
+									"host": [
+										"{{HOST_API}}{{VERSION_API}}"
+									],
+									"path": [
+										"role"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Product",
+					"item": [
+						{
+							"name": "Create-Product",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{HOST_API}}{{VERSION_API}}/product",
+									"host": [
+										"{{HOST_API}}{{VERSION_API}}"
+									],
+									"path": [
+										"product"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get-Products",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{HOST_API}}{{VERSION_API}}/products",
+									"host": [
+										"{{HOST_API}}{{VERSION_API}}"
+									],
+									"path": [
+										"products"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update-Partial-Product",
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"url": {
+									"raw": "{{HOST_API}}{{VERSION_API}}/product",
+									"host": [
+										"{{HOST_API}}{{VERSION_API}}"
+									],
+									"path": [
+										"product"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "WishList",
+					"item": [
+						{
+							"name": "Get-Products-WishList",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{HOST_API}}{{VERSION_API}}/wishlist",
+									"host": [
+										"{{HOST_API}}{{VERSION_API}}"
+									],
+									"path": [
+										"wishlist"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Add-Product-in-WishList",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{HOST_API}}{{VERSION_API}}/wishlist",
+									"host": [
+										"{{HOST_API}}{{VERSION_API}}"
+									],
+									"path": [
+										"wishlist"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete-Product-in-WishList",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{HOST_API}}{{VERSION_API}}/wishlist",
+									"host": [
+										"{{HOST_API}}{{VERSION_API}}"
+									],
+									"path": [
+										"wishlist"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "HealthCheck",
+					"item": [
+						{
+							"name": "Test-API",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{HOST_API}}{{VERSION_API}}{{HEALTH_CHECK_ROUTES}}/api",
+									"host": [
+										"{{HOST_API}}{{VERSION_API}}{{HEALTH_CHECK_ROUTES}}"
+									],
+									"path": [
+										"api"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Test-Database",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{HOST_API}}{{VERSION_API}}{{HEALTH_CHECK_ROUTES}}/database",
+									"host": [
+										"{{HOST_API}}{{VERSION_API}}{{HEALTH_CHECK_ROUTES}}"
+									],
+									"path": [
+										"database"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Test-Email",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{HOST_API}}{{VERSION_API}}{{HEALTH_CHECK_ROUTES}}/email",
+									"host": [
+										"{{HOST_API}}{{VERSION_API}}{{HEALTH_CHECK_ROUTES}}"
+									],
+									"path": [
+										"email"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "MICROSERVICE-EMAIL",
+			"item": [
+				{
+					"name": "HealthCheck",
+					"item": [
+						{
+							"name": "Test-API",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{HOST_API}}{{VERSION_API}}{{HEALTH_CHECK_ROUTES}}/",
+									"host": [
+										"{{HOST_API}}{{VERSION_API}}{{HEALTH_CHECK_ROUTES}}"
+									],
+									"path": [
+										""
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "HealthCheck",
+					"item": [
+						{
+							"name": "Test-API",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{HOST_API}}{{VERSION_API}}{{HEALTH_CHECK_ROUTES}}/",
+									"host": [
+										"{{HOST_API}}{{VERSION_API}}{{HEALTH_CHECK_ROUTES}}"
+									],
+									"path": [
+										""
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "EMAIL",
+					"item": [
+						{
+							"name": "Send-Email",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{HOST_MICRO_SERVICE}}{{VERSION_API}}/email",
+									"host": [
+										"{{HOST_MICRO_SERVICE}}{{VERSION_API}}"
+									],
+									"path": [
+										"email"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		}
+	]
+}
