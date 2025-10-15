@@ -1,18 +1,16 @@
 package config
 
 import (
-	"log"
+	"fmt"
 	"os"
 
 	"github.com/joho/godotenv"
 )
 
 type DBConfig struct {
-	Type     string
-	Username string
-	Password string
-	Domain   string
-	Name     string
+	DbUri        string
+	SqliteTypeDb string
+	SqlitePath   string
 }
 
 type APIConfig struct {
@@ -27,18 +25,28 @@ type EnvVariables struct {
 	API APIConfig
 }
 
-func initilizeEnvVariables() (*EnvVariables, error) {
-	if err := godotenv.Load(); err != nil {
-		log.Fatal("Error loading .env file")
+func InitilizeEnvVariables(paths ...string) (*EnvVariables, error) {
+	if len(paths) == 0 {
+		paths = []string{".env"}
+	}
+
+	loaded := false
+	for _, path := range paths {
+		if err := godotenv.Load(path); err == nil {
+			loaded = true
+			break
+		}
+	}
+
+	if !loaded {
+		return nil, fmt.Errorf("failed to load .env file from paths: %v", paths)
 	}
 
 	env := &EnvVariables{
 		DB: DBConfig{
-			Type:     os.Getenv("DB_TYPE"),
-			Username: os.Getenv("DB_USERNAME"),
-			Password: os.Getenv("DB_PASSWORD"),
-			Domain:   os.Getenv("DB_DOMAIN"),
-			Name:     os.Getenv("DB_NAME"),
+			DbUri:        os.Getenv("DB_URI"),
+			SqliteTypeDb: os.Getenv("SQLITE_TYPE_DB"),
+			SqlitePath:   os.Getenv("SQLITE_PATH"),
 		},
 		API: APIConfig{
 			JwtKey:       os.Getenv("JWT_KEY"),
