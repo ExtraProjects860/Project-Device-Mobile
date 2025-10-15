@@ -43,7 +43,7 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/response.TokensResponse"
+                            "$ref": "#/definitions/response.TokenResponse"
                         }
                     },
                     "400": {
@@ -86,6 +86,7 @@ const docTemplate = `{
                     "auth"
                 ],
                 "summary": "Refresh Token",
+                "deprecated": true,
                 "responses": {
                     "201": {
                         "description": "Created",
@@ -1406,14 +1407,6 @@ const docTemplate = `{
             }
         },
         "response.TokenResponse": {
-            "type": "object",
-            "properties": {
-                "access_token": {
-                    "type": "string"
-                }
-            }
-        },
-        "response.TokensResponse": {
             "type": "object",
             "properties": {
                 "access_token": {

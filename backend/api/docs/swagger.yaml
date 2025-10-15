@@ -213,11 +213,6 @@ definitions:
     properties:
       access_token:
         type: string
-    type: object
-  response.TokensResponse:
-    properties:
-      access_token:
-        type: string
       refresh_token:
         type: string
     type: object
@@ -247,7 +242,7 @@ paths:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/response.TokensResponse'
+            $ref: '#/definitions/response.TokenResponse'
         "400":
           description: Bad Request
           schema:
@@ -271,6 +266,7 @@ paths:
     post:
       consumes:
       - application/json
+      deprecated: true
       description: Refreshes the authentication token
       produces:
       - application/json
