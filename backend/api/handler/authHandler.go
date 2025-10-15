@@ -4,9 +4,9 @@ import (
 	"errors"
 	"net/http"
 
+	"github.com/ExtraProjects860/Project-Device-Mobile/appcontext"
 	"github.com/ExtraProjects860/Project-Device-Mobile/auth"
 	"github.com/ExtraProjects860/Project-Device-Mobile/config"
-	"github.com/ExtraProjects860/Project-Device-Mobile/appcontext"
 	"github.com/ExtraProjects860/Project-Device-Mobile/handler/request"
 	"github.com/ExtraProjects860/Project-Device-Mobile/handler/response"
 	"github.com/ExtraProjects860/Project-Device-Mobile/repository"
@@ -60,7 +60,7 @@ func ResetPasswordLogInHandler(appCtx *appcontext.AppContext, logger *config.Log
 // @Accept       json
 // @Produce      json
 // @Param        request body request.LoginRequest true "Request body"
-// @Success      201 {object} response.TokensResponse
+// @Success      201 {object} response.TokenResponse
 // @Failure      400 {object} response.ErrResponse
 // @Failure      401 {object} response.ErrResponse
 // @Failure      422 {object} response.ErrResponse
@@ -94,10 +94,10 @@ func LoginHandler(appCtx *appcontext.AppContext, logger *config.Logger) gin.Hand
 			return
 		}
 
-		accessToken, refreshToken, err := auth.GenerateTokens(
+		// TODO o token foi simplificado, porém um dia pode ter refresh
+		accessToken, err := auth.GenerateAccessToken(
 			userID,
 			appCtx.Env.API.JwtKey,
-			appCtx.Env.API.RefreshKey,
 		)
 		if err != nil {
 			logger.Error(err.Error())
@@ -106,8 +106,7 @@ func LoginHandler(appCtx *appcontext.AppContext, logger *config.Logger) gin.Hand
 		}
 
 		response.SendSuccess(ctx, http.StatusCreated, response.TokenResponse{
-			Access:  accessToken,
-			Refresh: refreshToken,
+			Access: accessToken,
 		})
 	}
 }
@@ -121,6 +120,7 @@ func LoginHandler(appCtx *appcontext.AppContext, logger *config.Logger) gin.Hand
 // @Failure      422 {object} response.ErrResponse
 // @Failure      500 {object} response.ErrResponse
 // @Router       /api/v1/auth/refresh-token [post]
+// @Deprecated true
 func RefreshTokenHandler(appCtx *appcontext.AppContext, logger *config.Logger) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		var input auth.RequestRefresh
