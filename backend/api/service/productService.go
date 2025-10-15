@@ -1,8 +1,8 @@
 package service
 
 import (
-	"context"
-
+	"github.com/ExtraProjects860/Project-Device-Mobile/appcontext"
+	"github.com/ExtraProjects860/Project-Device-Mobile/config"
 	"github.com/ExtraProjects860/Project-Device-Mobile/handler/request"
 	"github.com/ExtraProjects860/Project-Device-Mobile/repository"
 	"github.com/ExtraProjects860/Project-Device-Mobile/schemas"
@@ -11,18 +11,22 @@ import (
 )
 
 type ProductService struct {
-	repo repository.PostgresProductRepository
+	repo   *repository.PostgresProductRepository
+	logger *config.Logger
 }
 
-func NewProductService(repo repository.PostgresProductRepository) ProductService {
-	return ProductService{repo: repo}
+func GetProductService(appCtx *appcontext.AppContext) ProductService {
+	return ProductService{
+		repo:   repository.NewPostgresProductRepository(appCtx.DB),
+		logger: config.NewLogger("SERVICE - PRODUCT"),
+	}
 }
 
 func (p *ProductService) ValidateAndUpdateFields(product *schemas.Product, input request.ProductRequest) error {
 	return nil
 }
 
-func (p *ProductService) Create(ctx context.Context, input request.ProductRequest) (*dto.ProductDTO, error) {
+func (p *ProductService) Create(ctx *gin.Context, input request.ProductRequest) (*dto.ProductDTO, error) {
 	product := schemas.Product{
 		Name:               input.Name,
 		Description:        input.Description,
@@ -41,7 +45,7 @@ func (p *ProductService) Create(ctx context.Context, input request.ProductReques
 	return dto.MakeProductOutput(product), nil
 }
 
-func (p *ProductService) Update(ctx context.Context, id uint, input request.ProductRequest) (*dto.ProductDTO, error) {
+func (p *ProductService) Update(ctx *gin.Context, id uint, input request.ProductRequest) (*dto.ProductDTO, error) {
 	product, err := p.repo.GetProduct(ctx, id)
 	if err != nil {
 		return nil, err
@@ -61,7 +65,7 @@ func (p *ProductService) Update(ctx context.Context, id uint, input request.Prod
 func (p *ProductService) GetAll(ctx *gin.Context, itemsPerPage, currentPage uint) (*dto.PaginationDTO, error) {
 	products, totalPages, totalItems, err := p.repo.GetProducts(ctx, itemsPerPage, currentPage)
 	if err != nil {
-		logger.Error(err.Error())
+		p.logger.Error(err.Error())
 		return nil, err
 	}
 
