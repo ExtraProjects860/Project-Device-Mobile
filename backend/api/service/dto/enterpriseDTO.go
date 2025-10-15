@@ -7,10 +7,10 @@ import (
 )
 
 type EnterpriseDTO struct {
-	ID        uint      `json:"id"`
-	Name      string    `json:"name"`
-	CreatedAt time.Time `json:"created_at"`
-	UpdatedAt time.Time `json:"updated_at"`
+	ID        uint      `json:"id" example:"1"`
+	Name      string    `json:"name" example:"Empresa XPTO"`
+	CreatedAt time.Time `json:"created_at" example:"2025-10-10T08:00:00Z"`
+	UpdatedAt time.Time `json:"updated_at" example:"2025-10-12T09:30:00Z"`
 }
 
 func MakeEnterpriseOutput(enterprise schemas.Enterprise) *EnterpriseDTO {
