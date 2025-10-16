@@ -1,11 +1,25 @@
 import { instanceMainApi } from "./axios.js";
 
-export async function createProductRequest() {
-  return;
+/**
+ * @param {object} productData
+ */
+
+export async function createProductRequest(productData) {
+  const response = await instanceMainApi.post("/products", productData);
+  return response.data;
 }
 
-export async function updateProductRequest() {
-  return;
+/**
+ * @param {string} productId
+ * @param {object} updatedProductData
+ */
+
+export async function updateProductRequest(productId, updatedProductData) {
+  const response = await instanceMainApi.patch(
+    `/products/${productId}`,
+    updatedProductData,
+  );
+  return response.data;
 }
 
 export async function getProductsRequest(itemsPerPage = 20, currentPage = 1) {

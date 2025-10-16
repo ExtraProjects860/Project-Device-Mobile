@@ -2,45 +2,28 @@ package repository
 
 import (
 	"context"
-	"time"
+	"errors"
+	"strings"
 
 	"github.com/ExtraProjects860/Project-Device-Mobile/schemas"
+	"github.com/jackc/pgx/v5/pgconn"
 )
 
-type ProductDTO struct {
-	ID                 uint      `json:"id"`
-	Name               string    `json:"name"`
-	Description        string    `json:"description"`
-	Value              float64   `json:"value"`
-	Quantity           int       `json:"quantity"`
-	IsPromotionAvaible bool      `json:"is_promotion_avaible"`
-	Discount           *float64  `json:"discount,omitempty"`
-	PhotoUrl           *string   `json:"photo_url,omitempty"`
-	IsAvaible          bool      `json:"is_avaible"`
-	CreatedAt          time.Time `json:"created_at"`
-	UpdatedAt          time.Time `json:"updated_at"`
-}
-
-func makeProductOutput(product schemas.Product) *ProductDTO {
-	return &ProductDTO{
-		ID:                 product.ID,
-		Name:               product.Name,
-		Description:        product.Description,
-		Value:              product.Value,
-		Quantity:           product.Quantity,
-		IsPromotionAvaible: product.IsPromotionAvaible,
-		Discount:           product.Discount,
-		PhotoUrl:           product.PhotoUrl,
-		IsAvaible:          product.IsAvaible,
-		CreatedAt:          product.CreatedAt,
-		UpdatedAt:          product.UpdatedAt,
+func verifyProductDuplicated(err error) error {
+	var pgErr *pgconn.PgError
+	if errors.As(err, &pgErr) && pgErr.Code == "23505" {
+		if strings.Contains(pgErr.ConstraintName, "name") {
+			return errors.New("this name product is registered")
+		}
+		return err
 	}
+	return err
 }
 
-func (r *postgresProductRepository) CreateProduct(ctx context.Context, product schemas.Product) {
-	return
-}
+func (r *PostgresProductRepository) GetProduct(ctx context.Context, id uint) (schemas.Product, error) {
+	query := r.db.WithContext(ctx).Model(&schemas.Product{}).Preload("Role").Preload("Enterprise")
 
+<<<<<<< HEAD
 func (r *postgresProductRepository) GetProducts(ctx context.Context, itemsPerPage uint, currentPage uint) (PaginationDTO, error) {
 	query := r.db.WithContext(ctx).Model(&schemas.Product{})
 <<<<<<< HEAD
@@ -54,10 +37,13 @@ func (r *postgresProductRepository) GetProducts(ctx context.Context, itemsPerPag
 		Limit(int(itemsPerPage)).
 		Offset(int(paginationOffset)).
 		Find(&productsEntries).Error
+=======
+	product, err := getByID[schemas.Product](query, id)
+>>>>>>> dev
 	if err != nil {
-		logger.Errorf("%v", err)
-		return PaginationDTO{}, err
+		return schemas.Product{}, err
 	}
+<<<<<<< HEAD
 
 	var productsDTO []ProductDTO
 	for _, product := range productsEntries {
@@ -69,8 +55,52 @@ func (r *postgresProductRepository) GetProducts(ctx context.Context, itemsPerPag
 =======
 	return PaginationDTO{Data: productsDTO, CurrentPage: currentPage, TotalPages: totalPages, TotalItems: lengthItems}, err
 >>>>>>> dev
+=======
+	return product, nil
+>>>>>>> dev
 }
 
-func (r *postgresProductRepository) UpdateProducts(ctx context.Context, id uint) {
-	return
+func (r *PostgresProductRepository) CreateProduct(ctx context.Context, product *schemas.Product) error {
+	err := create(ctx, r.db, product)
+	if err != nil {
+		return verifyProductDuplicated(err)
+	}
+
+	u, err := r.GetProduct(ctx, product.ID)
+	if err != nil {
+		return err
+	}
+	*product = u
+
+	return nil
+}
+
+func (r *PostgresProductRepository) GetProducts(ctx context.Context, itemsPerPage uint, currentPage uint) ([]schemas.Product, uint, uint, error) {
+	query := r.db.WithContext(ctx).Model(&schemas.Product{})
+
+	products, totalPages, totalItems, err := getByPagination[schemas.Product](
+		query, 
+		itemsPerPage, 
+		currentPage,
+	)
+	if err != nil {
+		return nil, 0, 0, err
+	}
+
+	return products, totalPages, totalItems, err
+}
+
+func (r *PostgresProductRepository) UpdateProducts(ctx context.Context, id uint, product *schemas.Product) error {
+	if err := updateByID(ctx, r.db, product, id); err != nil {
+		return verifyProductDuplicated(err)
+	}
+
+	p, err := r.GetProduct(ctx, id)
+	if err != nil {
+		return err
+	}
+
+	*product = p
+
+	return nil
 }

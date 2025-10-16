@@ -27,51 +27,50 @@ func generateClaims(id uint, valueTime uint, timeFormat time.Duration) Claims {
 	}
 }
 
-func GenerateJwtToken(id uint) (string, error) {
-	claims := generateClaims(id, 15, time.Minute)
+func GenerateAccessToken(id uint, jwtKey string) (string, error) {
+	claims := generateClaims(id, 5, time.Hour)
 
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, &claims)
-	jwtToken, err := token.SignedString(jwtKey())
+	JWTtoken := jwt.NewWithClaims(jwt.SigningMethodHS256, &claims)
+	accessToken, err := JWTtoken.SignedString([]byte(jwtKey))
 	if err != nil {
 		return "", err
 	}
 
-	return jwtToken, nil
+	return accessToken, nil
 }
 
-func GenerateRefreshToken(id uint) (string, error) {
+func GenerateRefreshToken(id uint, refreshKey string) (string, error) {
 	claims := generateClaims(id, 24, time.Hour)
 
-	refreshToken := jwt.NewWithClaims(jwt.SigningMethodHS256, &claims)
-	refreshJWT, err := refreshToken.SignedString(refreshKey())
+	JWTtoken := jwt.NewWithClaims(jwt.SigningMethodHS256, &claims)
+	refreshToken, err := JWTtoken.SignedString([]byte(refreshKey))
 	if err != nil {
 		return "", err
 	}
 
-	return refreshJWT, nil
+	return refreshToken, nil
 }
 
-// TODO daria pra ser uma função só que recebe o parametro da chave, mas preguiça e teria de ficar experto com os imports
-func ValidateAccessToken(tokenStr string) (*jwt.Token, error) {
-    return jwt.Parse(tokenStr, func(token *jwt.Token) (interface{}, error) {
-        if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-            return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
-        }
-        return jwtKey(), nil
-    })
+func ValidateAccessToken(tokenStr, jwtKey string) (*jwt.Token, error) {
+	return jwt.Parse(tokenStr, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
+		}
+		return []byte(jwtKey), nil
+	})
 }
 
-func ValidateRefreshToken(tokenStr string) (*jwt.Token, error) {
-    return jwt.Parse(tokenStr, func(token *jwt.Token) (interface{}, error) {
-        if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-            return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
-        }
-        return refreshKey(), nil
-    })
+func ValidateRefreshToken(tokenStr string, refreshKey string) (*jwt.Token, error) {
+	return jwt.Parse(tokenStr, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
+		}
+		return []byte(refreshKey), nil
+	})
 }
 
-func RefreshToken(tokenStr string) (string, error) {
-	token, err := ValidateRefreshToken(tokenStr)
+func RefreshToken(tokenStr, jwtKey, refreshKey string) (string, error) {
+	token, err := ValidateRefreshToken(tokenStr, refreshKey)
 	if err != nil || !token.Valid {
 		return "", fmt.Errorf("invalid refresh token")
 	}
@@ -81,24 +80,28 @@ func RefreshToken(tokenStr string) (string, error) {
 		return "", fmt.Errorf("could not parse claims")
 	}
 
-	newJWT, _, err := GenerateTokens(uint(claims["sub"].(float64)))
+	newJWT, _, err := GenerateTokens(
+		uint(claims["sub"].(float64)),
+		jwtKey,
+		refreshKey,
+	)
 	if err != nil {
 		return "", fmt.Errorf("could not generate new token: %v", err)
 	}
-	
+
 	return newJWT, nil
 }
 
-func GenerateTokens(id uint) (string, string, error) {
-	token, err := GenerateJwtToken(id)
+func GenerateTokens(id uint, jwtKey, refreshKey string) (string, string, error) {
+	accessToken, err := GenerateAccessToken(id, jwtKey)
 	if err != nil {
 		return "", "", fmt.Errorf("could not create token: %v", err)
 	}
 
-	refresh, err := GenerateRefreshToken(id)
+	refreshToken, err := GenerateRefreshToken(id, refreshKey)
 	if err != nil {
 		return "", "", fmt.Errorf("could not create refresh token: %v", err)
 	}
 
-	return token, refresh, nil
+	return accessToken, refreshToken, nil
 }

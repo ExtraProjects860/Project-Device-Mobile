@@ -6,15 +6,18 @@
     "start": "expo start",
     "android": "expo run:android",
     "ios": "expo run:ios",
-    "web": "expo start --web"
+    "web": "expo start --web",
+    "test": "vitest"
   },
   "dependencies": {
     "@eslint/js": "^9.36.0",
     "@expo/metro-runtime": "^6.1.2",
     "@kichiyaki/react-native-barcode-generator": "^0.6.7",
+    "@react-native-async-storage/async-storage": "^2.2.0",
     "axios": "^1.12.2",
     "eslint": "^9.36.0",
     "expo": "^54.0.9",
+    "expo-image-picker": "~17.0.8",
     "expo-status-bar": "^3.0.8",
     "nativewind": "^4.1.23",
     "prettier-plugin-tailwindcss": "^0.5.14",
@@ -33,7 +36,8 @@
     "@babel/core": "^7.20.0",
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^5.2.0",
-    "eslint-plugin-react-native": "^5.0.0"
+    "eslint-plugin-react-native": "^5.0.0",
+    "vitest": "^3.2.4"
   },
   "private": true
 }

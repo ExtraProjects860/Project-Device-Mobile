@@ -2,35 +2,74 @@ package repository
 
 import (
 	"context"
-	"time"
+	"errors"
+	"strings"
 
 	"github.com/ExtraProjects860/Project-Device-Mobile/schemas"
+	"github.com/jackc/pgx/v5/pgconn"
 )
 
-type RoleDTO struct {
-	ID        uint      `json:"id"`
-	Name      string    `json:"name"`
-	CreatedAt time.Time `json:"created_at"`
-	UpdatedAt time.Time `json:"updated_at"`
-}
-
-func makeRoleOutput(role schemas.Role) *RoleDTO {
-	return &RoleDTO{
-		ID:        role.ID,
-		Name:      role.Name,
-		CreatedAt: role.CreatedAt,
-		UpdatedAt: role.UpdatedAt,
+func verifyRoleDuplicated(err error) error {
+	var pgErr *pgconn.PgError
+	if errors.As(err, &pgErr) && pgErr.Code == "23505" {
+		if strings.Contains(pgErr.ConstraintName, "name") {
+			return errors.New("this name role is registered")
+		}
+		return err
 	}
+	return err
 }
 
-func (r *postgresRoleRepository) CreateRole(ctx context.Context, role schemas.Role) {
-	return
+func (r *PostgresRoleRepository) GetRole(ctx context.Context, id uint) (schemas.Role, error) {
+	query := r.db.WithContext(ctx).Model(&schemas.Role{})
+
+	role, err := getByID[schemas.Role](query, id)
+	if err != nil {
+		return schemas.Role{}, err
+	}
+	return role, nil
 }
 
-func (r *postgresRoleRepository) GetRoles(ctx context.Context, id uint) {
-	return
+func (r *PostgresRoleRepository) CreateRole(ctx context.Context, role *schemas.Role) error {
+	err := create(ctx, r.db, role)
+	if err != nil {
+		return verifyRoleDuplicated(err)
+	}
+
+	ro, err := r.GetRole(ctx, role.ID)
+	if err != nil {
+		return err
+	}
+	*role = ro
+
+	return nil
 }
 
-func (r *postgresRoleRepository) UpdateRole(ctx context.Context, id uint, role schemas.Role) {
-	return
+func (r *PostgresRoleRepository) UpdateRole(ctx context.Context, id uint, role *schemas.Role) error {
+	if err := updateByID(ctx, r.db, role, id); err != nil {
+		return verifyRoleDuplicated(err)
+	}
+
+	ro, err := r.GetRole(ctx, role.ID)
+	if err != nil {
+		return err
+	}
+	*role = ro
+
+	return nil
+}
+
+func (r *PostgresRoleRepository) GetRoles(ctx context.Context, itemsPerPage uint, currentPage uint) ([]schemas.Role, uint, uint, error) {
+	query := r.db.WithContext(ctx).Model(&schemas.Role{})
+
+	roles, totalPages, totalItems, err := getByPagination[schemas.Role](
+		query, 
+		itemsPerPage, 
+		currentPage,
+	)
+	if err != nil {
+		return nil, 0, 0, err
+	}
+
+	return roles, totalPages, totalItems, err
 }

@@ -3,38 +3,32 @@ package config
 import (
 	"fmt"
 
+	"github.com/ExtraProjects860/Project-Device-Mobile/schemas"
+	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
-var (
-	db     *gorm.DB
-	env    *EnvVariables
-)
-
-func Init() error {
+func Init() (*EnvVariables, *gorm.DB, error) {
 	var err error
 
-	env, err = InitilizeEnvVariables()
+	env, err := InitilizeEnvVariables()
 	if err != nil {
-		return fmt.Errorf("error initializing env variables: %v", err)
+		return nil, nil, fmt.Errorf("error initializing env variables: %v", err)
 	}
 
-	db, err = InitializeDbSQL(env)
+	db, err := InitializeDbServer(
+		NewLogger("db"), 
+		postgres.Open(env.DB.DbUri),
+	)
 	if err != nil {
-		return fmt.Errorf("failed to connection to DataBase, error: %v", err)
+		return nil, nil, fmt.Errorf("failed to connection to DataBase, error: %v", err)
 	}
 
-	return nil
-}
+	if err := db.AutoMigrate(
+		schemas.AllModelsSlice()...,
+	); err != nil {
+		return nil, nil, fmt.Errorf("failed to migrate DB: %v", err)
+	}
 
-func GetDB() *gorm.DB {
-	return db
-}
-
-func GetEnv() *EnvVariables {
-	return env
-}
-
-func GetLogger(prefix string) *Logger {
-	return NewLogger(prefix)
+	return env, db, nil
 }

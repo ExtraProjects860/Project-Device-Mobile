@@ -8,11 +8,14 @@ import ListItems from "../components/ListItems.jsx";
 import ButtonAdd from "../components/ui/ButtonAdd.jsx";
 import { getUsersRequest } from "../lib/UserRequest.js";
 import { useThemeColors } from "../hooks/useThemeColors.js";
+import { useState } from "react";
 import CardUserList from "../components/ui/CardUserList.jsx";
+import ModalCreate from "../components/ModalCreateUser.jsx";
 
 export default function UsersScreen() {
   const themeColors = useThemeColors();
-
+  const [isCreateProductModalVisible, setCreateUserVisible] =
+    useState(false);
   // const handleEditUser = (user) => {
   //   console.log("Editar usuário:", user.name);
   //   Alert.alert("A Fazer", `Implementar modal de edição.`);
@@ -20,6 +23,10 @@ export default function UsersScreen() {
 
   return (
     <Background>
+      <ModalCreate
+        visible={isCreateProductModalVisible}
+        onClose={() => setCreateProductVisible(false)}
+      />
       <NavBar />
 
       <View className="flex-row gap-2 m-6 items-center justify-center">
@@ -32,11 +39,21 @@ export default function UsersScreen() {
       </View>
 
       <View className="items-center mb-2">
-        <SearchBar buttonAdd={<ButtonAdd />} />
+        <SearchBar
+          buttonAdd={
+            <ButtonAdd
+              onPress={() => setCreateUserVisible(true)}
+              name={"account-outline"}
+            />
+          }
+        />
       </View>
 
       {/* Usuários */}
-      <ListItems callbackFetch={getUsersRequest} CardListRender={CardUserList} />
+      <ListItems
+        callbackFetch={getUsersRequest}
+        CardListRender={CardUserList}
+      />
     </Background>
   );
 }

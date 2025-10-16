@@ -8,9 +8,8 @@ import Icon from "react-native-vector-icons/FontAwesome";
 import PageLoader from "../context/PageLoader.js";
 
 export default function HomeScreen() {
-  const fetchHomeData = useCallback(async (setData) => {
+  const fetchHomeData = useCallback(async () => {
     await new Promise((resolve) => setTimeout(resolve, 1000));
-    setData({});
   }, []);
 
   return (

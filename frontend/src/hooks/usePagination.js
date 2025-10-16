@@ -1,4 +1,5 @@
-import { useState, useCallback, useRef, use } from "react";
+import { useState, useCallback, useRef } from "react";
+import { useError } from "../context/ErrorContext";
 
 const initialData = {
   data: [],
@@ -16,6 +17,7 @@ export function usePagination(callbackFetch) {
   const [totalResult, setTotalResult] = useState(initialData.totalResult);
   const [isLoadingMore, setIsLoadingMore] = useState(initialData.loadingMore);
   const [isRefreshing, setRefreshing] = useState(initialData.refreshing);
+  const { showErrorModal } = useError();
 
   const isFetchingRef = useRef(false);
   const flatListRef = useRef(null);
@@ -31,16 +33,17 @@ export function usePagination(callbackFetch) {
         setTotalPages(result.total_pages);
         setTotalResult(result.total_items);
       }
-    } catch (error) {
-      // TODO colocar erro na tela como modal para usuário, ou seja, fazer um modal padrão para erros
-      console.error("Erro ao buscar dados iniciais:", error);
+    } catch (err) {
+      console.error("Erro ao buscar dados iniciais:", err);
+      const message =
+        err.message ||
+        "Não foi possível carregar os itens. Verifique sua conexão.";
+      showErrorModal(message, initialLoad);
     }
-  }, [callbackFetch]);
+  }, [callbackFetch, showErrorModal]);
 
-  const loadMore = async () => {
-    if (isLoadingMore || currentPage >= totalPages) {
-      return;
-    }
+  const loadMore = useCallback(async () => {
+    if (isLoadingMore || currentPage >= totalPages) return;
 
     try {
       isFetchingRef.current = true;
@@ -48,30 +51,22 @@ export function usePagination(callbackFetch) {
 
       const result = await callbackFetch(itemsPerPage, currentPage + 1);
       if (result.data && result.data.length > 0) {
-        setListItems((prevItems) => {
-          return [...prevItems, ...result.data];
-        });
+        setListItems((prevItems) => [...prevItems, ...result.data]);
         setCurrentPage(result.current_page);
       }
-    } catch (error) {
-      // TODO colocar erro na tela como modal para usuário, ou seja, fazer um modal padrão para erros
-      console.error("Erro ao buscar a próxima página:", error);
+    } catch (err) {
+      console.error("Erro ao buscar a próxima página:", err);
+      showErrorModal("Não foi possível carregar mais itens.", loadMore);
     } finally {
       isFetchingRef.current = false;
       setIsLoadingMore(false);
     }
-  };
+  }, [isLoadingMore, currentPage, totalPages, callbackFetch, showErrorModal]);
 
   const handleRefresh = useCallback(async () => {
     setRefreshing(true);
-    try {
-      await initialLoad();
-    } catch (error) {
-      // TODO colocar erro na tela como modal para usuário, ou seja, fazer um modal padrão para erros
-      console.error("Erro no refresh:", error);
-    } finally {
-      setRefreshing(false);
-    }
+    await initialLoad();
+    setRefreshing(false);
   }, [initialLoad]);
 
   const scrollToTop = () => {

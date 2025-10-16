@@ -4,7 +4,7 @@ export async function addInWishListRequest() {
   return;
 }
 
-export async function updateWishListRequest() {
+export async function deleteWishListRequest() {
   return;
 }
 

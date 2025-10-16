@@ -6,6 +6,7 @@ import (
 	"gorm.io/gorm"
 )
 
+<<<<<<< HEAD
 type PaginationDTO struct {
 	Data        any  `json:"data"`
 	CurrentPage uint `json:"current_page"`
@@ -16,6 +17,8 @@ type PaginationDTO struct {
 >>>>>>> dev
 }
 
+=======
+>>>>>>> dev
 func count(query *gorm.DB) uint {
 	var count int64
 	query.Count(&count)

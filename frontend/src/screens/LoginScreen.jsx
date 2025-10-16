@@ -86,7 +86,8 @@ export default function LoginScreen() {
             <Text className="text-white text-2xl font-bold">Entrar</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => goTo("/forgot-password")}>
             <Text className="text-white text-s underline underline-offset-1">
               Esqueceu a Senha? Clique Aqui!
             </Text>

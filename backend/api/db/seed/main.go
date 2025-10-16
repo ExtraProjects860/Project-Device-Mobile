@@ -6,13 +6,17 @@ import (
 	"github.com/ExtraProjects860/Project-Device-Mobile/config"
 )
 
-var logger *config.Logger = config.GetLogger("migrate")
-
 func main() {
-	if err := config.Init(); err != nil {
+	logger := config.NewLogger("seed")
+
+	_, db, err := config.Init()
+	if err != nil {
 		panic(fmt.Errorf("failed to init config: %v", err))
 	}
 
-	resetDB(config.GetDB())
-	seeds(config.GetDB())
+	err = config.ResetDB(db, logger)
+	if err != nil {
+		panic(fmt.Errorf("failed to reset database: %v", err))
+	}
+	seeds(db, logger)
 }
