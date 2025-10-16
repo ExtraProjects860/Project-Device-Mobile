@@ -9,25 +9,22 @@ export async function getUsersRequest(itemsPerPage = 20, currentPage = 1) {
 }
 
 export async function createUserRequest(userData) {
-  const response = await instanceMainApi.post("/users", userData);
+  const response = await instanceMainApi.post("/user", userData);
   return response.data;
 }
 
 export async function getInfoUserRequest(userId) {
-  const response = await instanceMainApi.get(`/users/${userId}`);
+  const response = await instanceMainApi.get(`/user/${userId}`);
   return response.data;
 }
 
 /**
  * @param {string} userId
  * @param {object} updatedUserData
- * @param {string} [updatedUserData.name]
- * @param {string} [updatedUserData.register_number]
- * @param {string} [updatedUserData.email]
  */
 export async function updateUserRequest(userId, updatedUserData) {
   const response = await instanceMainai.patch(
-    `/users/${userId}`,
+    `/user/${userId}`,
     updatedUserData,
   );
   return response.data;
