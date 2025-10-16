@@ -1,16 +1,15 @@
 package main
 
 import (
+	"github.com/ExtraProjects860/Project-Device-Mobile/config"
 	"github.com/ExtraProjects860/Project-Device-Mobile/schemas"
 	"gorm.io/gorm"
 )
 
-func migrateDatabase(db *gorm.DB) error {
+func migrateDatabase(db *gorm.DB, logger *config.Logger) error {
 	var err error
 
-	err = db.Migrator().DropTable(
-		schemas.AllModelsSlice()...,
-	)
+	err = config.ResetDB(db, logger)
 
 	if err != nil {
 		return err

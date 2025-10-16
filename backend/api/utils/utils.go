@@ -6,5 +6,4 @@ var validate *validator.Validate
 
 func init() {
 	validate = validator.New()
-	validate.RegisterValidation("cpf", validateCPF)
 }

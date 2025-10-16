@@ -1,27 +1,31 @@
 package service
 
 import (
-	"context"
 	"fmt"
 
+	"github.com/ExtraProjects860/Project-Device-Mobile/appcontext"
+	"github.com/ExtraProjects860/Project-Device-Mobile/config"
 	"github.com/ExtraProjects860/Project-Device-Mobile/handler/request"
 	"github.com/ExtraProjects860/Project-Device-Mobile/repository"
 	"github.com/ExtraProjects860/Project-Device-Mobile/schemas"
 	"github.com/ExtraProjects860/Project-Device-Mobile/service/dto"
 	"github.com/ExtraProjects860/Project-Device-Mobile/utils"
 	"github.com/gin-gonic/gin"
-	"github.com/paemuri/brdoc"
 )
 
 type UserService struct {
-	repo repository.PostgresUserRepository
+	repo   *repository.PostgresUserRepository
+	logger *config.Logger
 }
 
-func NewUserService(repo repository.PostgresUserRepository) UserService {
-	return UserService{repo: repo}
+func GetUserService(appCtx *appcontext.AppContext) UserService {
+	return UserService{
+		repo:   repository.NewPostgresUserRepository(appCtx.DB),
+		logger: config.NewLogger("SERVICE - USER"),
+	}
 }
 
-func validateAndUpdateFields(user *schemas.User, input request.UserRequest) error {
+func (u *UserService) ValidateAndUpdateFields(user *schemas.User, input request.UserRequest) error {
 	if input.Name != "" {
 		user.Name = input.Name
 	}
@@ -35,7 +39,7 @@ func validateAndUpdateFields(user *schemas.User, input request.UserRequest) erro
 		}
 		user.Password = hashed
 	}
-	if input.Cpf != "" && brdoc.IsCPF(input.Cpf) {
+	if input.Cpf != "" && utils.ValidateCPF(input.Cpf) {
 		user.Cpf = input.Cpf
 	}
 	if input.RegisterNumber != 0 {
@@ -54,7 +58,7 @@ func validateAndUpdateFields(user *schemas.User, input request.UserRequest) erro
 	return nil
 }
 
-func (u *UserService) Create(ctx context.Context, input request.UserRequest) (*dto.UserDTO, error) {
+func (u *UserService) Create(ctx *gin.Context, input request.UserRequest) (*dto.UserDTO, error) {
 	hashedPassword, err := utils.GenerateHashPassword(input.Password)
 	if err != nil {
 		return nil, err
@@ -84,7 +88,7 @@ func (u *UserService) Update(ctx *gin.Context, id uint, input request.UserReques
 		return nil, err
 	}
 
-	if err = validateAndUpdateFields(&user, input); err != nil {
+	if err = u.ValidateAndUpdateFields(&user, input); err != nil {
 		return nil, err
 	}
 
@@ -95,7 +99,7 @@ func (u *UserService) Update(ctx *gin.Context, id uint, input request.UserReques
 	return dto.MakeUserOutput(user), nil
 }
 
-func (u *UserService) Get(ctx context.Context, id uint) (*dto.UserDTO, error) {
+func (u *UserService) Get(ctx *gin.Context, id uint) (*dto.UserDTO, error) {
 	user, err := u.repo.GetInfoUser(ctx, id)
 	if err != nil {
 		return nil, err
@@ -107,7 +111,7 @@ func (u *UserService) Get(ctx context.Context, id uint) (*dto.UserDTO, error) {
 func (u *UserService) GetAll(ctx *gin.Context, itemsPerPage, currentPage uint) (*dto.PaginationDTO, error) {
 	users, totalPages, totalItems, err := u.repo.GetUsers(ctx, itemsPerPage, currentPage)
 	if err != nil {
-		logger.Error(err.Error())
+		u.logger.Error(err.Error())
 		return nil, err
 	}
 

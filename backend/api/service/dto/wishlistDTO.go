@@ -1,11 +1,25 @@
 package dto
 
-import "github.com/ExtraProjects860/Project-Device-Mobile/schemas"
+import (
+	"github.com/ExtraProjects860/Project-Device-Mobile/schemas"
+)
 
 type WishListDTO struct {
-	UserID    uint         `json:"id"`
-	ItemCount int          `json:"item_count"`
+	UserID    uint         `json:"id" example:"1"`
+	ItemCount int          `json:"item_count" example:"1"`
 	Products  []ProductDTO `json:"products"`
+}
+
+type WishListMinimalDTO struct {
+	UserID    uint `json:"user_id" example:"1"`
+	ProductID uint `json:"product_id" example:"1"`
+}
+
+func MakeWishListMinimalDTO(entry schemas.WishList) *WishListMinimalDTO {
+	return &WishListMinimalDTO{
+		UserID:    entry.UserID,
+		ProductID: entry.ProductID,
+	}
 }
 
 func MakeWishListOutput(wishListEntries []schemas.WishList, userID uint) *WishListDTO {

@@ -7,13 +7,13 @@ import (
 )
 
 type RoleDTO struct {
-	ID        uint      `json:"id"`
-	Name      string    `json:"name"`
-	CreatedAt time.Time `json:"created_at"`
-	UpdatedAt time.Time `json:"updated_at"`
+	ID        uint      `json:"id" example:"1"`
+	Name      string    `json:"name" example:"admin"`
+	CreatedAt time.Time `json:"created_at" example:"2025-10-12T21:00:00Z"`
+	UpdatedAt time.Time `json:"updated_at" example:"2025-10-12T21:05:00Z"`
 }
 
-func makeRoleOutput(role schemas.Role) *RoleDTO {
+func MakeRoleOutput(role schemas.Role) *RoleDTO {
 	return &RoleDTO{
 		ID:        role.ID,
 		Name:      role.Name,

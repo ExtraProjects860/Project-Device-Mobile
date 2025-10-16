@@ -1,21 +1,38 @@
 package routes
 
 import (
+	"github.com/ExtraProjects860/Project-Device-Mobile/appcontext"
+	"github.com/ExtraProjects860/Project-Device-Mobile/config"
 	"github.com/ExtraProjects860/Project-Device-Mobile/handler"
 	"github.com/gin-gonic/gin"
 )
 
-func registerAuthRoutes(rg *gin.RouterGroup) {
+func registerAuthRoutes(rg *gin.RouterGroup, appCtx *appcontext.AppContext) {
 	authGroup := rg.Group("/auth")
 	{
-		authGroup.POST("/request", handler.RequestTokenHandler)
+		authGroup.POST("/request", handler.RequestTokenHandler(
+			appCtx,
+			config.NewLogger("POST - AUTH-REQUEST"),
+		))
 
-		authGroup.POST("/reset-password", handler.ResetPasswordHandler)
+		authGroup.POST("/reset-password", handler.ResetPasswordHandler(
+			appCtx,
+			config.NewLogger("POST - AUTH-RESET-PASSWORD"),
+		))
 
-		authGroup.POST("/reset-pass-log-in", handler.ResetPasswordLogInHandler)
+		authGroup.POST("/reset-pass-log-in", handler.ResetPasswordLogInHandler(
+			appCtx,
+			config.NewLogger("POST - AUTH-REST-PASS-LOG-IN"),
+		))
 
-		authGroup.POST("/login", handler.LoginHandler)
+		authGroup.POST("/login", handler.LoginHandler(
+			appCtx,
+			config.NewLogger("POST - AUTH-LOGIN"),
+		))
 
-		authGroup.POST("/refresh-token", handler.RefreshTokenHandler)
+		authGroup.POST("/refresh-token", handler.RefreshTokenHandler(
+			appCtx,
+			config.NewLogger("POST - AUTH-REFRESH-TOKEN"),
+		))
 	}
 }

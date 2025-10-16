@@ -1,11 +1,11 @@
-package config
+package enum
 
 type TypeUser uint8
 
 const (
 	SuperAdmin TypeUser = iota
-	Admin 
-	User 
+	Admin
+	User
 )
 
 func (t TypeUser) String() string {
@@ -16,8 +16,7 @@ func (t TypeUser) String() string {
 		return "ADMIN"
 	case User:
 		return "USER"
+	default:
+		return "UNKNOWN"
 	}
-	
-	return "UNKNOWN"
 }
-

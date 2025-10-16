@@ -7,16 +7,16 @@ import (
 )
 
 type UserDTO struct {
-	ID             uint      `json:"id"`
-	Name           string    `json:"name"`
-	Role           string    `json:"role"`
-	Enterprise     *string   `json:"enterprise,omitempty"`
-	Email          string    `json:"email"`
-	Cpf            string    `json:"cpf"`
-	RegisterNumber uint      `json:"register_number"`
-	PhotoUrl       *string   `json:"photo_url,omitempty"`
-	CreatedAt      time.Time `json:"created_at"`
-	UpdatedAt      time.Time `json:"updated_at"`
+	ID             uint      `json:"id" example:"1"`
+	Name           string    `json:"name" example:"João da Silva"`
+	Role           string    `json:"role" example:"admin"`
+	Enterprise     *string   `json:"enterprise,omitempty" example:"Empresa XPTO"`
+	Email          string    `json:"email" example:"joao@example.com"`
+	Cpf            string    `json:"cpf" example:"123.456.789-00"`
+	RegisterNumber uint      `json:"register_number" example:"2021001"`
+	PhotoUrl       *string   `json:"photo_url,omitempty" example:"https://cdn.exemplo.com/fotos/joao.jpg"`
+	CreatedAt      time.Time `json:"created_at" example:"2025-10-12T21:00:00Z"`
+	UpdatedAt      time.Time `json:"updated_at" example:"2025-10-12T21:05:00Z"`
 }
 
 func MakeUserOutput(user schemas.User) *UserDTO {

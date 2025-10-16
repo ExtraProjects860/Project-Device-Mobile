@@ -1,9 +1,8 @@
 package routes
 
 import (
-	"fmt"
-
-	"github.com/ExtraProjects860/Project-Device-Mobile/config"
+	"github.com/ExtraProjects860/Project-Device-Mobile/appcontext"
+	"github.com/ExtraProjects860/Project-Device-Mobile/middleware"
 	"github.com/gin-gonic/gin"
 )
 
@@ -12,15 +11,17 @@ func configureNetwork(router *gin.Engine) {
 	router.SetTrustedProxies([]string{})
 }
 
-func InitializeRouter() {
+func InitializeRouter(appCtx *appcontext.AppContext) *gin.Engine {
 	router := gin.Default()
 
 	configureNetwork(router)
 
-	InitHealthCheckRoutes(router)
-	InitRoutesApiV1(router)
+	middleware.SecurityHeaders(router)
+	middleware.SetCors(router)
+
+	InitHealthCheckRoutes(router, appCtx)
+	InitRoutesApiV1(router, appCtx)
 	InitSwaggerRoute(router)
 
-	port := config.GetEnv().API.Port
-	router.Run(fmt.Sprintf(":%v", port))
+	return router
 }

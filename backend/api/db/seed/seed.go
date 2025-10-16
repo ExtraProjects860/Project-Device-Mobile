@@ -3,9 +3,11 @@ package main
 import (
 	"fmt"
 	"math/rand/v2"
+	"strings"
 	"time"
 
 	"github.com/ExtraProjects860/Project-Device-Mobile/config"
+	"github.com/ExtraProjects860/Project-Device-Mobile/enum"
 	"github.com/ExtraProjects860/Project-Device-Mobile/schemas"
 	"github.com/ExtraProjects860/Project-Device-Mobile/utils"
 	"github.com/brianvoe/gofakeit/v7"
@@ -24,7 +26,7 @@ func verifyStartSeed(db *gorm.DB, m any) bool {
 	return count > 0
 }
 
-func seedUser(db *gorm.DB, quantity int) {
+func seedUser(db *gorm.DB, logger *config.Logger, quantity int) {
 	userModelName := "User"
 	if verifyStartSeed(db, &schemas.User{}) {
 		logger.Infof("Table '%s' already has data. Skipping seed.", userModelName)
@@ -57,7 +59,7 @@ func seedUser(db *gorm.DB, quantity int) {
 		url := fmt.Sprintf("https://picsum.photos/%d/%d?random=%s", 300, 300, faker.Username())
 
 		user := schemas.User{
-			Name:           faker.Name(),
+			Name:           strings.ToUpper(faker.Name()),
 			Email:          faker.Email(),
 			Password:       hashedPassword,
 			Cpf:            faker.Regex("[0-9]{11}"),
@@ -76,7 +78,7 @@ func seedUser(db *gorm.DB, quantity int) {
 	logger.Infof("Seeding for table '%s' completed.", userModelName)
 }
 
-func seedEnterprise(db *gorm.DB, quantity int) {
+func seedEnterprise(db *gorm.DB, logger *config.Logger, quantity int) {
 	modelName := "Enterprise"
 	if verifyStartSeed(db, &schemas.Enterprise{}) {
 		logger.Infof("Table '%s' already has data. Skipping seed.", modelName)
@@ -86,7 +88,7 @@ func seedEnterprise(db *gorm.DB, quantity int) {
 	logger.Infof("Seeding table '%s'...", modelName)
 	for range quantity {
 		enterprise := schemas.Enterprise{
-			Name: faker.AppName(),
+			Name: strings.ToUpper(faker.AppName()),
 		}
 
 		if err := db.CreateInBatches(&enterprise, 3).Error; err != nil {
@@ -97,7 +99,7 @@ func seedEnterprise(db *gorm.DB, quantity int) {
 	logger.Infof("Seeding for table '%s' completed.", modelName)
 }
 
-func seedWishList(db *gorm.DB) {
+func seedWishList(db *gorm.DB, logger *config.Logger) {
 	wishlistModelName := "WishList"
 	if verifyStartSeed(db, &schemas.WishList{}) {
 		logger.Infof("Table '%s' already has data. Skipping seed.", wishlistModelName)
@@ -149,7 +151,7 @@ func seedWishList(db *gorm.DB) {
 	logger.Infof("Seeding for '%s' completed.", wishlistModelName)
 }
 
-func seedRole(db *gorm.DB) {
+func seedRole(db *gorm.DB, logger *config.Logger) {
 	modelName := "RoleUser"
 	if verifyStartSeed(db, &schemas.Role{}) {
 		logger.Infof("Table '%s' already has data. Skipping seed.", modelName)
@@ -158,9 +160,9 @@ func seedRole(db *gorm.DB) {
 
 	logger.Infof("Seeding table '%s'...", modelName)
 	roles := []schemas.Role{
-		{Name: config.SuperAdmin.String()},
-		{Name: config.Admin.String()},
-		{Name: config.User.String()},
+		{Name: enum.SuperAdmin.String()},
+		{Name: enum.Admin.String()},
+		{Name: enum.User.String()},
 	}
 
 	if err := db.Create(&roles).Error; err != nil {
@@ -169,7 +171,7 @@ func seedRole(db *gorm.DB) {
 	logger.Infof("Seeding for table '%s' completed.", modelName)
 }
 
-func seedProduct(db *gorm.DB, quantity int) {
+func seedProduct(db *gorm.DB, logger *config.Logger, quantity int) {
 	modelName := "Product"
 	if verifyStartSeed(db, &schemas.Product{}) {
 		logger.Infof("Table '%s' already has data. Skipping seed.", modelName)
@@ -180,15 +182,16 @@ func seedProduct(db *gorm.DB, quantity int) {
 	for range quantity {
 		url := fmt.Sprintf("https://picsum.photos/%d/%d?random=%s", 300, 300, faker.Username())
 		discount := faker.Price(5, 50) / 100
+		randAvaiable := rng.IntN(2) == 1
 
 		product := schemas.Product{
-			Name:               faker.ProductName(),
+			Name:               strings.ToUpper(faker.ProductName()),
 			Description:        faker.Sentence(10),
 			Value:              faker.Price(50, 5000), // preço entre 50 e 5000
 			Quantity:           faker.Number(1, 100),
 			Discount:           &discount,
 			PhotoUrl:           &url,
-			IsPromotionAvaible: rng.IntN(2) == 1,
+			IsPromotionAvaible: &randAvaiable,
 		}
 
 		if err := db.CreateInBatches(&product, 5).Error; err != nil {
@@ -199,12 +202,12 @@ func seedProduct(db *gorm.DB, quantity int) {
 	logger.Infof("Seeding for table '%s' completed.", modelName)
 }
 
-func seeds(db *gorm.DB) {
-	seedRole(db)
-	seedEnterprise(db, 10)
-	seedProduct(db, 30)
-	seedUser(db, 30)
-	seedWishList(db, )
+func seeds(db *gorm.DB, logger *config.Logger) {
+	seedRole(db, logger)
+	seedEnterprise(db, logger, 10)
+	seedProduct(db, logger, 30)
+	seedUser(db, logger, 30)
+	seedWishList(db, logger)
 
 	logger.Info("Seed completed.")
 }

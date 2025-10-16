@@ -1,63 +1,133 @@
 basePath: /
 definitions:
+  dto.EnterpriseDTO:
+    properties:
+      created_at:
+        example: "2025-10-10T08:00:00Z"
+        type: string
+      id:
+        example: 1
+        type: integer
+      name:
+        example: Empresa XPTO
+        type: string
+      updated_at:
+        example: "2025-10-12T09:30:00Z"
+        type: string
+    type: object
   dto.ProductDTO:
     properties:
       created_at:
+        example: "2025-10-12T20:00:00Z"
         type: string
       description:
+        example: Smartphone de última geração
         type: string
       discount:
+        example: 10.5
         type: number
       id:
+        example: 100
         type: integer
       is_avaible:
+        example: true
         type: boolean
       is_promotion_avaible:
+        example: true
         type: boolean
       name:
+        example: Smartphone X
         type: string
       photo_url:
+        example: https://cdn.exemplo.com/produtos/smartphone-x.jpg
         type: string
       quantity:
+        example: 50
         type: integer
       updated_at:
+        example: "2025-10-12T21:00:00Z"
         type: string
       value:
+        example: 2999.99
         type: number
+    type: object
+  dto.RoleDTO:
+    properties:
+      created_at:
+        example: "2025-10-12T21:00:00Z"
+        type: string
+      id:
+        example: 1
+        type: integer
+      name:
+        example: admin
+        type: string
+      updated_at:
+        example: "2025-10-12T21:05:00Z"
+        type: string
     type: object
   dto.UserDTO:
     properties:
       cpf:
+        example: 123.456.789-00
         type: string
       created_at:
+        example: "2025-10-12T21:00:00Z"
         type: string
       email:
+        example: joao@example.com
         type: string
       enterprise:
+        example: Empresa XPTO
         type: string
       id:
+        example: 1
         type: integer
       name:
+        example: João da Silva
         type: string
       photo_url:
+        example: https://cdn.exemplo.com/fotos/joao.jpg
         type: string
       register_number:
+        example: 2021001
         type: integer
       role:
+        example: admin
         type: string
       updated_at:
+        example: "2025-10-12T21:05:00Z"
         type: string
     type: object
   dto.WishListDTO:
     properties:
       id:
+        example: 1
         type: integer
       item_count:
+        example: 1
         type: integer
       products:
         items:
           $ref: '#/definitions/dto.ProductDTO'
         type: array
+    type: object
+  dto.WishListMinimalDTO:
+    properties:
+      product_id:
+        example: 1
+        type: integer
+      user_id:
+        example: 1
+        type: integer
+    type: object
+  request.EnterpriseRequest:
+    properties:
+      name:
+        minLength: 3
+        type: string
+    required:
+    - name
     type: object
   request.LoginRequest:
     properties:
@@ -65,25 +135,46 @@ definitions:
         type: string
       password:
         type: string
+    required:
+    - email
+    - password
     type: object
   request.ProductRequest:
     properties:
       description:
+        maxLength: 255
+        minLength: 3
         type: string
       discount:
+        minimum: 0
         type: number
       is_avaible:
         type: boolean
       is_promotion_avaible:
         type: boolean
       name:
+        minLength: 3
         type: string
       photo_url:
         type: string
       quantity:
+        minimum: 0
         type: integer
       value:
         type: number
+    required:
+    - description
+    - name
+    - quantity
+    - value
+    type: object
+  request.RoleRequest:
+    properties:
+      name:
+        minLength: 3
+        type: string
+    required:
+    - name
     type: object
   request.UserRequest:
     properties:
@@ -94,8 +185,10 @@ definitions:
       enterprise_id:
         type: integer
       name:
+        minLength: 3
         type: string
       password:
+        minLength: 6
         type: string
       photo_url:
         type: string
@@ -103,17 +196,24 @@ definitions:
         type: integer
       role_id:
         type: integer
-    type: object
-  request.WishListRequest:
-    properties:
-      product_id:
-        type: integer
-      user_id:
-        type: integer
+    required:
+    - cpf
+    - email
+    - name
+    - password
+    - register_number
+    - role_id
     type: object
   response.ErrResponse:
     properties:
       error:
+        type: string
+    type: object
+  response.TokenResponse:
+    properties:
+      access_token:
+        type: string
+      refresh_token:
         type: string
     type: object
 host: localhost:5050
@@ -139,62 +239,50 @@ paths:
       produces:
       - application/json
       responses:
-        "200":
-          description: OK
+        "201":
+          description: Created
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/response.TokenResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrResponse'
         "401":
           description: Unauthorized
           schema:
             $ref: '#/definitions/response.ErrResponse'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/response.ErrResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrResponse'
       summary: User Login
-      tags:
-      - auth
-  /api/v1/auth/logout:
-    post:
-      consumes:
-      - application/json
-      description: Logs out the user and invalidates token
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            additionalProperties:
-              type: string
-            type: object
-        "401":
-          description: Unauthorized
-          schema:
-            additionalProperties:
-              type: string
-            type: object
-      summary: User Logout
       tags:
       - auth
   /api/v1/auth/refresh-token:
     post:
       consumes:
       - application/json
+      deprecated: true
       description: Refreshes the authentication token
       produces:
       - application/json
       responses:
-        "200":
-          description: OK
+        "201":
+          description: Created
           schema:
-            additionalProperties:
-              type: string
-            type: object
-        "401":
-          description: Unauthorized
+            $ref: '#/definitions/response.TokenResponse'
+        "422":
+          description: Unprocessable Entity
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/response.ErrResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrResponse'
       summary: Refresh Token
       tags:
       - auth
@@ -215,6 +303,23 @@ paths:
       summary: Request Password Token
       tags:
       - auth
+  /api/v1/auth/reset-pass-log-in:
+    post:
+      consumes:
+      - application/json
+      description: Resets user password log in system
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Reset Password Log In
+      tags:
+      - auth
   /api/v1/auth/reset-password:
     post:
       consumes:
@@ -232,6 +337,114 @@ paths:
       summary: Reset Password
       tags:
       - auth
+  /api/v1/enterprise:
+    post:
+      consumes:
+      - application/json
+      description: Creates a new enterprise
+      parameters:
+      - description: Enterprise info
+        in: body
+        name: enterprise
+        required: true
+        schema:
+          $ref: '#/definitions/request.EnterpriseRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/dto.EnterpriseDTO'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrResponse'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/response.ErrResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrResponse'
+      summary: Create Enterprise
+      tags:
+      - enterprises
+    put:
+      consumes:
+      - application/json
+      description: Updates an existing enterprise by ID
+      parameters:
+      - description: Enterprise ID
+        in: query
+        name: id
+        required: true
+        type: integer
+      - description: Enterprise info to update
+        in: body
+        name: enterprise
+        required: true
+        schema:
+          $ref: '#/definitions/request.EnterpriseRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.EnterpriseDTO'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrResponse'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/response.ErrResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrResponse'
+      summary: Update Enterprise
+      tags:
+      - enterprises
+  /api/v1/enterprises:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves a paginated list of enterprises
+      parameters:
+      - description: Items per page
+        in: query
+        name: itemsPerPage
+        required: true
+        type: integer
+      - description: Current page number
+        in: query
+        name: currentPage
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/dto.EnterpriseDTO'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrResponse'
+      summary: List Enterprises
+      tags:
+      - enterprises
   /api/v1/product:
     patch:
       consumes:
@@ -258,6 +471,10 @@ paths:
             $ref: '#/definitions/dto.ProductDTO'
         "400":
           description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrResponse'
+        "422":
+          description: Unprocessable Entity
           schema:
             $ref: '#/definitions/response.ErrResponse'
         "500":
@@ -287,6 +504,10 @@ paths:
             $ref: '#/definitions/dto.ProductDTO'
         "400":
           description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrResponse'
+        "422":
+          description: Unprocessable Entity
           schema:
             $ref: '#/definitions/response.ErrResponse'
         "500":
@@ -330,6 +551,114 @@ paths:
       summary: Get Products
       tags:
       - products
+  /api/v1/role:
+    post:
+      consumes:
+      - application/json
+      description: Creates a new role
+      parameters:
+      - description: Role info
+        in: body
+        name: role
+        required: true
+        schema:
+          $ref: '#/definitions/request.RoleRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/dto.RoleDTO'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrResponse'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/response.ErrResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrResponse'
+      summary: Create Role
+      tags:
+      - roles
+    put:
+      consumes:
+      - application/json
+      description: Updates an existing role by ID
+      parameters:
+      - description: role ID
+        in: query
+        name: id
+        required: true
+        type: integer
+      - description: Role info to update
+        in: body
+        name: role
+        required: true
+        schema:
+          $ref: '#/definitions/request.RoleRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.RoleDTO'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrResponse'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/response.ErrResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrResponse'
+      summary: Update Role
+      tags:
+      - roles
+  /api/v1/roles:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves a paginated list of roles
+      parameters:
+      - description: Items per page
+        in: query
+        name: itemsPerPage
+        required: true
+        type: integer
+      - description: Current page number
+        in: query
+        name: currentPage
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/dto.RoleDTO'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrResponse'
+      summary: List Roles
+      tags:
+      - roles
   /api/v1/user:
     get:
       description: Returns information about a specific user
@@ -383,6 +712,10 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/response.ErrResponse'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/response.ErrResponse'
         "500":
           description: Internal Server Error
           schema:
@@ -398,7 +731,6 @@ paths:
       - description: User info
         in: body
         name: user
-        required: true
         schema:
           $ref: '#/definitions/request.UserRequest'
       produces:
@@ -410,6 +742,10 @@ paths:
             $ref: '#/definitions/dto.UserDTO'
         "400":
           description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrResponse'
+        "422":
+          description: Unprocessable Entity
           schema:
             $ref: '#/definitions/response.ErrResponse'
         "500":
@@ -473,9 +809,7 @@ paths:
         "200":
           description: OK
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/dto.WishListMinimalDTO'
         "400":
           description: Bad Request
           schema:
@@ -530,19 +864,23 @@ paths:
       - application/json
       description: Adds a product to the user wish list
       parameters:
-      - description: WishList info
-        in: body
-        name: wishlist
+      - description: User ID
+        in: query
+        name: user_id
         required: true
-        schema:
-          $ref: '#/definitions/request.WishListRequest'
+        type: string
+      - description: Product ID
+        in: query
+        name: product_id
+        required: true
+        type: string
       produces:
       - application/json
       responses:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/dto.WishListDTO'
+            $ref: '#/definitions/dto.WishListMinimalDTO'
         "400":
           description: Bad Request
           schema:

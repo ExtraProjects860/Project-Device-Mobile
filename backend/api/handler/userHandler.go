@@ -4,10 +4,10 @@ import (
 	"errors"
 	"net/http"
 
+	"github.com/ExtraProjects860/Project-Device-Mobile/appcontext"
 	"github.com/ExtraProjects860/Project-Device-Mobile/config"
 	"github.com/ExtraProjects860/Project-Device-Mobile/handler/request"
 	"github.com/ExtraProjects860/Project-Device-Mobile/handler/response"
-	"github.com/ExtraProjects860/Project-Device-Mobile/repository"
 	"github.com/ExtraProjects860/Project-Device-Mobile/service"
 	"github.com/ExtraProjects860/Project-Device-Mobile/utils"
 	"github.com/gin-gonic/gin"
@@ -18,38 +18,39 @@ import (
 // @Tags         users
 // @Accept       json
 // @Produce      json
-// @Param        user body request.UserRequest true "User info"
+// @Param        user body request.UserRequest false "User info"
 // @Success      201 {object} dto.UserDTO
 // @Failure      400 {object} response.ErrResponse
+// @Failure      422 {object} response.ErrResponse
 // @Failure      500 {object} response.ErrResponse
 // @Router       /api/v1/user [post]
-func CreateUserHandler(ctx *gin.Context) {
-	var input request.UserRequest
+func CreateUserHandler(appCtx *appcontext.AppContext, logger *config.Logger) gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		var input request.UserRequest
 
-	if err := ctx.ShouldBindJSON(&input); err != nil {
-		logger.Error(err.Error())
-		response.SendErr(ctx, http.StatusBadRequest, err)
-		return
+		if err := request.ReadBody(ctx, &input); err != nil {
+			logger.Error(err.Error())
+			response.SendErr(ctx, http.StatusBadRequest, err)
+			return
+		}
+
+		if err := request.ValidateBodyReq(&input, ctx, utils.GetValidate()); err != nil {
+			logger.Error(err.Error())
+			response.SendErr(ctx, http.StatusUnprocessableEntity, err)
+			return
+		}
+
+		userService := service.GetUserService(appCtx)
+
+		user, err := userService.Create(ctx, input)
+		if err != nil {
+			logger.Error(err.Error())
+			response.SendErr(ctx, http.StatusInternalServerError, err)
+			return
+		}
+
+		response.SendSuccess(ctx, http.StatusCreated, user)
 	}
-
-	if err := request.ValidateBodyReq(&input, utils.GetValidate()); err != nil {
-		logger.Error(err.Error())
-		response.SendErr(ctx, http.StatusBadRequest, err)
-		return
-	}
-
-	userService := service.NewUserService(
-		*repository.NewPostgresUserRepository(config.GetDB()),
-	)
-
-	user, err := userService.Create(ctx, input)
-	if err != nil {
-		logger.Error(err.Error())
-		response.SendErr(ctx, http.StatusInternalServerError, err)
-		return
-	}
-
-	response.SendSuccess(ctx, http.StatusCreated, user)
 }
 
 // @Summary      Get User Info
@@ -61,26 +62,26 @@ func CreateUserHandler(ctx *gin.Context) {
 // @Failure      400 {object} response.ErrResponse
 // @Failure      500 {object} response.ErrResponse
 // @Router       /api/v1/user [get]
-func GetInfoUserHandler(ctx *gin.Context) {
-	id, err := request.GetIdQuery(ctx)
-	if err != nil {
-		logger.Error(err.Error())
-		response.SendErr(ctx, http.StatusBadRequest, err)
-		return
+func GetInfoUserHandler(appCtx *appcontext.AppContext, logger *config.Logger) gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		id, err := request.GetIdQuery(ctx)
+		if err != nil {
+			logger.Error(err.Error())
+			response.SendErr(ctx, http.StatusBadRequest, err)
+			return
+		}
+
+		userService := service.GetUserService(appCtx)
+
+		user, err := userService.Get(ctx, id)
+		if err != nil {
+			logger.Error(err.Error())
+			response.SendErr(ctx, http.StatusInternalServerError, errors.New("error to process get user"))
+			return
+		}
+
+		response.SendSuccess(ctx, http.StatusOK, user)
 	}
-
-	userService := service.NewUserService(
-		*repository.NewPostgresUserRepository(config.GetDB()),
-	)
-
-	user, err := userService.Get(ctx, id)
-	if err != nil {
-		logger.Error(err.Error())
-		response.SendErr(ctx, http.StatusInternalServerError, errors.New("error to process get user"))
-		return
-	}
-
-	response.SendSuccess(ctx, http.StatusOK, user)
 }
 
 // @Summary      Get Users
@@ -93,26 +94,26 @@ func GetInfoUserHandler(ctx *gin.Context) {
 // @Failure      400 {object} response.ErrResponse
 // @Failure      500 {object} response.ErrResponse
 // @Router       /api/v1/users [get]
-func GetUsersHandler(ctx *gin.Context) {
-	itemsPerPage, currentPage, err := request.GetPaginationData(ctx)
-	if err != nil {
-		logger.Error(err.Error())
-		response.SendErr(ctx, http.StatusBadRequest, err)
-		return
+func GetUsersHandler(appCtx *appcontext.AppContext, logger *config.Logger) gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		itemsPerPage, currentPage, err := request.GetPaginationData(ctx)
+		if err != nil {
+			logger.Error(err.Error())
+			response.SendErr(ctx, http.StatusBadRequest, err)
+			return
+		}
+
+		userService := service.GetUserService(appCtx)
+
+		users, err := userService.GetAll(ctx, itemsPerPage, currentPage)
+		if err != nil {
+			logger.Error(err.Error())
+			response.SendErr(ctx, http.StatusInternalServerError, errors.New("error to process get users"))
+			return
+		}
+
+		response.SendSuccess(ctx, http.StatusOK, users)
 	}
-
-	userService := service.NewUserService(
-		*repository.NewPostgresUserRepository(config.GetDB()),
-	)
-
-	users, err := userService.GetAll(ctx, itemsPerPage, currentPage)
-	if err != nil {
-		logger.Error(err.Error())
-		response.SendErr(ctx, http.StatusInternalServerError, errors.New("error to process get users"))
-		return
-	}
-
-	response.SendSuccess(ctx, http.StatusOK, users)
 }
 
 // @Summary      Update User
@@ -124,39 +125,40 @@ func GetUsersHandler(ctx *gin.Context) {
 // @Param        user body request.UserRequest false "User info to update"
 // @Success      200 {object} dto.UserDTO
 // @Failure      400 {object} response.ErrResponse
+// @Failure      422 {object} response.ErrResponse
 // @Failure      500 {object} response.ErrResponse
 // @Router       /api/v1/user [patch]
-func UpdateUserHandler(ctx *gin.Context) {
-	id, err := request.GetIdQuery(ctx)
-	if err != nil {
-		logger.Error(err.Error())
-		response.SendErr(ctx, http.StatusBadRequest, err)
-		return
+func UpdateUserHandler(appCtx *appcontext.AppContext, logger *config.Logger) gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		id, err := request.GetIdQuery(ctx)
+		if err != nil {
+			logger.Error(err.Error())
+			response.SendErr(ctx, http.StatusBadRequest, err)
+			return
+		}
+
+		var input request.UserRequest
+		if err := request.ReadBody(ctx, &input); err != nil {
+			logger.Error(err.Error())
+			response.SendErr(ctx, http.StatusUnprocessableEntity, err)
+			return
+		}
+
+		if err := request.ValidateUpdateBodyReq(&input); err != nil {
+			logger.Error(err.Error())
+			response.SendErr(ctx, http.StatusBadRequest, err)
+			return
+		}
+
+		userService := service.GetUserService(appCtx)
+
+		user, err := userService.Update(ctx, id, input)
+		if err != nil {
+			logger.Error(err.Error())
+			response.SendErr(ctx, http.StatusInternalServerError, errors.New("error to update user"))
+			return
+		}
+
+		response.SendSuccess(ctx, http.StatusOK, user)
 	}
-
-	var input request.UserRequest
-	if err := ctx.ShouldBindJSON(&input); err != nil {
-		logger.Error(err.Error())
-		response.SendErr(ctx, http.StatusBadRequest, err)
-		return
-	}
-
-	if err := request.ValidateUpdateBodyReq(&input); err != nil {
-		logger.Error(err.Error())
-		response.SendErr(ctx, http.StatusBadRequest, err)
-		return
-	}
-
-	userService := service.NewUserService(
-		*repository.NewPostgresUserRepository(config.GetDB()),
-	)
-
-	user, err := userService.Update(ctx, id, input)
-	if err != nil {
-		logger.Error(err.Error())
-		response.SendErr(ctx, http.StatusInternalServerError, errors.New("error to update user"))
-		return
-	}
-
-	response.SendSuccess(ctx, http.StatusOK, user)
 }

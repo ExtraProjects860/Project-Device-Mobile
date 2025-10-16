@@ -4,33 +4,29 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
 )
 
 type EnterpriseRequest struct {
-	Name string `json:"name"`
+	Name string `json:"name" validate:"required,min=3"`
 }
 
-func (e *EnterpriseRequest) Validate(validate *validator.Validate) error {
-	if err := validate.Var(e.Name, "required,min=3"); err != nil {
-		return fmt.Errorf("name: %v", err)
-	}
+func (s *EnterpriseRequest) Validate(ctx *gin.Context, validate *validator.Validate) error {
+	return validate.StructCtx(ctx, s)
+}
 
+func (s *EnterpriseRequest) ValidateUpdate() error {
+	hasAtLeastOne := s.Name != ""
+	if !hasAtLeastOne {
+		return fmt.Errorf("at least one valid field must be provided")
+	}
 	return nil
 }
 
-func (e *EnterpriseRequest) ValidateUpdate(validate *validator.Validate) error {
-	if e.Name != "" {
-		if err := validate.Var(e.Name, "min=3"); err != nil {
-			return fmt.Errorf("name: %v", err)
-		}
-	}
-
-	return nil
-}
-
-func (e *EnterpriseRequest) Format() {
-	if e.Name != "" {
-		e.Name = strings.ToUpper(strings.TrimSpace(e.Name))
+func (s *EnterpriseRequest) Format() {
+	if s.Name != "" {
+		name := strings.ToUpper(strings.TrimSpace(s.Name))
+		s.Name = name
 	}
 }

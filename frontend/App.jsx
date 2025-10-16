@@ -32,7 +32,6 @@ function AppContent() {
             <Route path="notices" element={<NoticesScreen />} />
             <Route path="new-password" element={<NewPasswordScreen />} />
             <Route path="forgot-password" element={<ForgotPasswordScreen />} />
-            <Route />
             <Route path="*" element={<NotFoundScreen />}></Route>
           </Routes>
         </NativeRouter>
