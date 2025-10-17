@@ -14,17 +14,14 @@ import ModalCreate from "../components/ModalCreateProduct.jsx";
 
 export default function ProductsScreen() {
   const themeColors = useThemeColors();
-  const [isCreateProductModalVisible, setCreateProductVisible] = useState(false);
-
+  const [isCreateProductModalVisible, setCreateProductVisible] =
+    useState(false);
 
   return (
-    
-
     <Background>
       <ModalCreate
         visible={isCreateProductModalVisible}
         onClose={() => setCreateProductVisible(false)}
-  
       />
       <NavBar />
 
@@ -32,13 +29,17 @@ export default function ProductsScreen() {
         <Icon name="shopping-outline" size={30} color={themeColors.header} />
         <Text className="text-white font-bold text-3xl">Produtos</Text>
       </View>
-      
-
 
       <View className="items-center mb-2">
-        <SearchBar buttonAdd={<ButtonAdd onPress={() => setCreateProductVisible(true)} name={"shopping-outline"}/> } />
+        <SearchBar
+          buttonAdd={
+            <ButtonAdd
+              onPress={() => setCreateProductVisible(true)}
+              name={"shopping-outline"}
+            />
+          }
+        />
       </View>
-
 
       <ListItems
         callbackFetch={getProductsRequest}

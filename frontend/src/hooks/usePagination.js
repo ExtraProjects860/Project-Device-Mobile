@@ -26,12 +26,16 @@ export function usePagination(callbackFetch) {
 
   const initialLoad = useCallback(async () => {
     try {
-      const result = await callbackFetch(itemsPerPage, 1);
-      if (result?.data) {
-        setListItems(result.data);
-        setCurrentPage(result.current_page);
-        setTotalPages(result.total_pages);
-        setTotalResult(result.total_items);
+      if (typeof callbackFetch === "function") {
+        const result = await callbackFetch(itemsPerPage, 1);
+        if (result?.data) {
+          setListItems(result.data);
+          setCurrentPage(result.current_page);
+          setTotalPages(result.total_pages);
+          setTotalResult(result.total_items);
+        }
+      } else {
+        console.error("callbackFetch is not a function");
       }
     } catch (err) {
       console.error("Erro ao buscar dados iniciais:", err);

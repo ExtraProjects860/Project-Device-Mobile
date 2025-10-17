@@ -13,8 +13,10 @@ import {
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import * as ImagePicker from "expo-image-picker";
 import { createUserRequest } from "../lib/UserRequest.js";
+import { useError } from "../context/ErrorContext.js";
 
 export default function ModalCreateUser({ visible, onClose, onUserCreated }) {
+  const { showErrorModal } = useError();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [cpf, setCpf] = useState("");
@@ -25,13 +27,13 @@ export default function ModalCreateUser({ visible, onClose, onUserCreated }) {
 
   const handleCreateUser = async () => {
     if (!name || !email || !cpf || !registerNumber || !roleId) {
-      Alert.alert("Erro", "Por favor, preencha todos os campos obrigatórios.");
+      showErrorModal("Por favor, preencha todos os campos obrigatórios.");
       return;
     }
 
     const temporaryPassword = cpf.replace(/\D/g, "");
     if (temporaryPassword.length !== 11) {
-      Alert.alert("Erro", "O CPF deve conter 11 dígitos.");
+      showErrorModal("O CPF deve conter 11 dígitos.");
       return;
     }
 
@@ -61,7 +63,6 @@ export default function ModalCreateUser({ visible, onClose, onUserCreated }) {
       console.error("Erro ao criar usuário:", error);
     }
   };
-
   const pickImage = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== "granted") {
@@ -175,10 +176,10 @@ export default function ModalCreateUser({ visible, onClose, onUserCreated }) {
               />
             </View>
 
-            {/* Enterprise ID (Opcional) */}
+            {/* Enterprise ID */}
             <View className="mb-4">
               <Text className="ml-2 text-gray-strong text-xl font-semibold mb-2">
-                ID da Empresa (Opcional):
+                ID da Empresa:
               </Text>
               <TextInput
                 className="bg-gray-soft rounded-lg p-4 text-base"

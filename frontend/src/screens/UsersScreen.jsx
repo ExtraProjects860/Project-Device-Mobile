@@ -1,5 +1,5 @@
-import React from "react";
-import { View, Text, Alert } from "react-native";
+import React, { useState, useRef } from "react";
+import { View, Text } from "react-native";
 import Background from "../components/ui/Background";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { NavBar } from "../components/Navbar";
@@ -8,24 +8,47 @@ import ListItems from "../components/ListItems.jsx";
 import ButtonAdd from "../components/ui/ButtonAdd.jsx";
 import { getUsersRequest } from "../lib/UserRequest.js";
 import { useThemeColors } from "../hooks/useThemeColors.js";
-import { useState } from "react";
 import CardUserList from "../components/ui/CardUserList.jsx";
-import ModalCreate from "../components/ModalCreateUser.jsx";
+import ModalCreateUser from "../components/ModalCreateUser.jsx";
+import ModalUpdateUser from "../components/ModalUpdateUser.jsx";
 
 export default function UsersScreen() {
   const themeColors = useThemeColors();
-  const [isCreateProductModalVisible, setCreateUserVisible] =
-    useState(false);
-  // const handleEditUser = (user) => {
-  //   console.log("Editar usuário:", user.name);
-  //   Alert.alert("A Fazer", `Implementar modal de edição.`);
-  // };
+  const [isCreateModalVisible, setCreateModalVisible] = useState(false);
+  const [isUpdateModalVisible, setUpdateModalVisible] = useState(false);
+  const [selectedUser, setSelectedUser] = useState(null);
+  const listRef = useRef(null);
+
+  const handleEditUser = (user) => {
+    setSelectedUser(user);
+    setUpdateModalVisible(true);
+  };
+
+  const handleRefresh = () => {
+    if (listRef.current) {
+      listRef.current.refresh();
+    }
+  };
+
+  const CardListRender = ({ item }) => (
+    <CardUserList item={item} onEdit={handleEditUser} />
+  );
 
   return (
     <Background>
-      <ModalCreate
-        visible={isCreateProductModalVisible}
-        onClose={() => setCreateProductVisible(false)}
+      <ModalCreateUser
+        visible={isCreateModalVisible}
+        onClose={() => setCreateModalVisible(false)}
+        onUserCreated={handleRefresh}
+      />
+      <ModalUpdateUser
+        visible={isUpdateModalVisible}
+        onClose={() => setUpdateModalVisible(false)}
+        user={selectedUser}
+        onUserUpdated={() => {
+          setUpdateModalVisible(false);
+          handleRefresh();
+        }}
       />
       <NavBar />
 
@@ -42,17 +65,17 @@ export default function UsersScreen() {
         <SearchBar
           buttonAdd={
             <ButtonAdd
-              onPress={() => setCreateUserVisible(true)}
+              onPress={() => setCreateModalVisible(true)}
               name={"account-outline"}
             />
           }
         />
       </View>
 
-      {/* Usuários */}
       <ListItems
+        ref={listRef}
         callbackFetch={getUsersRequest}
-        CardListRender={CardUserList}
+        CardListRender={CardListRender}
       />
     </Background>
   );
