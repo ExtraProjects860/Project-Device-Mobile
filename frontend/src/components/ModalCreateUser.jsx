@@ -37,7 +37,6 @@ export default function ModalCreateUser({ visible, onClose, onUserCreated }) {
   };
 
   const handleCreateUser = async () => {
-    // ... (sua lógica handleCreateUser permanece a mesma)
     if (!name || !email || !cpf || !registerNumber || !roleId) {
       showErrorModal("Por favor, preencha todos os campos obrigatórios.");
       return;
@@ -76,7 +75,6 @@ export default function ModalCreateUser({ visible, onClose, onUserCreated }) {
   };
 
   const pickImage = async () => {
-    // ... (sua lógica pickImage permanece a mesma)
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== "granted") {
       Alert.alert(
@@ -86,7 +84,7 @@ export default function ModalCreateUser({ visible, onClose, onUserCreated }) {
       return;
     }
 
-    let result = await ImagePicker.launchImageLibraryAsync({
+    const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       aspect: [1, 1],
