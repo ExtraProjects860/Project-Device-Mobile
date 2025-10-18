@@ -8,25 +8,38 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// TODO colocar middlewares dps
 func registerUserRoutes(rg *gin.RouterGroup, appCtx *appcontext.AppContext) {
+	logger := config.NewLogger("MIDDLEWARE")
+
 	{
-		rg.GET("/users", handler.GetUsersHandler(
-			appCtx, config.NewLogger("GET - USERS"),
-		))
+		rg.GET("/users",
+			middleware.JWTMiddleware(appCtx, logger),
+			middleware.AdminPermission(appCtx, logger),
+			handler.GetUsersHandler(
+				appCtx, config.NewLogger("GET - USERS"),
+			))
 
 		rg.GET("/user",
-			middleware.JWTMiddleware(appCtx),
+			middleware.JWTMiddleware(appCtx, logger),
 			handler.GetInfoUserHandler(
 				appCtx, config.NewLogger("GET - USER"),
 			))
 
-		rg.POST("/user", handler.CreateUserHandler(
-			appCtx, config.NewLogger("POST - USERS"),
-		))
+		rg.POST("/user",
+			middleware.JWTMiddleware(appCtx, logger),
+			middleware.AdminPermission(appCtx, logger),
+			handler.CreateUserHandler(
+				appCtx, config.NewLogger("POST - USERS"),
+			))
 
-		rg.PATCH("/user", handler.UpdateUserHandler(
-			appCtx, config.NewLogger("PATCH - USERS"),
-		))
+		/*
+			TODO verificar depois de fazer outra rota em auth, porém para o usuário atualizar os dados
+		*/
+		rg.PATCH("/user",
+			middleware.JWTMiddleware(appCtx, logger),
+			middleware.AdminPermission(appCtx, logger),
+			handler.UpdateUserHandler(
+				appCtx, config.NewLogger("PATCH - USERS"),
+			))
 	}
 }
