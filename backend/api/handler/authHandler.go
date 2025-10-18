@@ -97,7 +97,7 @@ func LoginHandler(appCtx *appcontext.AppContext, logger *config.Logger) gin.Hand
 		accessToken, err := auth.GenerateAccessToken(
 			userID,
 			appCtx.Env.API.JwtKey,
-			input.RememberMe,
+			*input.RememberMe,
 		)
 		if err != nil {
 			logger.Error(err.Error())

@@ -44,13 +44,20 @@ func GenerateAccessToken(id uint, jwtKey string, rememberMe bool) (string, error
 	return accessToken, nil
 }
 
-func ValidateAccessToken(tokenStr, jwtKey string) (*jwt.Token, error) {
-	return jwt.Parse(tokenStr, func(token *jwt.Token) (interface{}, error) {
+func ValidateAccessToken(tokenStr, jwtKey string) (*Claims, error) {
+	claims := &Claims{}
+	token, err := jwt.ParseWithClaims(tokenStr, claims, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
 		}
 		return []byte(jwtKey), nil
 	})
+
+	if err != nil || !token.Valid {
+		return nil, fmt.Errorf("invalid token: %w", err)
+	}
+
+	return claims, nil
 }
 
 // func GenerateRefreshToken(id uint, refreshKey string) (string, error) {
