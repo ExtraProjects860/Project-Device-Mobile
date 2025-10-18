@@ -19,7 +19,7 @@ export default function NotFoundScreen() {
           <Text className="text-white text-3xl m-6 text-center">
             Ops.. Essa Página Não Existe
           </Text>
-          <TouchableOpacity onPress={() => goTo("/")}>
+          <TouchableOpacity onPress={() => goTo("/login")}>
             <Text className="underline decoration-solid text-white text-2xl">
               Retorne a <Icon name="home" size={20} color="white" /> Clicando
               Aqui!

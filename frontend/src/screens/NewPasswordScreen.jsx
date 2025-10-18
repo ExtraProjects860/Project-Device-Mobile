@@ -11,10 +11,10 @@ import Background from "../components/ui/Background";
 import Logo from "../components/ui/Logo";
 import { useNavigateTo } from "../hooks/useNavigateTo";
 
-export default function LoginScreen() {
+export default function NewPasswordScreen() {
   const [showPassword, setShowPassword] = useState(false);
   const goTo = useNavigateTo();
-  
+
   return (
     <Background>
       <StatusBar
@@ -35,7 +35,7 @@ export default function LoginScreen() {
         <View className="w-96 h-0.5 bg-light-card mb-2" />
 
         {/* Codigo */}
-        <View>
+        <View className="mb-6">
           <View className="flex-row items-center mb-2">
             <MaterialIcons name="check" size={24} color="white" />
             <Text className="text-light-text-inverted font-bold pl-2 text-2xl">
@@ -50,8 +50,9 @@ export default function LoginScreen() {
             />
           </View>
         </View>
+
         {/* Nova senha */}
-        <View>
+        <View className="mb-6">
           <View className="flex-row items-center mb-2">
             <MaterialIcons name="lock" size={24} color="white" />
             <Text className="text-light-text-inverted font-bold pl-2 text-2xl">
@@ -74,8 +75,9 @@ export default function LoginScreen() {
             </TouchableOpacity>
           </View>
         </View>
+
         {/* Confirmar senha */}
-        <View>
+        <View className="mb-6">
           <View className="flex-row items-center mb-2">
             <MaterialIcons name="lock" size={24} color="white" />
             <Text className="text-light-text-inverted font-bold pl-2 text-2xl">
@@ -98,17 +100,27 @@ export default function LoginScreen() {
             </TouchableOpacity>
           </View>
         </View>
+
         {/* Enviar e rodapé */}
         <View className="w-full items-center flex-1">
-          <TouchableOpacity
-            onPress={() => goTo("/")}
-            className="mt-2 py-2 px-20 bg-light-secondary rounded-full items-center"
-          >
-            <Text className="text-white text-2xl font-bold">ENVIAR</Text>
-          </TouchableOpacity>
-            <Text className="text-white text-s py-2 px-20"> {/* arrumar cores */}
-              Digite o código enviado para o e-mail e defina sua nova senha.
-            </Text>
+          <View className="flex mt-6 flex-row gap-4">
+            <TouchableOpacity
+              onPress={() => goTo("/new-password")}
+              className="mb-3 py-2 px-16 bg-light-secondary rounded-full items-center"
+            >
+              <Text className="text-white text-2xl font-bold">Enviar</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => goTo("/forgot-password")}
+              className="mb-3 py-2 px-16 h-12 bg-light-primary rounded-full items-center"
+            >
+              <Text className="text-white text-2xl font-bold">Voltar</Text>
+            </TouchableOpacity>
+          </View>
+          <Text className="text-white text-s py-2 px-20">
+            Obs: Chegará um código no E-mail cadastrado para proseguir com a
+            alteração da senha.
+          </Text>
         </View>
       </View>
     </Background>
