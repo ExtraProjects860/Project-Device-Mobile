@@ -69,26 +69,28 @@ export default function ModalUpdateUser({
     }
 
     const updatedUserData = {};
-    if (name !== user.name) updatedUserData.name = name;
-    if (email !== user.email) updatedUserData.email = email;
-    if (cpf !== user.cpf) updatedUserData.cpf = cpf;
-    if (parseInt(registerNumber, 10) !== user.register_number)
+    if (name !== user.name && name !== "") updatedUserData.name = name;
+    if (email !== user.email && email !== "") updatedUserData.email = email;
+    if (cpf !== user.cpf && cpf !== "") updatedUserData.cpf = cpf;
+    if (parseInt(registerNumber, 10 ) !== user.register_number && registerNumber !== "")
       updatedUserData.register_number = parseInt(registerNumber, 10);
-    if (parseInt(roleId, 10) !== user.role_id)
+    if (parseInt(roleId, 10) !== user.role_id && roleId !== "")
       updatedUserData.role_id = parseInt(roleId, 10);
-    if (parseInt(enterpriseId, 10) !== user.enterprise_id)
+    if (parseInt(enterpriseId, 10) !== user.enterprise_id && enterpriseId !== "")
       updatedUserData.enterprise_id = enterpriseId
         ? parseInt(enterpriseId, 10)
         : null;
     if (photoUri !== user.photo_url) updatedUserData.photo_url = photoUri;
+    
 
     if (Object.keys(updatedUserData).length === 0) {
-      showErrorModal("Nenhum campo foi modificado.");
+      setSuccessMessage("Nenhum campo foi modificado.");
+      setSuccessVisible(true);
       return;
     }
 
     try {
-      await updateUserRequest(user.id, updatedUserData);
+      await updateUserRequest(user.id, updatedUserData);     
 
       setSuccessMessage("Usuário atualizado com sucesso!");
       setSuccessVisible(true);
