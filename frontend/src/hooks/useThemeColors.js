@@ -1,12 +1,12 @@
 import resolveConfig from "tailwindcss/resolveConfig";
-import { useTheme } from "../context/ThemeContext.js";
 import tailwindConfig from "../../tailwind.config.js";
+import { useAppContext } from "../context/AppContext.js";
 
 const fullConfig = resolveConfig(tailwindConfig);
 const colors = fullConfig.theme.colors;
 
 export function useThemeColors() {
-  const { isThemeDark } = useTheme();
+  const { isThemeDark } = useAppContext();
 
   return {
     primary: isThemeDark ? colors.dark["text-primary"] : colors.light.primary,

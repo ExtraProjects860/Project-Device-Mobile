@@ -17,7 +17,7 @@ import Animated, {
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import PasswordChange from "../components/PasswordChange";
 import { useNavigateTo } from "../hooks/useNavigateTo";
-import { useTheme } from "../context/ThemeContext.js";
+import { useAppContext } from "../context/AppContext.js";
 import { useThemeColors } from "../hooks/useThemeColors.js";
 
 /**
@@ -27,8 +27,9 @@ import { useThemeColors } from "../hooks/useThemeColors.js";
  */
 export default function Menu({ visible, onClose }) {
   const goTo = useNavigateTo();
-  const { isThemeDark, toggleTheme } = useTheme();
+  const { isThemeDark, toggleTheme } = useAppContext();
   const themeColors = useThemeColors();
+
   {
     /* Fazer lógica pra verificar usuário adm */
   }
