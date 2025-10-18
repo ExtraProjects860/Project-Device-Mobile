@@ -23,7 +23,7 @@ module.exports = {
         },
         dark: {
           primary: "#0f172a",
-          secondary: "#E95",
+          secondary: "#E91D62",
           card: "#1e293b",
           "text-primary": "#f1f5f9",
           "text-secondary": "#94a3b8",
