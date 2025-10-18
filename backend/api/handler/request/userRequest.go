@@ -16,7 +16,7 @@ type UserRequest struct {
 	Email          string  `json:"email" validate:"required,email"`
 	Password       string  `json:"password" validate:"required,min=6"`
 	Cpf            string  `json:"cpf" validate:"required"`
-	RegisterNumber uint    `json:"register_number" validate:"required,gt=0"`
+	RegisterNumber string  `json:"register_number" validate:"required,min=8,max=8"`
 	PhotoUrl       *string `json:"photo_url"`
 }
 
@@ -41,7 +41,7 @@ func (s *UserRequest) ValidateUpdate() error {
 		s.Email != "" ||
 		s.Password != "" ||
 		s.Cpf != "" ||
-		s.RegisterNumber != 0 ||
+		s.RegisterNumber != "" ||
 		s.RoleID != 0 ||
 		s.EnterpriseID != nil && *s.EnterpriseID != 0 ||
 		s.PhotoUrl != nil && *s.PhotoUrl != ""

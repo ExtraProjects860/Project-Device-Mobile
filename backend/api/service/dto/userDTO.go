@@ -13,7 +13,7 @@ type UserDTO struct {
 	Enterprise     *string   `json:"enterprise,omitempty" example:"Empresa XPTO"`
 	Email          string    `json:"email" example:"joao@example.com"`
 	Cpf            string    `json:"cpf" example:"123.456.789-00"`
-	RegisterNumber uint      `json:"register_number" example:"2021001"`
+	RegisterNumber string    `json:"register_number" example:"20210012"`
 	PhotoUrl       *string   `json:"photo_url,omitempty" example:"https://cdn.exemplo.com/fotos/joao.jpg"`
 	CreatedAt      time.Time `json:"created_at" example:"2025-10-12T21:00:00Z"`
 	UpdatedAt      time.Time `json:"updated_at" example:"2025-10-12T21:05:00Z"`

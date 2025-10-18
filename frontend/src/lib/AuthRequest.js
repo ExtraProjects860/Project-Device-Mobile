@@ -1,21 +1,27 @@
 import { instanceMainApi } from "./axios.js";
 
-export async function RequestToken() {
+export async function requestToken() {
   return;
 }
 
-export async function ResetPasswordRequest() {
+export async function resetPasswordRequest() {
   return;
 }
 
-export async function LoginRequest() {
+/**
+ * @param {object} userData
+ */
+export async function loginRequest(userData) {
+  const response = await instanceMainApi.post("/auth/login", userData);
+  const accessToken = response.data?.access_token;
+
+  return accessToken;
+}
+
+export async function refreshTokenRequest() {
   return;
 }
 
-export async function RefreshTokenRequest() {
-  return;
-}
-
-export async function LogoutRequest() {
+export async function logoutRequest() {
   return;
 }

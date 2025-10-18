@@ -17,7 +17,7 @@ import Animated, {
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import PasswordChange from "../components/PasswordChange";
 import { useNavigateTo } from "../hooks/useNavigateTo";
-import { useTheme } from "../context/ThemeContext.js";
+import { useAppContext } from "../context/AppContext.js";
 import { useThemeColors } from "../hooks/useThemeColors.js";
 
 /**
@@ -27,8 +27,9 @@ import { useThemeColors } from "../hooks/useThemeColors.js";
  */
 export default function Menu({ visible, onClose }) {
   const goTo = useNavigateTo();
-  const { isThemeDark, toggleTheme } = useTheme();
+  const { isThemeDark, toggleTheme, logout } = useAppContext();
   const themeColors = useThemeColors();
+
   {
     /* Fazer lógica pra verificar usuário adm */
   }
@@ -130,7 +131,10 @@ export default function Menu({ visible, onClose }) {
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity
-                onPress={() => goTo("/")}
+                onPress={async () => {
+                  await logout();
+                  goTo("/login");
+                }}
                 className="flex-row items-center bg-light-card dark:bg-dark-card rounded-full p-3"
               >
                 <Icon name="logout" size={24} color={themeColors.primary} />

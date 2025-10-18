@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"math/rand/v2"
+	"strconv"
 	"strings"
 	"time"
 
@@ -26,25 +27,49 @@ func verifyStartSeed(db *gorm.DB, m any) bool {
 	return count > 0
 }
 
-func seedUser(db *gorm.DB, quantity int) {
+func seedAdmin(db *gorm.DB, logger *config.Logger, enterprises []schemas.Enterprise) {
+	hashedPassword, err := utils.GenerateHashPassword("admin")
+	if err != nil {
+		panic(fmt.Sprintf("failed to hash password: %v", err))
+	}
+
+	en := enterprises[rng.IntN(len(enterprises))]
+	// url := utils.GenerateRandomPhoto(faker.Username(), 300, 300)
+
+	user := schemas.User{
+		Name:           strings.ToUpper("admin"),
+		Email:          "admin@admin.com",
+		Password:       hashedPassword,
+		Cpf:            utils.GenerateCPF(),
+		RegisterNumber: "1231231",
+		PhotoUrl:       nil,
+		RoleID:         1,
+		EnterpriseID:   &en.ID,
+	}
+
+	if err := db.Create(&user).Error; err != nil {
+		logger.Errorf("Error creating admin: %v", err)
+	}
+}
+
+func seedUser(db *gorm.DB, logger *config.Logger, quantity int) {
 	userModelName := "User"
 	if verifyStartSeed(db, &schemas.User{}) {
->>>>>>> dev
 		logger.Infof("Table '%s' already has data. Skipping seed.", userModelName)
 		return
 	}
 
 	var roles []schemas.Role
 	var enterprises []schemas.Enterprise
-	var products []schemas.Product
 	db.Find(&roles)
 	db.Find(&enterprises)
-	db.Find(&products)
 
-	if len(roles) == 0 || len(enterprises) == 0 || len(products) == 0 {
-		logger.Warningf("Cannot seed Users. Roles, Enterprises or Products table is empty.")
+	if len(roles) == 0 || len(enterprises) == 0 {
+		logger.Warningf("Cannot seed Users. Roles, Enterprises table is empty.")
 		return
 	}
+
+	seedAdmin(db, logger, enterprises)
 
 	logger.Infof("Seeding table '%s' with %d records...", userModelName, quantity)
 	hashedPassword, err := utils.GenerateHashPassword("123456")
@@ -54,17 +79,17 @@ func seedUser(db *gorm.DB, quantity int) {
 
 	usersToCreate := make([]schemas.User, 0, quantity)
 
-	for i := 0; i < quantity; i++ {
+	for range quantity {
 		re := roles[rng.IntN(len(roles))]
 		en := enterprises[rng.IntN(len(enterprises))]
-		url := fmt.Sprintf("https://picsum.photos/%d/%d?random=%s", 300, 300, faker.Username())
+		url := utils.GenerateRandomPhoto(faker.Username(), 300, 300)
 
 		user := schemas.User{
 			Name:           strings.ToUpper(faker.Name()),
 			Email:          faker.Email(),
 			Password:       hashedPassword,
-			Cpf:            faker.Regex("[0-9]{11}"),
-			RegisterNumber: uint(faker.Number(1000, 9999)),
+			Cpf:            utils.GenerateCPF(),
+			RegisterNumber: strconv.Itoa(faker.Number(1000000, 9999999)),
 			PhotoUrl:       &url,
 			RoleID:         re.ID,
 			EnterpriseID:   &en.ID,
@@ -100,10 +125,9 @@ func seedEnterprise(db *gorm.DB, logger *config.Logger, quantity int) {
 	logger.Infof("Seeding for table '%s' completed.", modelName)
 }
 
-func seedWishList(db *gorm.DB) {
+func seedWishList(db *gorm.DB, logger *config.Logger) {
 	wishlistModelName := "WishList"
 	if verifyStartSeed(db, &schemas.WishList{}) {
->>>>>>> dev
 		logger.Infof("Table '%s' already has data. Skipping seed.", wishlistModelName)
 		return
 	}
@@ -153,7 +177,7 @@ func seedWishList(db *gorm.DB) {
 	logger.Infof("Seeding for '%s' completed.", wishlistModelName)
 }
 
-func seedRole(db *gorm.DB) {
+func seedRole(db *gorm.DB, logger *config.Logger) {
 	modelName := "RoleUser"
 	if verifyStartSeed(db, &schemas.Role{}) {
 		logger.Infof("Table '%s' already has data. Skipping seed.", modelName)
@@ -173,7 +197,7 @@ func seedRole(db *gorm.DB) {
 	logger.Infof("Seeding for table '%s' completed.", modelName)
 }
 
-func seedProduct(db *gorm.DB, quantity int) {
+func seedProduct(db *gorm.DB, logger *config.Logger, quantity int) {
 	modelName := "Product"
 	if verifyStartSeed(db, &schemas.Product{}) {
 		logger.Infof("Table '%s' already has data. Skipping seed.", modelName)
@@ -182,7 +206,7 @@ func seedProduct(db *gorm.DB, quantity int) {
 
 	logger.Infof("Seeding table '%s' with %d records...", modelName, quantity)
 	for range quantity {
-		url := fmt.Sprintf("https://picsum.photos/%d/%d?random=%s", 300, 300, faker.Username())
+		url := utils.GenerateRandomPhoto(faker.Username(), 300, 300)
 		discount := faker.Price(5, 50) / 100
 		randAvaiable := rng.IntN(2) == 1
 
@@ -204,12 +228,12 @@ func seedProduct(db *gorm.DB, quantity int) {
 	logger.Infof("Seeding for table '%s' completed.", modelName)
 }
 
-func seeds(db *gorm.DB) {
-	seedRole(db)
-	seedEnterprise(db, 10)
-	seedProduct(db, 30)
-	seedUser(db, 30)
-	seedWishList(db, )
+func seeds(db *gorm.DB, logger *config.Logger) {
+	seedRole(db, logger)
+	seedEnterprise(db, logger, 10)
+	seedProduct(db, logger, 30)
+	seedUser(db, logger, 30)
+	seedWishList(db, logger)
 
 	logger.Info("Seed completed.")
 }

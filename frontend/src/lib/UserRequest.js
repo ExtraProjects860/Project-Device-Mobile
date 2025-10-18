@@ -13,8 +13,12 @@ export async function createUserRequest(userData) {
   return response.data;
 }
 
-export async function getInfoUserRequest(userId) {
-  const response = await instanceMainApi.get(`/user/${userId}`);
+export async function getInfoUserRequest(accessToken) {
+  const response = await instanceMainApi.get(`/user`, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
   return response.data;
 }
 
@@ -23,9 +27,8 @@ export async function getInfoUserRequest(userId) {
  * @param {object} updatedUserData
  */
 export async function updateUserRequest(userId, updatedUserData) {
-  const response = await instanceMainai.patch(
-    `/user/${userId}`,
-    updatedUserData,
-  );
+  const response = await instanceMainApi.patch("/user", updatedUserData, {
+    params: { id: userId },
+  });
   return response.data;
 }

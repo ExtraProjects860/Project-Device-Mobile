@@ -12,7 +12,7 @@ type User struct {
 	Email          string `gorm:"uniqueIndex;not null"`
 	Password       string `gorm:"not null"`
 	Cpf            string `gorm:"uniqueIndex;not null"`
-	RegisterNumber uint   `gorm:"not null"`
+	RegisterNumber string `gorm:"not null"`
 	PhotoUrl       *string
 
 	Role            Role          `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`

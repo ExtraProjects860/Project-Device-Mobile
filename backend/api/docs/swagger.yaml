@@ -135,6 +135,8 @@ definitions:
         type: string
       password:
         type: string
+      remember_me:
+        type: boolean
     required:
     - email
     - password
@@ -665,12 +667,6 @@ paths:
   /api/v1/user:
     get:
       description: Returns information about a specific user
-      parameters:
-      - description: User ID
-        in: query
-        name: id
-        required: true
-        type: string
       produces:
       - application/json
       responses:
@@ -686,6 +682,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/response.ErrResponse'
+      security:
+      - BearerAuth: []
       summary: Get User Info
       tags:
       - users

@@ -6,7 +6,7 @@ import { View, Text, TouchableOpacity } from "react-native";
  * @param {object} props.item
  * @param {function} props.onEdit
  */
-export default function CardUserList({ item }) {
+export default function CardUserList({ item, onEdit }) {
   return (
     <View className="flex-1 flex-col bg-light-card dark:bg-dark-card rounded-xl m-2 overflow-hidden">
       <View className="flex-1 p-3">
@@ -25,7 +25,7 @@ export default function CardUserList({ item }) {
       </View>
 
       <TouchableOpacity
-        // onPress={() => onEdit(item)}
+        onPress={() => onEdit(item)}
         className="py-2 px-5 m-3 rounded-full bg-light-secondary dark:bg-dark-secondary"
       >
         <Text className="text-white font-bold text-center">Editar</Text>

@@ -5,18 +5,109 @@ import {
   TextInput,
   TouchableOpacity,
   StatusBar,
+  Switch,
 } from "react-native";
 import { MaterialIcons, Feather } from "@expo/vector-icons";
 import Background from "../components/ui/Background";
 import Logo from "../components/ui/Logo";
-import { useNavigateTo } from "../hooks/useNavigateTo";
+import ModalCheck from "../components/ModalCheck";
+import ModalErrors from "../components/ModalErrors.jsx";
+import { loginRequest } from "../lib/AuthRequest.js";
+import { getInfoUserRequest } from "../lib/UserRequest.js";
+import { useNavigateTo } from "../hooks/useNavigateTo.js";
+import { useAppContext } from "../context/AppContext.js";
 
 export default function LoginScreen() {
+  const { updateToken, updateUser } = useAppContext();
   const [showPassword, setShowPassword] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [rememberMe, setRememberMe] = useState(false);
+
+  const [successMessage, setSuccessMessage] = useState("");
+  const [isSuccessVisible, setSuccessVisible] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [isErrorVisible, setErrorVisible] = useState(false);
+
   const goTo = useNavigateTo();
-  
+
+  const getToken = async () => {
+    const userData = {
+      email,
+      password,
+      remember_me: rememberMe,
+    };
+
+    const token = await loginRequest(userData);
+
+    if (!token) {
+      throw new Error("Não foi possível recuperar o token de acesso")
+    } 
+
+    await updateToken(token);
+    
+    return token;
+  };
+
+  const getUserData = async (accessToken) => {
+    const userData = await getInfoUserRequest(accessToken);
+
+    if (!userData) {
+      throw new Error("Não foi possível recuperar os dados do usuário")
+    }
+
+    await updateUser(userData);
+  };
+
+  const handleLogin = async () => {
+    if (!email || !password) {
+      setErrorVisible(true);
+      setErrorMessage("Por favor, preencha todos os campos obrigatórios.");
+      return;
+    }
+
+    try {
+      const token = await getToken();
+      await getUserData(token);
+
+      setSuccessMessage("Usuário logado com sucesso!");
+      setSuccessVisible(true);
+    } catch (error) {
+      const errorMessage =
+        error.response?.data?.error ||
+        "Não foi possível realizar login. Verifique os dados e tente novamente.";
+
+      setErrorVisible(true);
+      setErrorMessage(errorMessage);
+      console.error("Erro ao logar usuário:", errorMessage);
+    }
+  };
+
+  const handleCloseSuccessModal = () => {
+    setSuccessVisible(false);
+
+    goTo("/home");
+  };
+
+  const handleCloseErrorModal = () => {
+    setErrorVisible(false);
+  };
+
   return (
     <Background>
+      <ModalCheck
+        visible={isSuccessVisible}
+        message={successMessage}
+        onClose={handleCloseSuccessModal}
+      />
+
+      <ModalErrors
+        visible={isErrorVisible}
+        message={errorMessage}
+        onClose={handleCloseErrorModal}
+        onRetry={handleLogin}
+      />
+
       <StatusBar
         barStyle={"light-content"}
         translucent={true}
@@ -48,12 +139,14 @@ export default function LoginScreen() {
               placeholder="Exemplo@gmail.com"
               placeholderTextColor="gray"
               keyboardType="email-address"
+              value={email}
+              onChangeText={setEmail}
             />
           </View>
         </View>
 
         {/* Campo Senha */}
-        <View>
+        <View className="mb-6">
           <View className="flex-row items-center mb-2">
             <MaterialIcons name="lock" size={24} color="white" />
             <Text className="text-light-text-inverted font-bold pl-2 text-2xl">
@@ -66,6 +159,8 @@ export default function LoginScreen() {
               secureTextEntry={!showPassword}
               placeholder="*********"
               placeholderTextColor="gray"
+              value={password}
+              onChangeText={setPassword}
             />
             <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
               <Feather
@@ -77,17 +172,23 @@ export default function LoginScreen() {
           </View>
         </View>
 
+        <View className="mb-6 flex-row items-center">
+          <Switch value={rememberMe} onValueChange={setRememberMe} />
+          <Text className="text-light-text-inverted font-bold">
+            Lembrar de Mim
+          </Text>
+        </View>
+
         {/* Botões */}
         <View className="w-full items-center flex-1">
           <TouchableOpacity
-            onPress={() => goTo("/home")}
-            className="mt-20 mb-3 py-2 px-20 bg-light-secondary rounded-full items-center"
+            onPress={handleLogin}
+            className="mt-10 mb-3 py-2 px-20 bg-light-secondary rounded-full items-center"
           >
             <Text className="text-white text-2xl font-bold">Entrar</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity
-            onPress={() => goTo("/forgot-password")}>
+          <TouchableOpacity onPress={() => goTo("/forgot-password")}>
             <Text className="text-white text-s underline underline-offset-1">
               Esqueceu a Senha? Clique Aqui!
             </Text>

@@ -4,6 +4,7 @@ import (
 	"github.com/ExtraProjects860/Project-Device-Mobile/appcontext"
 	"github.com/ExtraProjects860/Project-Device-Mobile/config"
 	"github.com/ExtraProjects860/Project-Device-Mobile/handler"
+	"github.com/ExtraProjects860/Project-Device-Mobile/middleware"
 	"github.com/gin-gonic/gin"
 )
 
@@ -14,9 +15,11 @@ func registerUserRoutes(rg *gin.RouterGroup, appCtx *appcontext.AppContext) {
 			appCtx, config.NewLogger("GET - USERS"),
 		))
 
-		rg.GET("/user", handler.GetInfoUserHandler(
-			appCtx, config.NewLogger("GET - USER"),
-		))
+		rg.GET("/user",
+			middleware.JWTMiddleware(appCtx),
+			handler.GetInfoUserHandler(
+				appCtx, config.NewLogger("GET - USER"),
+			))
 
 		rg.POST("/user", handler.CreateUserHandler(
 			appCtx, config.NewLogger("POST - USERS"),
