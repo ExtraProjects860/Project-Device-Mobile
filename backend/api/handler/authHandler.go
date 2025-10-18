@@ -50,6 +50,44 @@ func ResetPasswordHandler(appCtx *appcontext.AppContext, logger *config.Logger) 
 // @Router       /api/v1/auth/reset-pass-log-in [post]
 func ResetPasswordLogInHandler(appCtx *appcontext.AppContext, logger *config.Logger) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
+		uidRaw, exists := ctx.Get("user_id")
+		if !exists {
+			response.SendErr(ctx, http.StatusUnauthorized, errors.New("user id not found in token"))
+			return
+		}
+
+		uid, ok := uidRaw.(uint)
+		if !ok {
+			response.SendErr(ctx, http.StatusInternalServerError, errors.New("invalid user id type"))
+			return
+		}
+
+		var input request.ChangePasswordInternal
+		if err := request.ReadBody(ctx, &input); err != nil {
+			logger.Error(err.Error())
+			response.SendErr(ctx, http.StatusUnprocessableEntity, errors.New("invalid input"))
+			return
+		}
+
+		if input.NewPassword == "" {
+			logger.Error()
+			response.SendErr(ctx, http.StatusBadRequest, errors.New("new_password can't be empty"))
+			return
+		}
+
+		authService := service.GetAuthService(appCtx)
+		err := authService.ResetPasswordLogIn(
+			ctx,
+			input.NewPassword,
+			uid,
+			repository.NewPostgresUserRepository(appCtx.DB),
+		)
+		if err != nil {
+			logger.Error(err.Error())
+			response.SendErr(ctx, http.StatusInternalServerError, errors.New("error to change password"))
+			return
+		}
+
 		response.SendSuccess(ctx, http.StatusOK, "Change Password!")
 	}
 }

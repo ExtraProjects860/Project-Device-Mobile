@@ -16,6 +16,7 @@ import (
 // @Summary      Create Product
 // @Description  Creates a new product
 // @Tags         products
+// @Security     BearerAuth
 // @Accept       json
 // @Produce      json
 // @Param        product body request.ProductRequest true "Product info"
@@ -56,6 +57,7 @@ func CreateProductHandler(appCtx *appcontext.AppContext, logger *config.Logger) 
 // @Summary      Update Product
 // @Description  Updates an existing product
 // @Tags         products
+// @Security     BearerAuth
 // @Accept       json
 // @Produce      json
 // @Param 		 id query string true "Product ID"
@@ -89,20 +91,21 @@ func UpdateProductHandler(appCtx *appcontext.AppContext, logger *config.Logger) 
 
 		productService := service.GetProductService(appCtx)
 
-		user, err := productService.Update(ctx, id, input)
+		product, err := productService.Update(ctx, id, input)
 		if err != nil {
 			logger.Error(err.Error())
 			response.SendErr(ctx, http.StatusInternalServerError, errors.New("error to update product"))
 			return
 		}
 
-		response.SendSuccess(ctx, http.StatusOK, user)
+		response.SendSuccess(ctx, http.StatusOK, product)
 	}
 }
 
 // @Summary      Get Products
 // @Description  Returns all products
 // @Tags         products
+// @Security     BearerAuth
 // @Produce      json
 // @Param        itemsPerPage query string true "Pagination Items"
 // @Param        currentPage query string true "Pagination Current Page"

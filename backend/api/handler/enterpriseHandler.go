@@ -16,6 +16,7 @@ import (
 // @Summary      Create Enterprise
 // @Description  Creates a new enterprise
 // @Tags         enterprises
+// @Security     BearerAuth
 // @Accept       json
 // @Produce      json
 // @Param        enterprise body request.EnterpriseRequest true "Enterprise info"
@@ -56,6 +57,7 @@ func CreateEnterprise(appCtx *appcontext.AppContext, logger *config.Logger) gin.
 // @Summary      Update Enterprise
 // @Description  Updates an existing enterprise by ID
 // @Tags         enterprises
+// @Security     BearerAuth
 // @Accept       json
 // @Produce      json
 // @Param        id   query int true "Enterprise ID"
@@ -103,6 +105,7 @@ func UpdateEnterprise(appCtx *appcontext.AppContext, logger *config.Logger) gin.
 // @Summary      List Enterprises
 // @Description  Retrieves a paginated list of enterprises
 // @Tags         enterprises
+// @Security     BearerAuth
 // @Accept       json
 // @Produce      json
 // @Param        itemsPerPage query int true "Items per page"
