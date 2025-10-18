@@ -11,7 +11,7 @@ import { useThemeColors } from "../hooks/useThemeColors.js";
 import { getProductsRequest } from "../lib/ProductsRequest.js";
 import { useState } from "react";
 import ModalCreate from "../components/modals/ModalCreateProduct";
-import ModalUpdateProduct from "../components/ModalUpdateProduct.jsx";
+import ModalUpdateProduct from "../components/modals/ModalUpdateProduct.jsx";
 import { useRef } from "react";
 
 
