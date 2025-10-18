@@ -7,8 +7,8 @@ import logo from "../assets/images/logo.png"
 /**
  * Componente responsável pelo cabeçalho principal do app
  * 
- * Recebe 1 atributo
- * O atributo chamdo onMenuPress é responsável por passar a função de abertra de menu ao clicar no icone
+ * Recebe 1 atributo.
+ * O atributo chamdo onMenuPress é responsável por passar a função de abertra de menu ao clicar no icone.
  *
  * @param {object} props
  * @param {function} props.onMenuPress
