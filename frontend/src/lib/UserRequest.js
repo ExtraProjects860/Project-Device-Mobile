@@ -13,8 +13,12 @@ export async function createUserRequest(userData) {
   return response.data;
 }
 
-export async function getInfoUserRequest(userId) {
-  const response = await instanceMainApi.get(`/user/${userId}`);
+export async function getInfoUserRequest(accessToken) {
+  const response = await instanceMainApi.get(`/user`, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
   return response.data;
 }
 
