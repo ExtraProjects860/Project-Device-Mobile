@@ -4,9 +4,9 @@ import { View, Text, TouchableOpacity } from "react-native";
 /**
  * Componente responsável pelo card de usuário
  * 
- * Recebe 2 atributos
- * O primeiro chamado item é o objeto de user que é usado para ver as informações exibidas
- * O segundo chamdo onEdit é responsável por receber a função de edicão do item
+ * Recebe 2 atributos.
+ * O primeiro chamado item é o objeto de usuário que é usado para ver as informações exibidas.
+ * O segundo chamado onEdit é responsável por receber a função de edicão do item.
  * 
  * @param {object} props
  * @param {object} props.item

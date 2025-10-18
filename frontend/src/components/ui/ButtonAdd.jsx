@@ -7,9 +7,9 @@ import { useState } from "react";
 /**
  * Componente responsável pelo botão de adicionar, exemplo: botão de adicionar usuário na tela UsersScreen
  *
- * Recebe 2 atributos
- * O primeiro chamado onPress é responsável por passar a função a ser realizada ao clickar no botão
- * O segundo chamado name é responsável por receber o nome do Icon a ser utilizado no botão tornado assim facil de se reutilizar em várias telas
+ * Recebe 2 atributos.
+ * O primeiro chamado onPress é responsável por passar a função a ser realizada ao clickar no botão.
+ * O segundo chamado name é responsável por receber o nome do Icon a ser utilizado no botão tornado assim facil de se reutilizar em várias telas.
  */
 
 export default function ButtonAdd({ onPress, name }) {

@@ -5,9 +5,9 @@ import footer from "../../assets/images/footer.png";
 /** 
  * Componente responsável pela View do background 
  * 
- * Recebe 2 atributos 
- * O primeiro chamado children responsável pro fazer o carregamento do conteudo que for passado dentro a tag BackGround
- * O Segundo chamdo className responsável por receber estilização para se encrementada ao estilo atual de BackGround
+ * Recebe 2 atributos.
+ * O primeiro chamado children responsável pro fazer o carregamento do conteudo que for passado dentro a tag BackGround.
+ * O Segundo chamdo className responsável por receber estilização para se encrementada ao estilo atual de BackGround.
 */
 
 export default function Background({ children, className = "" }) {
