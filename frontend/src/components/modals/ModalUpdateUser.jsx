@@ -12,10 +12,10 @@ import {
 } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import * as ImagePicker from "expo-image-picker";
-import { updateUserRequest } from "../lib/UserRequest.js";
-import { useError } from "../context/ErrorContext.js";
-import { useThemeColors } from "../hooks/useThemeColors.js";
-import ModalCheck from "./ModalCheck.jsx";
+import { updateUserRequest } from "../../lib/UserRequest.js";
+import { useError } from "../../context/ErrorContext.js";
+import { useThemeColors } from "../../hooks/useThemeColors.js";
+import ModalCheck from "./ModalCheck";
 
 export default function ModalUpdateUser({
   visible,

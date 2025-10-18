@@ -10,7 +10,7 @@ import PageLoader from "../context/PageLoader.js";
 import Loading from "./ui/Loading.jsx";
 import WarningNotFound from "./ui/WarningNotFound.jsx";
 import { usePagination } from "../hooks/usePagination.js";
-import ModalErrors from "./ModalErrors.jsx";
+import ModalErrors from "./modals/ModalErrors";
 
 const ListItems = forwardRef(
   ({ callbackFetch, CardListRender, onEditItem }, ref) => {

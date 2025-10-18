@@ -9,8 +9,8 @@ import ButtonAdd from "../components/ui/ButtonAdd.jsx";
 import { getUsersRequest } from "../lib/UserRequest.js";
 import { useThemeColors } from "../hooks/useThemeColors.js";
 import CardUserList from "../components/ui/CardUserList.jsx";
-import ModalCreateUser from "../components/ModalCreateUser.jsx";
-import ModalUpdateUser from "../components/ModalUpdateUser.jsx";
+import ModalCreateUser from "../components/modals/ModalCreateUser";
+import ModalUpdateUser from "../components/modals/ModalUpdateUser";
 
 export default function UsersScreen() {
   const themeColors = useThemeColors();

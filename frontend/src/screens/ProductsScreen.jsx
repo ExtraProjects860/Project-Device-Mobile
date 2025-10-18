@@ -10,7 +10,7 @@ import CardProductList from "../components/ui/CardProductList.jsx";
 import { useThemeColors } from "../hooks/useThemeColors.js";
 import { getProductsRequest } from "../lib/ProductsRequest.js";
 import { useState } from "react";
-import ModalCreate from "../components/ModalCreateProduct.jsx";
+import ModalCreate from "../components/modals/ModalCreateProduct";
 
 export default function ProductsScreen() {
   const themeColors = useThemeColors();

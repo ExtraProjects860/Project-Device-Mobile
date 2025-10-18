@@ -12,10 +12,10 @@ import {
 } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import * as ImagePicker from "expo-image-picker";
-import { createUserRequest } from "../lib/UserRequest.js";
-import { useError } from "../context/ErrorContext.js";
-import ModalCheck from "./ModalCheck.jsx";
-import { useThemeColors } from "../hooks/useThemeColors.js"; // 1. Importar
+import { createUserRequest } from "../../lib/UserRequest.js";
+import { useError } from "../../context/ErrorContext.js";
+import ModalCheck from "./ModalCheck";
+import { useThemeColors } from "../../hooks/useThemeColors.js"; // 1. Importar
 
 export default function ModalCreateUser({ visible, onClose, onUserCreated }) {
   const { showErrorModal } = useError();
