@@ -3,6 +3,7 @@
 OS=$(uname -s)
 
 echo "Iniciando instalação do ngrok!"
+echo "Sistema operacional detectado: '$OS'"
 echo "Antes de iniciar, tenha o curl ou netcat instalado na máquina"
 
 if docker ps > /dev/null 2>&1; then
@@ -42,15 +43,15 @@ else
 fi
 
 if docker inspect ngrok > /dev/null 2>&1; then
-    echo "Ngrok já instalado no container, iniciando..."
-    docker start -ai ngrok
+    echo "Removendo container ngrok antigo..."
+    docker rm -f ngrok
+fi
+
+echo "Rodando ngrok"
+if [ "$OS" = "Linux" ]; then
+    docker run --net=host --name ngrok -it -e NGROK_AUTHTOKEN=$AUTH_TOKEN ngrok/ngrok:latest http $PORT_APP
 else
-    echo "Rodando ngrok pela primeira vez..."
-    if [[ "$OS" == "Linux"* ]]; then
-        docker run --net=host --name ngrok -it -e NGROK_AUTHTOKEN=$AUTH_TOKEN ngrok/ngrok:latest http $PORT_APP
-    else
-        docker run --name ngrok -it -e NGROK_AUTHTOKEN=$AUTH_TOKEN -p 4040:4040 ngrok/ngrok:latest http host.docker.internal:$PORT_APP
-    fi
+    docker run --name ngrok -it -e NGROK_AUTHTOKEN=$AUTH_TOKEN -p 4040:4040 ngrok/ngrok:latest http host.docker.internal:$PORT_APP
 fi
 
 echo "✅ Processo concluído. O domínio do ngrok deve aparecer acima."
