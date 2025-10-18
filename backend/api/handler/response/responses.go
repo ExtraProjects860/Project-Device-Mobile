@@ -25,6 +25,13 @@ func SendErr(ctx *gin.Context, code int, err error) {
 	})
 }
 
+func SendErrAbort(ctx *gin.Context, code int, err error) {
+	ctx.Header("Content-type", "application/json")
+	ctx.AbortWithStatusJSON(code, ErrResponse{
+		Error: err.Error(),
+	})
+}
+
 type ErrResponse struct {
 	Error string `json:"error"`
 }

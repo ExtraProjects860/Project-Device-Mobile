@@ -13,9 +13,8 @@ type LoginRequest struct {
 	RememberMe *bool  `json:"remember_me"`
 }
 
-type UserData struct {
-	ID    uint   `json:"id"`
-	Email string `json:"email"`
+type ChangePasswordInternal struct {
+	NewPassword string `json:"new_password" validate:"required"`
 }
 
 func (s *LoginRequest) Validate(ctx *gin.Context, validate *validator.Validate) error {
