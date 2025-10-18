@@ -68,7 +68,6 @@ func ResetPasswordLogInHandler(appCtx *appcontext.AppContext, logger *config.Log
 // @Router       /api/v1/auth/login [post]
 func LoginHandler(appCtx *appcontext.AppContext, logger *config.Logger) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-
 		var input request.LoginRequest
 		if err := request.ReadBody(ctx, &input); err != nil {
 			logger.Error(err.Error())
@@ -98,6 +97,7 @@ func LoginHandler(appCtx *appcontext.AppContext, logger *config.Logger) gin.Hand
 		accessToken, err := auth.GenerateAccessToken(
 			userID,
 			appCtx.Env.API.JwtKey,
+			input.RememberMe,
 		)
 		if err != nil {
 			logger.Error(err.Error())
@@ -123,26 +123,26 @@ func LoginHandler(appCtx *appcontext.AppContext, logger *config.Logger) gin.Hand
 // @Deprecated true
 func RefreshTokenHandler(appCtx *appcontext.AppContext, logger *config.Logger) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		var input auth.RequestRefresh
-		if err := request.ReadBody(ctx, &input); err != nil {
-			logger.Error(err.Error())
-			response.SendErr(ctx, http.StatusUnprocessableEntity, errors.New("invalid input"))
-			return
-		}
+		// var input auth.RequestRefresh
+		// if err := request.ReadBody(ctx, &input); err != nil {
+		// 	logger.Error(err.Error())
+		// 	response.SendErr(ctx, http.StatusUnprocessableEntity, errors.New("invalid input"))
+		// 	return
+		// }
 
-		newAccessToken, err := auth.RefreshToken(
-			input.RefreshToken,
-			appCtx.Env.API.JwtKey,
-			appCtx.Env.API.RefreshKey,
-		)
-		if err != nil {
-			logger.Error(err.Error())
-			response.SendErr(ctx, http.StatusInternalServerError, errors.New("error to generate new jwt token"))
-			return
-		}
+		// newAccessToken, err := auth.RefreshToken(
+		// 	input.RefreshToken,
+		// 	appCtx.Env.API.JwtKey,
+		// 	appCtx.Env.API.RefreshKey,
+		// )
+		// if err != nil {
+		// 	logger.Error(err.Error())
+		// 	response.SendErr(ctx, http.StatusInternalServerError, errors.New("error to generate new jwt token"))
+		// 	return
+		// }
 
-		response.SendSuccess(ctx, http.StatusCreated, response.TokenResponse{
-			Access: newAccessToken,
-		})
+		// response.SendSuccess(ctx, http.StatusCreated, response.TokenResponse{
+		// 	Access: newAccessToken,
+		// })
 	}
 }
