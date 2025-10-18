@@ -21,7 +21,7 @@ func verifyProductDuplicated(err error) error {
 }
 
 func (r *PostgresProductRepository) GetProduct(ctx context.Context, id uint) (schemas.Product, error) {
-	query := r.db.WithContext(ctx).Model(&schemas.Product{}).Preload("Role").Preload("Enterprise")
+	query := r.db.WithContext(ctx).Model(&schemas.Product{})
 
 	product, err := getByID[schemas.Product](query, id)
 	if err != nil {
