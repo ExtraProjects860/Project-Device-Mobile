@@ -64,7 +64,7 @@ export default function ModalUpdateUser({
       !enterpriseId &&
       !photoUri
     ) {
-      showErrorModal("Nenhum campo foi modificado.");
+      showErrorModal("Nenhum campo Vazio para atualizar.");
       return;
     }
 
