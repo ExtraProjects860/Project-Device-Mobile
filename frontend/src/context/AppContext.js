@@ -6,9 +6,10 @@ const AppContext = createContext();
 
 export function AppProvider({ children }) {
   const { colorScheme, setColorScheme } = useColorScheme();
-  const [accessToken, setAcessToken] = useState(null);
+  const [accessToken, setAccessToken] = useState(null);
   const [userData, setUserData] = useState({});
-  const [theme, setTheme] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
+  const [_, setTheme] = useState("");
 
   const isThemeDark = colorScheme === "dark";
 
@@ -19,7 +20,7 @@ export function AppProvider({ children }) {
       const storedTheme = await Storage.getItem("theme");
 
       if (storedToken) {
-        setAcessToken(storedToken);
+        setAccessToken(storedToken);
       }
       if (storedUserData) {
         setUserData(storedUserData);
@@ -28,18 +29,20 @@ export function AppProvider({ children }) {
         setTheme(storedTheme);
         setColorScheme(storedTheme);
       }
+
+      setIsLoading(false);
     };
 
     loadingStorageData();
   }, []);
 
   const updateToken = async (newToken) => {
-    setToken(newToken);
+    setAccessToken(newToken);
     await Storage.setItem("token", newToken);
   };
 
   const updateUser = async (newUser) => {
-    setUser(newUser);
+    setUserData(newUser);
     await Storage.setItem("user", newUser);
   };
 
@@ -55,7 +58,7 @@ export function AppProvider({ children }) {
   };
 
   const logout = async () => {
-    setAcessToken(null);
+    setAccessToken(null);
     setUserData(null);
     await Storage.removeItem("token");
     await Storage.removeItem("user");
@@ -66,6 +69,7 @@ export function AppProvider({ children }) {
     userData,
     theme: colorScheme,
     isThemeDark,
+    isLoading,
     updateToken,
     updateUser,
     updateTheme,

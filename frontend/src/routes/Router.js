@@ -8,6 +8,7 @@ import NoticesScreen from "../screens/NoticesScreeen";
 import NewPasswordScreen from "../screens/NewPasswordScreen";
 import ForgotPasswordScreen from "../screens/ForgotPasswordScreen";
 import LoginScreen from "../screens/LoginScreen";
+import SplashScreen from "../screens/SplashScreen";
 
 export default function Router() {
   return (
@@ -15,7 +16,8 @@ export default function Router() {
       future={{ v7_startTransition: true, v7_relativeSplatPath: true }}
     >
       <Routes>
-        <Route path="/" element={<LoginScreen />} />
+        <Route path="/" element={<SplashScreen />} />
+        <Route path="login" element={<LoginScreen />} />
         <Route path="home" element={<HomeScreen />} />
         <Route path="products" element={<ProductsScreen />} />
         <Route path="users" element={<UsersScreen />} />
