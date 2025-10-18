@@ -27,7 +27,7 @@ import { useThemeColors } from "../hooks/useThemeColors.js";
  */
 export default function Menu({ visible, onClose }) {
   const goTo = useNavigateTo();
-  const { isThemeDark, toggleTheme } = useAppContext();
+  const { isThemeDark, toggleTheme, logout } = useAppContext();
   const themeColors = useThemeColors();
 
   {
@@ -131,7 +131,10 @@ export default function Menu({ visible, onClose }) {
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity
-                onPress={() => goTo("/")}
+                onPress={async () => {
+                  await logout();
+                  goTo("/login");
+                }}
                 className="flex-row items-center bg-light-card dark:bg-dark-card rounded-full p-3"
               >
                 <Icon name="logout" size={24} color={themeColors.primary} />
