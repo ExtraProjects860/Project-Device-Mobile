@@ -56,7 +56,7 @@ func CreateUserHandler(appCtx *appcontext.AppContext, logger *config.Logger) gin
 // @Summary      Get User Info
 // @Description  Returns information about a specific user
 // @Tags         users
-// @Param 		 id query string true "User ID"
+// @Security     BearerAuth
 // @Produce      json
 // @Success      200 {object} dto.UserDTO
 // @Failure      400 {object} response.ErrResponse
@@ -64,16 +64,21 @@ func CreateUserHandler(appCtx *appcontext.AppContext, logger *config.Logger) gin
 // @Router       /api/v1/user [get]
 func GetInfoUserHandler(appCtx *appcontext.AppContext, logger *config.Logger) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		id, err := request.GetIdQuery(ctx)
-		if err != nil {
-			logger.Error(err.Error())
-			response.SendErr(ctx, http.StatusBadRequest, err)
+		uidRaw, exists := ctx.Get("user_id")
+		if !exists {
+			response.SendErr(ctx, http.StatusUnauthorized, errors.New("user id not found in token"))
+			return
+		}
+
+		uid, ok := uidRaw.(uint)
+		if !ok {
+			response.SendErr(ctx, http.StatusInternalServerError, errors.New("invalid user id type"))
 			return
 		}
 
 		userService := service.GetUserService(appCtx)
 
-		user, err := userService.Get(ctx, id)
+		user, err := userService.Get(ctx, uid)
 		if err != nil {
 			logger.Error(err.Error())
 			response.SendErr(ctx, http.StatusInternalServerError, errors.New("error to process get user"))
