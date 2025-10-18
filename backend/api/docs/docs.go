@@ -675,6 +675,11 @@ const docTemplate = `{
         },
         "/api/v1/user": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Returns information about a specific user",
                 "produces": [
                     "application/json"
@@ -683,15 +688,6 @@ const docTemplate = `{
                     "users"
                 ],
                 "summary": "Get User Info",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "User ID",
-                        "name": "id",
-                        "in": "query",
-                        "required": true
-                    }
-                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -1304,6 +1300,9 @@ const docTemplate = `{
                 },
                 "password": {
                     "type": "string"
+                },
+                "remember_me": {
+                    "type": "boolean"
                 }
             }
         },
