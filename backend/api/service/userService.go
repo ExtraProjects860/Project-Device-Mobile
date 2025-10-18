@@ -42,7 +42,7 @@ func (u *UserService) ValidateAndUpdateFields(user *schemas.User, input request.
 	if input.Cpf != "" && utils.ValidateCPF(input.Cpf) {
 		user.Cpf = input.Cpf
 	}
-	if input.RegisterNumber != 0 {
+	if input.RegisterNumber != "" && len(input.RegisterNumber) == 7 {
 		user.RegisterNumber = input.RegisterNumber
 	}
 	if input.RoleID != 0 {
