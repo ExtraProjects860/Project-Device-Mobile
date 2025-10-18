@@ -91,7 +91,7 @@ const ListItems = forwardRef(
                 />
               }
               ListEmptyComponent={
-                !error && <WarningNotFound message={"Nenhum item encontrado"} />
+                !error && <WarningNotFound/>
               }
             />
           </View>
