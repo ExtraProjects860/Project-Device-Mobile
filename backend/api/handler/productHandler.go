@@ -89,14 +89,14 @@ func UpdateProductHandler(appCtx *appcontext.AppContext, logger *config.Logger) 
 
 		productService := service.GetProductService(appCtx)
 
-		user, err := productService.Update(ctx, id, input)
+		product, err := productService.Update(ctx, id, input)
 		if err != nil {
 			logger.Error(err.Error())
 			response.SendErr(ctx, http.StatusInternalServerError, errors.New("error to update product"))
 			return
 		}
 
-		response.SendSuccess(ctx, http.StatusOK, user)
+		response.SendSuccess(ctx, http.StatusOK, product)
 	}
 }
 

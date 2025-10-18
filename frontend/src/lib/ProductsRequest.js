@@ -13,10 +13,9 @@ export async function createProductRequest(productData) {
  * @param {object} updatedProductData
  */
 export async function updateProductRequest(productId, updatedProductData) {
-  const response = await instanceMainApi.patch(
-    `/products/${productId}`,
-    updatedProductData,
-  );
+  const response = await instanceMainApi.patch("/product", updatedProductData, {
+    params: { id: productId },
+  });
   return response.data;
 }
 

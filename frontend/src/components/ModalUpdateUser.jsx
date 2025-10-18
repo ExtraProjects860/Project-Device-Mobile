@@ -36,17 +36,18 @@ export default function ModalUpdateUser({
   const [isSuccessVisible, setSuccessVisible] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
 
-  useEffect(() => {
-    if (user) {
-      setName(user.name || "");
-      setEmail(user.email || "");
-      setCpf(user.cpf || "");
-      setRegisterNumber(user.register_number?.toString() || "");
-      setRoleId(user.role_id?.toString() || "");
-      setEnterpriseId(user.enterprise_id?.toString() || "");
-      setPhotoUri(user.photo_url || null);
-    }
-  }, [user]);
+useEffect(() => {
+  // Este código agora vai rodar sempre que o prop 'user' for alterado
+  if (user) {
+    setName(user.name || "");
+    setEmail(user.email || "");
+    setCpf(user.cpf || "");
+    setRegisterNumber(user.register_number?.toString() || "");
+    setRoleId(user.role_id?.toString() || "");
+    setEnterpriseId(user.enterprise_id?.toString() || ""); // Esta linha está correta!
+    setPhotoUri(user.photo_url || null);
+  }
+}, [user]); // <-- A CORREÇÃO ESTÁ AQUI
 
   const handleCloseSuccessModal = () => {
     setSuccessVisible(false);
@@ -80,7 +81,7 @@ export default function ModalUpdateUser({
       updatedUserData.enterprise_id = enterpriseId
         ? parseInt(enterpriseId, 10)
         : null;
-    if (photoUri !== user.photo_url) updatedUserData.photo_url = photoUri;
+    if (photoUri !== user.photo_url && photoUri !== null) updatedUserData.photo_url = photoUri;
     
 
     if (Object.keys(updatedUserData).length === 0) {
@@ -88,6 +89,9 @@ export default function ModalUpdateUser({
       setSuccessVisible(true);
       return;
     }
+    
+    console.log("Produto original:", user);
+    console.log("Dados atualizados do produto:", updatedUserData);
 
     try {
       await updateUserRequest(user.id, updatedUserData);     

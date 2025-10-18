@@ -23,21 +23,18 @@ func (s *ProductRequest) Validate(ctx *gin.Context, validate *validator.Validate
 	return validate.StructCtx(ctx, s)
 }
 
+// Arquivo: /app/handler/request/productRequest.go
+
 func (s *ProductRequest) ValidateUpdate() error {
-	hasAtLeastOne := s.Name != "" ||
-		s.Description != "" ||
-		s.Value != 0 ||
-		s.Quantity != 0 ||
-		s.IsPromotionAvaible != nil ||
-		*s.Discount != 0 && s.Discount != nil ||
-		*s.PhotoUrl != "" && s.PhotoUrl != nil ||
-		s.IsAvaible != nil
-
-	if !hasAtLeastOne {
-		return fmt.Errorf("at least one valid field must be provided")
-	}
-
-	return nil
+    if s.Name != "" { return nil }
+    if s.Description != "" { return nil }
+    if s.Value != 0 { return nil }
+    if s.Quantity != 0 { return nil }
+    if s.IsPromotionAvaible != nil { return nil }
+    if s.Discount != nil { return nil }
+    if s.PhotoUrl != nil { return nil }
+    if s.IsAvaible != nil { return nil }
+    return fmt.Errorf("at least one field must be provided for update")
 }
 
 func (s *ProductRequest) Format() {
