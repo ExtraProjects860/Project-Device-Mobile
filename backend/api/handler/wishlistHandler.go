@@ -15,6 +15,7 @@ import (
 // @Summary      Add Product to Wish List
 // @Description  Adds a product to the user wish list
 // @Tags         wishlist
+// @Security     BearerAuth
 // @Accept       json
 // @Produce      json
 // @Param 		 user_id query string true "User ID"
@@ -48,6 +49,7 @@ func AddInWishListHandler(appCtx *appcontext.AppContext, logger *config.Logger) 
 // @Summary      Delete Product from Wish List
 // @Description  Delete a product from the user wish list
 // @Tags         wishlist
+// @Security     BearerAuth
 // @Produce      json
 // @Param 		 user_id query string true "User ID"
 // @Param 		 product_id query string true "Product ID"
@@ -81,6 +83,7 @@ func DeleteInWishListHandler(appCtx *appcontext.AppContext, logger *config.Logge
 // @Summary      Get Wish List Items
 // @Description  Returns all products in the user wish list
 // @Tags         wishlist
+// @Security     BearerAuth
 // @Produce      json
 // @Param 		 id query string true "User ID"
 // @Param        itemsPerPage query string true "Pagination Items"

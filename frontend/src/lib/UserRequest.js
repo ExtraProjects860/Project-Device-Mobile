@@ -8,11 +8,20 @@ export async function getUsersRequest(itemsPerPage = 20, currentPage = 1) {
   return response.data || [];
 }
 
-export async function createUserRequest(userData) {
-  const response = await instanceMainApi.post("/user", userData);
+/**
+ * @param {object} userData
+ * @param {string} accessToken
+ */
+export async function createUserRequest(userData, accessToken) {
+  const response = await instanceMainApi.post("/user", userData, {
+    Authorization: `Bearer ${accessToken}`,
+  });
   return response.data;
 }
 
+/**
+ * @param {string} accessToken
+ */
 export async function getInfoUserRequest(accessToken) {
   const response = await instanceMainApi.get(`/user`, {
     headers: {
@@ -25,10 +34,14 @@ export async function getInfoUserRequest(accessToken) {
 /**
  * @param {string} userId
  * @param {object} updatedUserData
+ * @param {string} accessToken
  */
-export async function updateUserRequest(userId, updatedUserData) {
+export async function updateUserRequest(userId, updatedUserData, accessToken) {
   const response = await instanceMainApi.patch("/user", updatedUserData, {
     params: { id: userId },
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
   });
   return response.data;
 }

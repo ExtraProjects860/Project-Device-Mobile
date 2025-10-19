@@ -16,8 +16,11 @@ import { createUserRequest } from "../../lib/UserRequest.js";
 import { useError } from "../../context/ErrorContext.js";
 import ModalCheck from "./ModalCheck";
 import { useThemeColors } from "../../hooks/useThemeColors.js"; // 1. Importar
+import { useAppContext } from "../../context/AppContext.js";
 
 export default function ModalCreateUser({ visible, onClose, onUserCreated }) {
+  const { accessToken } = useAppContext();
+
   const { showErrorModal } = useError();
   const themeColors = useThemeColors(); // 2. Usar o hook
   const [name, setName] = useState("");
@@ -60,7 +63,7 @@ export default function ModalCreateUser({ visible, onClose, onUserCreated }) {
         photo_url: photoUri || "",
       };
 
-      await createUserRequest(userData);
+      await createUserRequest(userData, accessToken);
 
       setSuccessMessage("Usuário cadastrado com sucesso!");
       setSuccessVisible(true);

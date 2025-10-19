@@ -16,6 +16,7 @@ import (
 // @Summary      Create Role
 // @Description  Creates a new role
 // @Tags         roles
+// @Security     BearerAuth
 // @Accept       json
 // @Produce      json
 // @Param        role body request.RoleRequest true "Role info"
@@ -56,6 +57,7 @@ func CreateRole(appCtx *appcontext.AppContext, logger *config.Logger) gin.Handle
 // @Summary      Update Role
 // @Description  Updates an existing role by ID
 // @Tags         roles
+// @Security     BearerAuth
 // @Accept       json
 // @Produce      json
 // @Param        id   query int true "role ID"
@@ -103,6 +105,7 @@ func UpdateRole(appCtx *appcontext.AppContext, logger *config.Logger) gin.Handle
 // @Summary      List Roles
 // @Description  Retrieves a paginated list of roles
 // @Tags         roles
+// @Security     BearerAuth
 // @Accept       json
 // @Produce      json
 // @Param        itemsPerPage query int true "Items per page"

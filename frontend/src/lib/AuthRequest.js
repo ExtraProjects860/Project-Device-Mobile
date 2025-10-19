@@ -21,7 +21,3 @@ export async function loginRequest(userData) {
 export async function refreshTokenRequest() {
   return;
 }
-
-export async function logoutRequest() {
-  return;
-}

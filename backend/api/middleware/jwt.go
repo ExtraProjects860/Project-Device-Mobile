@@ -1,31 +1,34 @@
 package middleware
 
 import (
-	"fmt"
+	"errors"
 	"net/http"
 	"strings"
 
 	"github.com/ExtraProjects860/Project-Device-Mobile/appcontext"
 	"github.com/ExtraProjects860/Project-Device-Mobile/auth"
+	"github.com/ExtraProjects860/Project-Device-Mobile/config"
+	"github.com/ExtraProjects860/Project-Device-Mobile/handler/response"
 	"github.com/gin-gonic/gin"
 )
 
-func JWTMiddleware(appCtx *appcontext.AppContext) gin.HandlerFunc {
+func JWTMiddleware(appCtx *appcontext.AppContext, logger *config.Logger) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		tokenStr := ctx.GetHeader("Authorization")
 		if tokenStr == "" {
-			ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "missing token"})
+			logger.Error("missing token")
+			response.SendErrAbort(ctx, http.StatusBadRequest, errors.New("missing token"))
 			return
 		}
 
-		fmt.Println(tokenStr)
 		if strings.HasPrefix(strings.ToLower(tokenStr), "bearer ") {
 			tokenStr = strings.TrimSpace(tokenStr[7:])
 		}
 
 		claims, err := auth.ValidateAccessToken(tokenStr, appCtx.Env.API.JwtKey)
 		if err != nil {
-			ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+			logger.Error(err.Error())
+			response.SendErrAbort(ctx, http.StatusUnauthorized, errors.New("invalid token"))
 			return
 		}
 

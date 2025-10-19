@@ -16,6 +16,7 @@ import { updateUserRequest } from "../../lib/UserRequest.js";
 import { useError } from "../../context/ErrorContext.js";
 import { useThemeColors } from "../../hooks/useThemeColors.js";
 import ModalCheck from "./ModalCheck";
+import { useAppContext } from "../../context/AppContext.js";
 
 export default function ModalUpdateUser({
   visible,
@@ -23,6 +24,8 @@ export default function ModalUpdateUser({
   user,
   onUserUpdated,
 }) {
+  const { accessToken } = useAppContext();
+
   const { showErrorModal } = useError();
   const themeColors = useThemeColors();
   const [name, setName] = useState("");
@@ -94,8 +97,7 @@ export default function ModalUpdateUser({
     }
 
     try {
-      await updateUserRequest(user.id, updatedUserData);
-
+      await updateUserRequest(user.id, updatedUserData, accessToken);
       setSuccessMessage("Usuário atualizado com sucesso!");
       setSuccessVisible(true);
     } catch (error) {
@@ -117,7 +119,7 @@ export default function ModalUpdateUser({
       return;
     }
 
-    let result = await ImagePicker.launchImageLibraryAsync({
+    const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       aspect: [1, 1],
