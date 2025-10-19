@@ -1,8 +1,12 @@
 import { instanceMainApi } from "./axios.js";
 
-export async function getUsersRequest(itemsPerPage = 20, currentPage = 1) {
+export async function getUsersRequest(itemsPerPage = 20, currentPage = 1, accessToken) {
   const response = await instanceMainApi.get(
-    `/users?itemsPerPage=${itemsPerPage}&currentPage=${currentPage}`,
+    `/users?itemsPerPage=${itemsPerPage}&currentPage=${currentPage}`,{
+      headers: {
+        Authorization: `Bearer ${accessToken}`
+      }
+    }
   );
 
   return response.data || [];
