@@ -77,7 +77,7 @@ export default function Menu({ visible, onClose }) {
       {/* Sidebar */}
       <Animated.View
         style={animatedMenuStyle}
-        className="absolute top-0 bottom-0 right-0 h-full w-5/6 bg-light-secondary dark:bg-dark-primary p-6 z-50 pt-10"
+        className="absolute top-0 bottom-0 right-0 h-full w-5/6 bg-light-secondary dark:bg-dark-primary p-6 z-50 pt-10 flex flex-col"
       >
         <ScrollView>
           {/* Header */}
@@ -211,20 +211,19 @@ export default function Menu({ visible, onClose }) {
               </View>
             </View>
           )}
-
-          {/* Footer */}
-          <View>
-            <View className="h-px bg-light-text-inverted dark:bg-dark-text-secondary my-4" />
-            <View className="flex-1">
-              <Text className="text-light-text-inverted dark:text-dark-text-primary text-right text-xs">
-                0.0.0.1v - Design
-              </Text>
-              <Text className="text-light-text-inverted dark:text-dark-text-primary text-right text-xs">
-                © Direitos Reservados
-              </Text>
-            </View>
-          </View>
         </ScrollView>
+        {/* Footer */}
+        <View>
+          <View className="h-px bg-light-text-inverted dark:bg-dark-text-secondary my-4" />
+          <View>
+            <Text className="text-light-text-inverted dark:text-dark-text-primary text-right text-xs">
+              0.0.0.1v - Design
+            </Text>
+            <Text className="text-light-text-inverted dark:text-dark-text-primary text-right text-xs">
+              © Direitos Reservados
+            </Text>
+          </View>
+        </View>
       </Animated.View>
     </>
   );
