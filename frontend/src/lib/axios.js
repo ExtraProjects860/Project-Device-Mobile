@@ -1,8 +1,8 @@
 import axios from "axios";
+import {env} from "./env.js"
 
-// TODO não esquecer de mudar sempre a URL do axios quando for utilizar
 export const instanceMainApi = axios.create({
-  baseURL: "https://thermogenous-jimmie-manly.ngrok-free.dev/api/v1",
+  baseURL: env.axiosURL,
 });
 
 instanceMainApi.defaults.headers.post["Content-Type"] = "application/json";
