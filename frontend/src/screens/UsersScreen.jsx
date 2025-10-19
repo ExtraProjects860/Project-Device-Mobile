@@ -17,7 +17,7 @@ export default function UsersScreen() {
   const [isCreateModalVisible, setCreateModalVisible] = useState(false);
   const [isUpdateModalVisible, setUpdateModalVisible] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
-  const listRef = useRef(null);
+  const [listKey, setListKey] = useState(0);
 
   const handleEditUser = (user) => {
     setSelectedUser(user);
@@ -25,9 +25,7 @@ export default function UsersScreen() {
   };
 
   const handleRefresh = () => {
-    if (listRef.current) {
-      listRef.current.refresh();
-    }
+    setListKey((prevKey) => prevKey + 1);
   };
 
   const CardListRender = ({ item }) => (
@@ -73,7 +71,7 @@ export default function UsersScreen() {
       </View>
 
       <ListItems
-        ref={listRef}
+        key={listKey}
         callbackFetch={getUsersRequest}
         CardListRender={CardListRender}
       />
