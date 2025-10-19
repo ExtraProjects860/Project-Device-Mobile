@@ -173,25 +173,6 @@ export default function Menu({ visible, onClose }) {
             </View>
           </View>
 
-          {/* Outros */}
-          <View>
-            <Text className="text-light-text-inverted dark:text-dark-text-primary font-bold text-xl mb-0">
-              Outros
-            </Text>
-            <View className="h-px bg-white my-4" />
-            <View>
-              <TouchableOpacity
-                onPress={() => goTo("/notices")}
-                className="flex-row items-center bg-light-card dark:bg-dark-card rounded-full p-3"
-              >
-                <Icon name="web" size={24} color={themeColors.primary} />
-                <Text className="ml-2 text-light-primary dark:text-dark-text-primary font-semibold text-base">
-                  Notícias
-                </Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-
           {/* Seção do Administrador */}
           {isAdmin && (
             <View>
