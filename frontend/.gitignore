@@ -36,5 +36,8 @@ yarn-error.*
 # typescript
 *.tsbuildinfo
 
+# axios
+/src/lib/env.js
+
 /android
 /ios
