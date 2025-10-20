@@ -18,7 +18,7 @@ export async function createProductRequest(productData, accessToken) {
  * @param {object} updatedProductData
  * @param {string} accessToken
  */
-export async function updateProductsRequest(
+export async function updateProductRequest(
   productId,
   updatedProductData,
   accessToken,
