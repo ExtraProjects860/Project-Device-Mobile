@@ -8,17 +8,18 @@ import ListItems from "../components/ListItems.jsx";
 import ButtonAdd from "../components/ui/ButtonAdd.jsx";
 import CardProductList from "../components/ui/CardProductList.jsx";
 import { useThemeColors } from "../hooks/useThemeColors.js";
-import { getProductsRequest } from "../lib/ProductsRequest.js";
+import { getProductsRequest } from "../lib/productsRequests.js";
 import { useState } from "react";
 import ModalCreate from "../components/modals/ModalCreateProduct";
 import ModalUpdateProduct from "../components/modals/ModalUpdateProduct.jsx";
 import { useRef } from "react";
 
-
 export default function ProductsScreen() {
   const themeColors = useThemeColors();
-  const [isCreateProductModalVisible, setCreateProductVisible] = useState(false);
-  const [isUpdateProductModalVisible, setUpdateProductVisible] = useState(false);
+  const [isCreateProductModalVisible, setCreateProductVisible] =
+    useState(false);
+  const [isUpdateProductModalVisible, setUpdateProductVisible] =
+    useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const listRef = useRef(null);
 
@@ -32,9 +33,11 @@ export default function ProductsScreen() {
       listRef.current.refresh();
     }
   };
+
   const CardProductRender = ({ item }) => (
-      <CardProductList item={item} onEdit={handleEditProduct} />
-    );
+    <CardProductList item={item} onEdit={handleEditProduct} />
+  );
+
   return (
     <Background>
       <ModalCreate
@@ -45,10 +48,7 @@ export default function ProductsScreen() {
         visible={isUpdateProductModalVisible}
         onClose={() => setUpdateProductVisible(false)}
         product={selectedProduct}
-        onProductUpdated={() => {
-          setUpdateProductVisible(false);
-          handleRefresh();
-        }}
+        onProductUpdated={handleRefresh}
       />
       <NavBar />
 
