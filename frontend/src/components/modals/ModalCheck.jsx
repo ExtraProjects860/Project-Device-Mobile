@@ -2,7 +2,7 @@ import React from "react";
 import { View, Text, Modal, Pressable } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 
-export default function ModalCheck({visible, message, onClose}) {
+export default function ModalCheck({ visible, message, onClose }) {
   return (
     <Modal
       animationType="fade"
@@ -15,6 +15,7 @@ export default function ModalCheck({visible, message, onClose}) {
           <View className="h-14 w-14 justify-center items-center rounded-full bg-green-100 dark:bg-green-900/50 mb-4">
             <Icon name="checkmark-outline" size={30} color="#087975" />
           </View>
+
           <Text className="text-xl font-bold text-light-text-primary dark:text-dark-text-primary mb-2">
             Sucesso
           </Text>

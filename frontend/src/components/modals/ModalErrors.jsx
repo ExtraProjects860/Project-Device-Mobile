@@ -17,6 +17,7 @@ export default function ModalErrors({ visible, message, onClose, onRetry }) {
           <View className="h-14 w-14 justify-center items-center rounded-full bg-red-100 dark:bg-red-900/50 mb-4">
             <Icon name="warning-outline" size={30} color="#E91D62" />
           </View>
+
           <Text className="text-xl font-bold text-light-text-primary dark:text-dark-text-primary mb-2">
             Ocorreu um Erro
           </Text>
