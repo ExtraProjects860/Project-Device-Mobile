@@ -21,21 +21,22 @@ import { useAppContext } from "../context/AppContext.js";
 import { useThemeColors } from "../hooks/useThemeColors.js";
 
 /**
+ * Componente responsável pelo Menu do app
+ * 
+ * Recebe 2 atributos
+ * O primeiro chamado visible responsável por receber o estado de visibilidade do menu
+ * O segundo chamado onClose responsável por receber a função que fecha o menu
+ * 
  * @param {object} props
  * @param {boolean} props.visible
  * @param {function} props.onClose
  */
 export default function Menu({ visible, onClose }) {
   const goTo = useNavigateTo();
-  const { isThemeDark, toggleTheme, logout } = useAppContext();
+  const { isThemeDark, toggleTheme, logout, userData } = useAppContext();
   const themeColors = useThemeColors();
-
-  {
-    /* Fazer lógica pra verificar usuário adm */
-  }
-  const isAdmin = true;
+  const isAdmin = userData?.role === "ADMIN" || "SUPERADMIN";
   const [isPasswordModalVisible, setPasswordModalVisible] = useState(false);
-
   const { width: screenWidth } = Dimensions.get("window");
   const translateX = useSharedValue(screenWidth);
 
@@ -45,6 +46,7 @@ export default function Menu({ visible, onClose }) {
     };
   });
 
+  // Função para animação do menu aparecendo na tela
   useEffect(() => {
     if (!visible) {
       translateX.value = withTiming(screenWidth, {
