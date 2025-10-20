@@ -3,9 +3,9 @@ import { useNavigate } from "react-router-native";
 export function useNavigateTo() {
   const navigate = useNavigate();
 
-  function goTo(screen, params = {}) {
+  const goTo = (screen, params = {}) => {
     navigate(screen, { state: params });
-  }
+  };
 
   return goTo;
 }

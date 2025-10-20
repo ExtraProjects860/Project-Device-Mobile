@@ -9,6 +9,6 @@ export function useMenu(initialState = false) {
   return {
     isVisible,
     openMenu,
-    closeMenu
+    closeMenu,
   };
 }

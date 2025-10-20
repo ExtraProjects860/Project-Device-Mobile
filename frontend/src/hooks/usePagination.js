@@ -11,9 +11,6 @@ const initialData = {
   totalResult: 0,
 };
 
-/**
- * TODO token de acesso aqui não está funcionando, pois da como null, precisa verificar como fazer para ajustar
- */
 export function usePagination(callbackFetch) {
   const { accessToken } = useAppContext();
 
@@ -23,6 +20,7 @@ export function usePagination(callbackFetch) {
   const [totalResult, setTotalResult] = useState(initialData.totalResult);
   const [isLoadingMore, setIsLoadingMore] = useState(initialData.loadingMore);
   const [isRefreshing, setRefreshing] = useState(initialData.refreshing);
+
   const { showErrorModal } = useError();
 
   const isFetchingRef = useRef(false);
@@ -59,7 +57,11 @@ export function usePagination(callbackFetch) {
       isFetchingRef.current = true;
       setIsLoadingMore(true);
 
-      const result = await callbackFetch(itemsPerPage, currentPage + 1, accessToken);
+      const result = await callbackFetch(
+        itemsPerPage,
+        currentPage + 1,
+        accessToken,
+      );
       if (result.data && result.data.length > 0) {
         setListItems((prevItems) => [...prevItems, ...result.data]);
         setCurrentPage(result.current_page);
@@ -71,7 +73,14 @@ export function usePagination(callbackFetch) {
       isFetchingRef.current = false;
       setIsLoadingMore(false);
     }
-  }, [isLoadingMore, currentPage, totalPages, callbackFetch, showErrorModal, accessToken]);
+  }, [
+    isLoadingMore,
+    currentPage,
+    totalPages,
+    callbackFetch,
+    showErrorModal,
+    accessToken,
+  ]);
 
   const handleRefresh = useCallback(async () => {
     setRefreshing(true);
