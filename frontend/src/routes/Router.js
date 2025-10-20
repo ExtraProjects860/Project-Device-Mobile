@@ -16,13 +16,21 @@ export default function Router() {
     >
       <Routes>
         <Route path="/" element={<SplashScreen />} />
+
         <Route path="login" element={<LoginScreen />} />
+
         <Route path="home" element={<HomeScreen />} />
+
         <Route path="products" element={<ProductsScreen />} />
+
         <Route path="users" element={<UsersScreen />} />
+
         <Route path="wishlist" element={<WishListScreen />} />
+
         <Route path="new-password" element={<NewPasswordScreen />} />
+
         <Route path="forgot-password" element={<ForgotPasswordScreen />} />
+
         <Route path="*" element={<NotFoundScreen />}></Route>
       </Routes>
     </NativeRouter>
