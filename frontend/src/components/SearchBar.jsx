@@ -8,9 +8,11 @@ export default function SearchBar({ buttonAdd }) {
   return (
     <View className="flex-row w-full px-5 items-center gap-x-2">
       <View className="flex-1 flex-row items-center bg-white rounded-full px-4 gap-x-3">
+
         <TouchableOpacity>
           <Icon name="menu" size={24} />
         </TouchableOpacity>
+
         <TextInput
           placeholder="Buscar"
           returnKeyType="search"
@@ -22,8 +24,11 @@ export default function SearchBar({ buttonAdd }) {
         <TouchableOpacity className="px-2">
           <Icon name="magnify" size={24} />
         </TouchableOpacity>
+
       </View>
+
       <View>{buttonAdd}</View>
+      
     </View>
   );
 }

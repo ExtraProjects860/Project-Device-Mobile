@@ -1,4 +1,4 @@
-import React, { useImperativeHandle, forwardRef } from "react";
+import React from "react";
 import {
   View,
   Text,
@@ -40,6 +40,7 @@ export default function ListItems({ callbackFetch, CardListRender }) {
     if (isLoadingMore) {
       return <Loading />;
     }
+
     if (allItemsLoaded) {
       return (
         <View className="w-full items-center">
@@ -54,6 +55,7 @@ export default function ListItems({ callbackFetch, CardListRender }) {
         </View>
       );
     }
+
     return null;
   };
 
