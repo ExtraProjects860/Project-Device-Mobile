@@ -3,11 +3,11 @@ import { View, Text, TouchableOpacity } from "react-native";
 
 /**
  * Componente responsável pelo card de Produto
- * 
+ *
  * Recebe 2 atributos
  * O primeiro chamado item é o objeto de produto que é usado para ver as informações exibidas
  * O segundo chamado onEdit é responsável por receber a função de edicão do item
- * 
+ *
  * @param {object} props
  * @param {object} props.item
  * @param {function} props.onEdit
@@ -22,9 +22,11 @@ export default function CardProductList({ item, onEdit }) {
         >
           {item.name}
         </Text>
+
         <Text className="text-light-text-secondary dark:text-dark-text-secondary text-sm">
           ID: {item.id}
         </Text>
+
         <Text className="text-light-text-secondary dark:text-dark-text-secondary text-sm">
           Valor: {item.value}
         </Text>

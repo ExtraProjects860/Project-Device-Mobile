@@ -1,8 +1,7 @@
 import React from "react";
-import { View, Text, TouchableOpacity } from "react-native";
+import { Text, TouchableOpacity } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { useThemeColors } from "../../hooks/useThemeColors.js";
-import { useState } from "react";
 
 /**
  * Componente responsável pelo botão de adicionar, exemplo: botão de adicionar usuário na tela UsersScreen
@@ -20,6 +19,7 @@ export default function ButtonAdd({ onPress, name }) {
       onPress={onPress}
     >
       <Icon name={name} size={24} color={themeColors.header} />
+
       <Text className="ml-2 text-white font-semibold">Add</Text>
     </TouchableOpacity>
   );
