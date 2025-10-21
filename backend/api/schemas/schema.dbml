@@ -1,0 +1,64 @@
+Project ProjectDeviceMobile {
+  database_type: "PostgreSQL"
+}
+
+Table Role {
+  Id   serial [pk]
+  Name varchar [unique]
+
+  Note: "Tabela de papéis ou funções de usuário"
+}
+
+Table Enterprises {
+  Id   serial [pk]
+  Name varchar [unique]
+
+  Note: "Empresas ou organizações"
+}
+
+Table Users {
+  Id             serial [pk]
+  IdRole         int [ref: > Role.Id]
+  IdEnterprise   int [ref: > Enterprises.Id]
+  Name           varchar
+  Email          varchar [unique]
+  Password       varchar
+  Cpf            varchar [unique]
+  RegisterNumber int
+  PhotoUrl       varchar
+
+  Note: "Usuários do sistema"
+}
+
+Table Products {
+  Id                 serial [pk]
+  Name               varchar [unique]
+  Description        varchar
+  Value              decimal
+  Discount           decimal
+  Quantity           int
+  IsAvaible          boolean
+  IsPromotionAvaible boolean
+
+  Note: "Produtos cadastrados no sistema"
+}
+
+Table TokenPassword {
+  Id     serial [pk]
+  IdUser int [ref: > Users.Id]
+  Code   varchar
+  TimeUp timestamp
+
+  Note: "Tokens temporários para recuperação de senha"
+}
+
+Table WishList {
+  IdUser    int [ref: > Users.Id]
+  IdProduct int [ref: > Products.Id]
+
+  Note: "Relacionamento entre usuários e produtos desejados"
+  
+  Indexes {
+    (IdUser, IdProduct) [pk]
+  }
+}
