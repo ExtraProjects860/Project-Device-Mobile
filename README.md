@@ -45,6 +45,10 @@ Ferramentas de Desenvolvimento:
 
 ## Diagrama do Banco de Dados:
 
+Visualize abaixo o modelo atual de dados:
+
+![Diagrama do Banco de Dados](https://github.com/ExtraProjects860/Project-Device-Mobile/raw/dev/backend/api/schemas/diagram-db-sql.png)
+
 ## UI/UX do Projeto:
 
 ## Equipe:
