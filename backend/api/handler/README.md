@@ -1,0 +1,3 @@
+# Package `handler`
+
+## Visão Geral
