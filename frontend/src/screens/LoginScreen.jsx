@@ -10,10 +10,10 @@ import {
 import { MaterialIcons, Feather } from "@expo/vector-icons";
 import Background from "../components/ui/Background";
 import Logo from "../components/ui/Logo";
-import ModalCheck from "../components/ModalCheck";
-import ModalErrors from "../components/ModalErrors.jsx";
-import { loginRequest } from "../lib/AuthRequest.js";
-import { getInfoUserRequest } from "../lib/UserRequest.js";
+import ModalCheck from "../components/modals/ModalCheck";
+import ModalErrors from "../components/modals/ModalErrors";
+import { loginRequest } from "../lib/authRequests.js";
+import { getInfoUserRequest } from "../lib/userRequests.js";
 import { useNavigateTo } from "../hooks/useNavigateTo.js";
 import { useAppContext } from "../context/AppContext.js";
 

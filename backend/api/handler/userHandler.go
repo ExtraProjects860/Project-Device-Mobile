@@ -16,6 +16,7 @@ import (
 // @Summary      Create User
 // @Description  Creates a new user
 // @Tags         users
+// @Security     BearerAuth
 // @Accept       json
 // @Produce      json
 // @Param        user body request.UserRequest false "User info"
@@ -92,6 +93,7 @@ func GetInfoUserHandler(appCtx *appcontext.AppContext, logger *config.Logger) gi
 // @Summary      Get Users
 // @Description  Returns a list of all users
 // @Tags         users
+// @Security     BearerAuth
 // @Produce      json
 // @Param        itemsPerPage query string true "Pagination Items"
 // @Param        currentPage query string true "Pagination Current Page"
@@ -124,6 +126,7 @@ func GetUsersHandler(appCtx *appcontext.AppContext, logger *config.Logger) gin.H
 // @Summary      Update User
 // @Description  Updates an existing user
 // @Tags         users
+// @Security     BearerAuth
 // @Accept       json
 // @Produce      json
 // @Param 		 id query string true "User ID"

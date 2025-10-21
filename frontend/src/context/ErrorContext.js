@@ -1,5 +1,5 @@
 import React, { createContext, useState, useContext, useCallback } from "react";
-import ModalErrors from "../components/ModalErrors.jsx";
+import ModalErrors from "../components/modals/ModalErrors.jsx";
 
 const ErrorContext = createContext();
 

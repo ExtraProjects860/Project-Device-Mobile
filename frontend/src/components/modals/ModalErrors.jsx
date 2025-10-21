@@ -2,7 +2,9 @@ import React from "react";
 import { View, Text, Modal, Pressable } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 
-export default function ModalCheck({visible, message, onClose}) {
+export default function ModalErrors({ visible, message, onClose, onRetry }) {
+  const hasRetryAction = typeof onRetry === "function";
+
   return (
     <Modal
       animationType="fade"
@@ -12,15 +14,17 @@ export default function ModalCheck({visible, message, onClose}) {
     >
       <View className="flex-1 justify-center items-center bg-black/50 px-5">
         <View className="w-full max-w-sm bg-light-card dark:bg-dark-card rounded-2xl p-6 items-center shadow-lg">
-          <View className="h-14 w-14 justify-center items-center rounded-full bg-green-100 dark:bg-green-900/50 mb-4">
-            <Icon name="checkmark-outline" size={30} color="#087975" />
+          <View className="h-14 w-14 justify-center items-center rounded-full bg-red-100 dark:bg-red-900/50 mb-4">
+            <Icon name="warning-outline" size={30} color="#E91D62" />
           </View>
+
           <Text className="text-xl font-bold text-light-text-primary dark:text-dark-text-primary mb-2">
-            Sucesso
+            Ocorreu um Erro
           </Text>
 
           <Text className="text-sm text-light-text-secondary dark:text-dark-text-secondary text-center mb-6">
-            {message || "Operação concluida com sucesso!"}
+            {message ||
+              "Não foi possível concluir a operação. Por favor, tente novamente."}
           </Text>
 
           <View className="flex-row w-full gap-3">
@@ -32,6 +36,17 @@ export default function ModalCheck({visible, message, onClose}) {
                 Fechar
               </Text>
             </Pressable>
+
+            {hasRetryAction && (
+              <Pressable
+                className="flex-1 p-3 rounded-lg bg-light-secondary dark:bg-dark-secondary active:opacity-80"
+                onPress={onRetry}
+              >
+                <Text className="text-center font-semibold text-white">
+                  Tentar Novamente
+                </Text>
+              </Pressable>
+            )}
           </View>
         </View>
       </View>

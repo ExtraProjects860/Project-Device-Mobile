@@ -16,7 +16,7 @@ export default function SplashScreen() {
 
       goTo("/home");
     }
-  }, [isLoading, accessToken]);
+  }, [isLoading, accessToken, goTo]);
 
   return <Loading/>;
 }

@@ -36,3 +36,26 @@ func (s *AuthService) VerifyCredentials(ctx *gin.Context, input request.LoginReq
 
 	return user.ID, nil
 }
+
+func (s *AuthService) ResetPasswordLogIn(ctx *gin.Context, newPassword string, id uint, repo *repository.PostgresUserRepository) error {
+	user, err := repo.GetInfoUser(ctx, id)
+	if err != nil {
+		s.logger.Warning(err.Error())
+		return fmt.Errorf("error not found use by id")
+	}
+
+	hashedPassword, err := utils.GenerateHashPassword(newPassword)
+	if err != nil {
+		s.logger.Warning(err.Error())
+		return fmt.Errorf("error to generate password hash")
+	}
+
+	user.Password = hashedPassword
+
+	if err := repo.UpdateUser(ctx, id, &user); err != nil {
+		s.logger.Warning(err.Error())
+		return fmt.Errorf("error to update password user")
+	}
+
+	return nil
+}

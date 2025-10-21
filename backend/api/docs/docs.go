@@ -189,6 +189,11 @@ const docTemplate = `{
         },
         "/api/v1/enterprise": {
             "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Updates an existing enterprise by ID",
                 "consumes": [
                     "application/json"
@@ -246,6 +251,11 @@ const docTemplate = `{
                 }
             },
             "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Creates a new enterprise",
                 "consumes": [
                     "application/json"
@@ -298,6 +308,11 @@ const docTemplate = `{
         },
         "/api/v1/enterprises": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Retrieves a paginated list of enterprises",
                 "consumes": [
                     "application/json"
@@ -352,6 +367,11 @@ const docTemplate = `{
         },
         "/api/v1/product": {
             "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Creates a new product",
                 "consumes": [
                     "application/json"
@@ -402,6 +422,11 @@ const docTemplate = `{
                 }
             },
             "patch": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Updates an existing product",
                 "consumes": [
                     "application/json"
@@ -461,6 +486,11 @@ const docTemplate = `{
         },
         "/api/v1/products": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Returns all products",
                 "produces": [
                     "application/json"
@@ -512,6 +542,11 @@ const docTemplate = `{
         },
         "/api/v1/role": {
             "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Updates an existing role by ID",
                 "consumes": [
                     "application/json"
@@ -569,6 +604,11 @@ const docTemplate = `{
                 }
             },
             "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Creates a new role",
                 "consumes": [
                     "application/json"
@@ -621,6 +661,11 @@ const docTemplate = `{
         },
         "/api/v1/roles": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Retrieves a paginated list of roles",
                 "consumes": [
                     "application/json"
@@ -710,6 +755,11 @@ const docTemplate = `{
                 }
             },
             "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Creates a new user",
                 "consumes": [
                     "application/json"
@@ -759,6 +809,11 @@ const docTemplate = `{
                 }
             },
             "patch": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Updates an existing user",
                 "consumes": [
                     "application/json"
@@ -817,6 +872,11 @@ const docTemplate = `{
         },
         "/api/v1/users": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Returns a list of all users",
                 "produces": [
                     "application/json"
@@ -868,6 +928,11 @@ const docTemplate = `{
         },
         "/api/v1/wishlist": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Returns all products in the user wish list",
                 "produces": [
                     "application/json"
@@ -924,6 +989,11 @@ const docTemplate = `{
                 }
             },
             "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Adds a product to the user wish list",
                 "consumes": [
                     "application/json"
@@ -973,6 +1043,11 @@ const docTemplate = `{
                 }
             },
             "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Delete a product from the user wish list",
                 "produces": [
                     "application/json"
@@ -1581,8 +1656,8 @@ const docTemplate = `{
                     "example": "https://cdn.exemplo.com/fotos/joao.jpg"
                 },
                 "register_number": {
-                    "type": "integer",
-                    "example": 2021001
+                    "type": "string",
+                    "example": "20210012"
                 },
                 "role": {
                     "type": "string",
@@ -1740,7 +1815,9 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "register_number": {
-                    "type": "integer"
+                    "type": "string",
+                    "maxLength": 8,
+                    "minLength": 8
                 },
                 "role_id": {
                     "type": "integer"

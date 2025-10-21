@@ -29,7 +29,7 @@ func (s *ProductRequest) ValidateUpdate() error {
 		s.Value != 0 ||
 		s.Quantity != 0 ||
 		s.IsPromotionAvaible != nil ||
-		*s.Discount != 0 && s.Discount != nil ||
+		*s.Discount != 0.0 && s.Discount != nil ||
 		*s.PhotoUrl != "" && s.PhotoUrl != nil ||
 		s.IsAvaible != nil
 

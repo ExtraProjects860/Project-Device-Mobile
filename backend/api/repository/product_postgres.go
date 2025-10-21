@@ -21,7 +21,7 @@ func verifyProductDuplicated(err error) error {
 }
 
 func (r *PostgresProductRepository) GetProduct(ctx context.Context, id uint) (schemas.Product, error) {
-	query := r.db.WithContext(ctx).Model(&schemas.Product{}).Preload("Role").Preload("Enterprise")
+	query := r.db.WithContext(ctx).Model(&schemas.Product{})
 
 <<<<<<< HEAD
 func (r *postgresProductRepository) GetProducts(ctx context.Context, itemsPerPage uint, currentPage uint) (PaginationDTO, error) {

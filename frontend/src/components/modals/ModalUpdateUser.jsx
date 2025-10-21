@@ -12,10 +12,11 @@ import {
 } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import * as ImagePicker from "expo-image-picker";
-import { updateUserRequest } from "../lib/UserRequest.js";
-import { useError } from "../context/ErrorContext.js";
-import { useThemeColors } from "../hooks/useThemeColors.js";
-import ModalCheck from "./ModalCheck.jsx";
+import { updateUserRequest } from "../../lib/userRequests.js";
+import { useError } from "../../context/ErrorContext.js";
+import { useThemeColors } from "../../hooks/useThemeColors.js";
+import ModalCheck from "./ModalCheck";
+import { useAppContext } from "../../context/AppContext.js";
 
 export default function ModalUpdateUser({
   visible,
@@ -23,6 +24,8 @@ export default function ModalUpdateUser({
   user,
   onUserUpdated,
 }) {
+  const { accessToken } = useAppContext();
+
   const { showErrorModal } = useError();
   const themeColors = useThemeColors();
   const [name, setName] = useState("");
@@ -64,7 +67,7 @@ export default function ModalUpdateUser({
       !enterpriseId &&
       !photoUri
     ) {
-      showErrorModal("Nenhum campo foi modificado.");
+      showErrorModal("Nenhum campo Vazio para atualizar.");
       return;
     }
 
@@ -72,16 +75,20 @@ export default function ModalUpdateUser({
     if (name !== user.name && name !== "") updatedUserData.name = name;
     if (email !== user.email && email !== "") updatedUserData.email = email;
     if (cpf !== user.cpf && cpf !== "") updatedUserData.cpf = cpf;
-    if (parseInt(registerNumber, 10 ) !== user.register_number && registerNumber !== "")
-      updatedUserData.register_number = parseInt(registerNumber, 10);
+    if (registerNumber !== user.register_number && registerNumber !== "")
+      updatedUserData.register_number = registerNumber;
     if (parseInt(roleId, 10) !== user.role_id && roleId !== "")
       updatedUserData.role_id = parseInt(roleId, 10);
-    if (parseInt(enterpriseId, 10) !== user.enterprise_id && enterpriseId !== "")
+    if (
+      parseInt(enterpriseId, 10) !== user.enterprise_id &&
+      enterpriseId !== ""
+    )
       updatedUserData.enterprise_id = enterpriseId
         ? parseInt(enterpriseId, 10)
         : null;
-    if (photoUri !== user.photo_url) updatedUserData.photo_url = photoUri;
-    
+    if (photoUri !== user.photo_url) {
+      updatedUserData.photo_url = photoUri || "";
+    }
 
     if (Object.keys(updatedUserData).length === 0) {
       setSuccessMessage("Nenhum campo foi modificado.");
@@ -90,8 +97,7 @@ export default function ModalUpdateUser({
     }
 
     try {
-      await updateUserRequest(user.id, updatedUserData);     
-
+      await updateUserRequest(user.id, updatedUserData, accessToken);
       setSuccessMessage("Usuário atualizado com sucesso!");
       setSuccessVisible(true);
     } catch (error) {
@@ -113,7 +119,7 @@ export default function ModalUpdateUser({
       return;
     }
 
-    let result = await ImagePicker.launchImageLibraryAsync({
+    const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       aspect: [1, 1],

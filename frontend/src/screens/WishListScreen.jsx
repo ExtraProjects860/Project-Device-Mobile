@@ -3,9 +3,8 @@ import { View, Text } from "react-native";
 import Background from "../components/ui/Background";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { NavBar } from "../components/Navbar";
-import SearchBar from "../components/SearchBar.jsx";
-import ListItems from "../components/ListItems.jsx";
-import ButtonAdd from "../components/ui/ButtonAdd.jsx";
+import SearchBar from "../components/SearchBar";
+import ButtonAdd from "../components/ui/ButtonAdd";
 import { useThemeColors } from "../hooks/useThemeColors.js";
 
 export default function ProductsScreen() {

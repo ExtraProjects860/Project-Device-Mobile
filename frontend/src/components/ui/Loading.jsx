@@ -1,9 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { ActivityIndicator, View, Text, StatusBar} from "react-native";
+import { ActivityIndicator, View, Text, StatusBar } from "react-native";
 
+/**
+ * Componente responsável pela tela de carregamento
+ */
 export default function Loading() {
   const [dots, setDots] = useState("");
 
+  // Funcão para carregar os 3 pontos durante o loading
   useEffect(() => {
     let count = 0;
     const interval = setInterval(() => {
@@ -21,8 +25,12 @@ export default function Loading() {
         translucent={true}
         className="bg-light-primary dark:bg-dark-primary"
       />
+
       <ActivityIndicator size="large" color="#E91D62" />
-      <Text className="text-light-text-inverted dark:text-dark-text-primary text-xl">Carregando{dots}</Text>
+
+      <Text className="text-light-text-inverted dark:text-dark-text-primary text-xl">
+        Carregando{dots}
+      </Text>
     </View>
   );
 }

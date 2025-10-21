@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState } from "react";
 import { View, Text } from "react-native";
 import Background from "../components/ui/Background";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
@@ -6,18 +6,18 @@ import { NavBar } from "../components/Navbar";
 import SearchBar from "../components/SearchBar.jsx";
 import ListItems from "../components/ListItems.jsx";
 import ButtonAdd from "../components/ui/ButtonAdd.jsx";
-import { getUsersRequest } from "../lib/UserRequest.js";
+import { getUsersRequest } from "../lib/userRequests.js";
 import { useThemeColors } from "../hooks/useThemeColors.js";
 import CardUserList from "../components/ui/CardUserList.jsx";
-import ModalCreateUser from "../components/ModalCreateUser.jsx";
-import ModalUpdateUser from "../components/ModalUpdateUser.jsx";
+import ModalCreateUser from "../components/modals/ModalCreateUser";
+import ModalUpdateUser from "../components/modals/ModalUpdateUser";
 
 export default function UsersScreen() {
   const themeColors = useThemeColors();
   const [isCreateModalVisible, setCreateModalVisible] = useState(false);
   const [isUpdateModalVisible, setUpdateModalVisible] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
-  const listRef = useRef(null);
+  const [listKey, setListKey] = useState(0);
 
   const handleEditUser = (user) => {
     setSelectedUser(user);
@@ -25,9 +25,7 @@ export default function UsersScreen() {
   };
 
   const handleRefresh = () => {
-    if (listRef.current) {
-      listRef.current.refresh();
-    }
+    setListKey((prevKey) => prevKey + 1);
   };
 
   const CardListRender = ({ item }) => (
@@ -45,10 +43,7 @@ export default function UsersScreen() {
         visible={isUpdateModalVisible}
         onClose={() => setUpdateModalVisible(false)}
         user={selectedUser}
-        onUserUpdated={() => {
-          setUpdateModalVisible(false);
-          handleRefresh();
-        }}
+        onUserUpdated={handleRefresh}
       />
       <NavBar />
 
@@ -73,7 +68,7 @@ export default function UsersScreen() {
       </View>
 
       <ListItems
-        ref={listRef}
+        key={listKey}
         callbackFetch={getUsersRequest}
         CardListRender={CardListRender}
       />

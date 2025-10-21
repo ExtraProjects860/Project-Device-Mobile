@@ -1,0 +1,3 @@
+# Package `auth`
+
+## Visão Geral

@@ -17,10 +17,10 @@ export function useThemeColors() {
 
     switch: {
       track: {
+        true: colors.dark["text-secondary"],
         false: colors.dark["text-secondary"],
-        true: colors.light.primary,
       },
-      thumb: isThemeDark ? colors.dark.primary : colors.light.card,
+      thumb: isThemeDark ? colors.dark["white"] : colors.light.primary,
     },
   };
 }

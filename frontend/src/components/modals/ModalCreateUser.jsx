@@ -12,12 +12,15 @@ import {
 } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import * as ImagePicker from "expo-image-picker";
-import { createUserRequest } from "../lib/UserRequest.js";
-import { useError } from "../context/ErrorContext.js";
-import ModalCheck from "./ModalCheck.jsx";
-import { useThemeColors } from "../hooks/useThemeColors.js"; // 1. Importar
+import { createUserRequest } from "../../lib/userRequests.js";
+import { useError } from "../../context/ErrorContext.js";
+import ModalCheck from "./ModalCheck";
+import { useThemeColors } from "../../hooks/useThemeColors.js"; // 1. Importar
+import { useAppContext } from "../../context/AppContext.js";
 
 export default function ModalCreateUser({ visible, onClose, onUserCreated }) {
+  const { accessToken } = useAppContext();
+
   const { showErrorModal } = useError();
   const themeColors = useThemeColors(); // 2. Usar o hook
   const [name, setName] = useState("");
@@ -54,13 +57,13 @@ export default function ModalCreateUser({ visible, onClose, onUserCreated }) {
         email,
         cpf,
         password: temporaryPassword,
-        register_number: parseInt(registerNumber, 10),
+        register_number: registerNumber,
         role_id: parseInt(roleId, 10),
         enterprise_id: enterpriseId ? parseInt(enterpriseId, 10) : null,
-        photo_url: photoUri,
+        photo_url: photoUri || "",
       };
 
-      await createUserRequest(userData);
+      await createUserRequest(userData, accessToken);
 
       setSuccessMessage("Usuário cadastrado com sucesso!");
       setSuccessVisible(true);
@@ -111,17 +114,14 @@ export default function ModalCreateUser({ visible, onClose, onUserCreated }) {
         onRequestClose={onClose}
       >
         <View className="flex-1 justify-center items-center bg-black/40 px-5">
-          {/* 3. View principal com dark mode */}
           <View className="bg-light-card dark:bg-dark-card w-full p-6 rounded-2xl max-h-[90%]">
             {/* Header */}
             <View className="flex-row justify-between items-center mb-6">
               <View className="w-8" />
-              {/* 4. Texto do header com dark mode */}
               <Text className="text-xl font-bold text-light-text-primary dark:text-dark-text-primary">
                 Cadastrar Usuário
               </Text>
               <Pressable onPress={onClose} className="p-1">
-                {/* 5. Cor do ícone com dark mode */}
                 <Icon name="close" size={24} color={themeColors.primary} />
               </Pressable>
             </View>
@@ -129,11 +129,9 @@ export default function ModalCreateUser({ visible, onClose, onUserCreated }) {
             <ScrollView showsVerticalScrollIndicator={false}>
               {/* Nome do Usuário */}
               <View className="mb-4">
-                {/* 6. Label com dark mode */}
                 <Text className="ml-2 text-light-text-primary dark:text-dark-text-primary text-xl font-semibold mb-2">
                   Nome:
                 </Text>
-                {/* 7. Input com dark mode */}
                 <TextInput
                   className="bg-gray-soft rounded-lg p-4 text-base text-light-text-primary dark:text-dark-text-primary"
                   placeholder="Nome Completo"
@@ -237,7 +235,6 @@ export default function ModalCreateUser({ visible, onClose, onUserCreated }) {
                   Foto:
                 </Text>
 
-                {/* 8. Picker de imagem com dark mode */}
                 <TouchableOpacity
                   onPress={pickImage}
                   className="bg-gray-soft h-32 rounded-lg items-center justify-center"
@@ -249,7 +246,6 @@ export default function ModalCreateUser({ visible, onClose, onUserCreated }) {
                     />
                   ) : (
                     <View className="items-center">
-                      {/* 9. Ícone do picker com dark mode */}
                       <Icon
                         name="image-plus"
                         size={40}
@@ -259,7 +255,6 @@ export default function ModalCreateUser({ visible, onClose, onUserCreated }) {
                             : "#6B7280"
                         }
                       />
-                      {/* 10. Texto do picker com dark mode */}
                       <Text
                         color={
                           themeColors.primary === "#FFFFFF"
@@ -275,7 +270,7 @@ export default function ModalCreateUser({ visible, onClose, onUserCreated }) {
               </View>
             </ScrollView>
 
-            {/* Cadastrar (Botão primário não muda com o tema) */}
+            {/* Cadastrar */}
             <TouchableOpacity
               onPress={handleCreateUser}
               className="bg-light-primary dark:bg-dark-secondary p-3 rounded-full flex-row justify-center items-center mt-4"

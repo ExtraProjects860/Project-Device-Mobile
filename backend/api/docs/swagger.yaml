@@ -90,8 +90,8 @@ definitions:
         example: https://cdn.exemplo.com/fotos/joao.jpg
         type: string
       register_number:
-        example: 2021001
-        type: integer
+        example: "20210012"
+        type: string
       role:
         example: admin
         type: string
@@ -195,7 +195,9 @@ definitions:
       photo_url:
         type: string
       register_number:
-        type: integer
+        maxLength: 8
+        minLength: 8
+        type: string
       role_id:
         type: integer
     required:
@@ -373,6 +375,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/response.ErrResponse'
+      security:
+      - BearerAuth: []
       summary: Create Enterprise
       tags:
       - enterprises
@@ -411,6 +415,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/response.ErrResponse'
+      security:
+      - BearerAuth: []
       summary: Update Enterprise
       tags:
       - enterprises
@@ -447,6 +453,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/response.ErrResponse'
+      security:
+      - BearerAuth: []
       summary: List Enterprises
       tags:
       - enterprises
@@ -486,6 +494,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/response.ErrResponse'
+      security:
+      - BearerAuth: []
       summary: Update Product
       tags:
       - products
@@ -519,6 +529,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/response.ErrResponse'
+      security:
+      - BearerAuth: []
       summary: Create Product
       tags:
       - products
@@ -553,6 +565,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/response.ErrResponse'
+      security:
+      - BearerAuth: []
       summary: Get Products
       tags:
       - products
@@ -587,6 +601,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/response.ErrResponse'
+      security:
+      - BearerAuth: []
       summary: Create Role
       tags:
       - roles
@@ -625,6 +641,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/response.ErrResponse'
+      security:
+      - BearerAuth: []
       summary: Update Role
       tags:
       - roles
@@ -661,6 +679,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/response.ErrResponse'
+      security:
+      - BearerAuth: []
       summary: List Roles
       tags:
       - roles
@@ -721,6 +741,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/response.ErrResponse'
+      security:
+      - BearerAuth: []
       summary: Update User
       tags:
       - users
@@ -753,6 +775,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/response.ErrResponse'
+      security:
+      - BearerAuth: []
       summary: Create User
       tags:
       - users
@@ -787,6 +811,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/response.ErrResponse'
+      security:
+      - BearerAuth: []
       summary: Get Users
       tags:
       - users
@@ -819,6 +845,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/response.ErrResponse'
+      security:
+      - BearerAuth: []
       summary: Delete Product from Wish List
       tags:
       - wishlist
@@ -857,6 +885,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/response.ErrResponse'
+      security:
+      - BearerAuth: []
       summary: Get Wish List Items
       tags:
       - wishlist
@@ -890,6 +920,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/response.ErrResponse'
+      security:
+      - BearerAuth: []
       summary: Add Product to Wish List
       tags:
       - wishlist

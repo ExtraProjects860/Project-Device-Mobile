@@ -1,5 +1,6 @@
 import { useState, useCallback, useRef } from "react";
 import { useError } from "../context/ErrorContext";
+import { useAppContext } from "../context/AppContext";
 
 const initialData = {
   data: [],
@@ -11,12 +12,15 @@ const initialData = {
 };
 
 export function usePagination(callbackFetch) {
+  const { accessToken } = useAppContext();
+
   const [listItems, setListItems] = useState(initialData.data);
   const [currentPage, setCurrentPage] = useState(initialData.currentPage);
   const [totalPages, setTotalPages] = useState(initialData.totalPages);
   const [totalResult, setTotalResult] = useState(initialData.totalResult);
   const [isLoadingMore, setIsLoadingMore] = useState(initialData.loadingMore);
   const [isRefreshing, setRefreshing] = useState(initialData.refreshing);
+
   const { showErrorModal } = useError();
 
   const isFetchingRef = useRef(false);
@@ -27,7 +31,7 @@ export function usePagination(callbackFetch) {
   const initialLoad = useCallback(async () => {
     try {
       if (typeof callbackFetch === "function") {
-        const result = await callbackFetch(itemsPerPage, 1);
+        const result = await callbackFetch(itemsPerPage, 1, accessToken);
         if (result?.data) {
           setListItems(result.data);
           setCurrentPage(result.current_page);
@@ -44,7 +48,7 @@ export function usePagination(callbackFetch) {
         "Não foi possível carregar os itens. Verifique sua conexão.";
       showErrorModal(message, initialLoad);
     }
-  }, [callbackFetch, showErrorModal]);
+  }, [callbackFetch, showErrorModal, accessToken]);
 
   const loadMore = useCallback(async () => {
     if (isLoadingMore || currentPage >= totalPages) return;
@@ -53,7 +57,11 @@ export function usePagination(callbackFetch) {
       isFetchingRef.current = true;
       setIsLoadingMore(true);
 
-      const result = await callbackFetch(itemsPerPage, currentPage + 1);
+      const result = await callbackFetch(
+        itemsPerPage,
+        currentPage + 1,
+        accessToken,
+      );
       if (result.data && result.data.length > 0) {
         setListItems((prevItems) => [...prevItems, ...result.data]);
         setCurrentPage(result.current_page);
@@ -65,7 +73,14 @@ export function usePagination(callbackFetch) {
       isFetchingRef.current = false;
       setIsLoadingMore(false);
     }
-  }, [isLoadingMore, currentPage, totalPages, callbackFetch, showErrorModal]);
+  }, [
+    isLoadingMore,
+    currentPage,
+    totalPages,
+    callbackFetch,
+    showErrorModal,
+    accessToken,
+  ]);
 
   const handleRefresh = useCallback(async () => {
     setRefreshing(true);
