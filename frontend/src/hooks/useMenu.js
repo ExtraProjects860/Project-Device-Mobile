@@ -1,7 +1,7 @@
 import { useState } from "react";
 
-export function useMenu(initialState = false) {
-  const [isVisible, setIsVisible] = useState(initialState);
+export function useMenu() {
+  const [isVisible, setIsVisible] = useState(false);
 
   const openMenu = () => setIsVisible(true);
   const closeMenu = () => setIsVisible(false);

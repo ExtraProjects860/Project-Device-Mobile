@@ -9,7 +9,7 @@ export function NavBar() {
   return (
     <>
       <Header onMenuPress={openMenu} />
-      <Menu visible={isVisible} onClose={closeMenu} />
+      <Menu visible={isVisible} closeMenu={closeMenu} />
     </>
   );
 }

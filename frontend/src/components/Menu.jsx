@@ -1,19 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
   View,
   Text,
   TouchableOpacity,
   Switch,
-  Dimensions,
   Pressable,
   ScrollView,
+  Animated,
 } from "react-native";
-import Animated, {
-  useSharedValue,
-  useAnimatedStyle,
-  withTiming,
-  Easing,
-} from "react-native-reanimated";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import PasswordChange from "../components/PasswordChange";
 import { useNavigateTo } from "../hooks/useNavigateTo";
@@ -25,44 +19,38 @@ import { useThemeColors } from "../hooks/useThemeColors.js";
  *
  * Recebe 2 atributos
  * O primeiro chamado visible responsável por receber o estado de visibilidade do menu
- * O segundo chamado onClose responsável por receber a função que fecha o menu
+ * O segundo chamado closeMenu responsável por receber a função que fecha o menu
  *
  * @param {object} props
  * @param {boolean} props.visible
- * @param {function} props.onClose
+ * @param {function} props.closeMenu
  */
-export default function Menu({ visible, onClose }) {
+export default function Menu({ visible, closeMenu }) {
   const goTo = useNavigateTo();
   const { isThemeDark, toggleTheme, logout, userData } = useAppContext();
   const themeColors = useThemeColors();
 
   const [isPasswordModalVisible, setPasswordModalVisible] = useState(false);
 
-  const translateX = useSharedValue(screenWidth);
-  const { width: screenWidth } = Dimensions.get("window");
+  const slideAnim = useRef(new Animated.Value(400)).current;
+  const fadeAnim = useRef(new Animated.Value(0)).current;
 
-  const isAdmin = userData?.role === "ADMIN" || "SUPERADMIN";
+  const isAdmin = userData?.role === "ADMIN" || userData?.role === "SUPERADMIN";
 
-  const animatedMenuStyle = useAnimatedStyle(() => {
-    return {
-      transform: [{ translateX: translateX.value }],
-    };
-  });
-
-  // Função para animação do menu aparecendo na tela
   useEffect(() => {
-    if (!visible) {
-      translateX.value = withTiming(screenWidth, {
-        duration: 200,
-        easing: Easing.in(Easing.ease),
-      });
-      return;
-    }
-    translateX.value = withTiming(0, {
-      duration: 200,
-      easing: Easing.out(Easing.ease),
-    });
-  }, [visible, translateX, screenWidth]);
+    Animated.parallel([
+      Animated.timing(slideAnim, {
+        toValue: visible ? 0 : 400,
+        duration: 250,
+        useNativeDriver: true,
+      }),
+      Animated.timing(fadeAnim, {
+        toValue: visible ? 1 : 0,
+        duration: 250,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  }, [visible, slideAnim, fadeAnim]);
 
   return (
     <>
@@ -72,19 +60,23 @@ export default function Menu({ visible, onClose }) {
         onClose={() => setPasswordModalVisible(false)}
       />
 
-      {visible && (
-        <Pressable
-          onPress={onClose}
-          className="absolute inset-0 bg-black/40 z-50"
-        />
-      )}
+      <Animated.View
+        style={{ opacity: fadeAnim }}
+        pointerEvents={visible ? "auto" : "none"}
+        className="absolute inset-0 bg-black/40 z-50"
+      >
+        <Pressable onPress={closeMenu} className="w-full h-full" />
+      </Animated.View>
 
       {/* Sidebar */}
       <Animated.View
-        style={animatedMenuStyle}
+        style={{
+          transform: [{ translateX: slideAnim }],
+        }}
+        pointerEvents={visible ? "auto" : "none"}
         className="absolute top-0 bottom-0 right-0 h-full w-5/6 bg-light-secondary dark:bg-dark-primary p-6 z-50 pt-10 flex flex-col"
       >
-        <ScrollView>
+        <ScrollView showsVerticalScrollIndicator={false}>
           {/* Header */}
           <View className="flex-row items-center justify-between mb-10 rounded-xl">
             <TouchableOpacity
@@ -95,7 +87,7 @@ export default function Menu({ visible, onClose }) {
             </TouchableOpacity>
 
             <TouchableOpacity
-              onPress={onClose}
+              onPress={closeMenu}
               className="p-2 border-2 border-light-text-inverted dark:border-dark-text-primary rounded-xl"
             >
               <Icon name="arrow-left" size={30} color={themeColors.header} />
@@ -141,6 +133,9 @@ export default function Menu({ visible, onClose }) {
                 </Text>
               </TouchableOpacity>
 
+              {/**
+               * TODO fazer modal depois perguntando se o usuário realmente que deslogar
+               */}
               <TouchableOpacity
                 onPress={async () => {
                   await logout();

@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { useColorScheme } from "nativewind";
-import { Storage } from "../lib/Storage.js";
+import { Storage } from "../lib/storage.js";
 
 const AppContext = createContext();
 
