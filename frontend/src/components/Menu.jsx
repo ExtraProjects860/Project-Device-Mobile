@@ -110,7 +110,7 @@ export default function Menu({ visible, closeMenu }) {
                     size={24}
                     color={themeColors.primary}
                   />
-                  <Text className="ml-2 text-light-text-primary dark:text-dark-text-primary font-semibold text-base">
+                  <Text className="ml-2 text-light-primary dark:text-dark-text-primary font-semibold text-base">
                     Tema
                   </Text>
                 </View>
