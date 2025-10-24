@@ -82,7 +82,6 @@ export default function ListItems({ callbackFetch, CardListRender }) {
             contentContainerStyle={{ paddingBottom: 40 }}
             ref={flatListRef}
             data={listItems}
-            numColumns={2}
             keyExtractor={(item) => item.id.toString()}
             onEndReached={loadMore}
             onEndReachedThreshold={0.5}

@@ -6,17 +6,11 @@ import DefaultProduct from "../../assets/images/shopping-bag.png";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
 /**
- * Componente responsável pelo card de Produto
- *
- * Recebe 2 atributos
- * O primeiro chamado item é o objeto de produto que é usado para ver as informações exibidas
- * O segundo chamado onEdit é responsável por receber a função de edicão do item
- *
  * @param {object} props
  * @param {object} props.item
- * @param {function} props.onEdit
+ * @param {function} props.onRemove
  */
-export default function CardProductList({ item, onEdit }) {
+export default function CardWishListItem({ item, onRemove }) {
   const themeColors = useThemeColors();
 
   return (
@@ -36,10 +30,10 @@ export default function CardProductList({ item, onEdit }) {
           />
         </View>
 
-        <View className="flex-1 p-3 justify-between">
+        <View className="flex-1 p-2 justify-between">
           <View>
             <Text
-              className="text-light-text-primary dark:text-dark-text-primary font-bold text-lg"
+              className="text-light-text-primary dark:text-dark-text-primary font-bold text-base"
               numberOfLines={2}
             >
               {item?.name || "Nome não disponível"}
@@ -64,7 +58,7 @@ export default function CardProductList({ item, onEdit }) {
 
             <Text
               className="text-light-text-secondary dark:text-dark-text-secondary text-sm"
-              numberOfLines={2}
+              numberOfLines={1}
               ellipsizeMode="tail"
             >
               Descrição: {item.description || "Sem descrição no momento"}
@@ -73,15 +67,17 @@ export default function CardProductList({ item, onEdit }) {
 
           <View className="m-2">
             <TouchableOpacity
-              onPress={() => onEdit(item)}
-              className="flex-row gap-1 items-center justify-center py-2 px-5 rounded-full bg-light-secondary dark:bg-dark-secondary"
+              onPress={() => onRemove()}
+              className="flex-row gap-1 items-center justify-center py-2 px-5 rounded-full bg-light-primary dark:bg-dark-primary"
             >
               <Icon
-                name="square-edit-outline"
+                name="trash-can-outline"
                 size={20}
                 color={themeColors.header}
               />
-              <Text className="text-white font-bold text-center">Editar</Text>
+              <Text className="text-white font-bold text-center">
+                Remover da Lista
+              </Text>
             </TouchableOpacity>
           </View>
         </View>
