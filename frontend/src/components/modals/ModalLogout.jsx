@@ -1,6 +1,6 @@
 import React from "react";
 import { View, Text, Modal, Pressable } from "react-native";
-import Icon from "react-native-vector-icons/Ionicons";
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
 /**
  * Modal de confirmação para Logout.
@@ -21,7 +21,7 @@ export default function ModalLogout({ visible, onClose, onConfirm }) {
       <View className="flex-1 justify-center items-center bg-black/50 px-5">
         <View className="w-full max-w-sm bg-light-card dark:bg-dark-card rounded-2xl p-6 items-center shadow-lg">
           <View className="h-14 w-14 justify-center items-center rounded-full bg-red-100 dark:bg-red-900/50 mb-4">
-            <Icon name="log-out-outline" size={30} color="#E91D62" />
+            <Icon name="logout" size={30} color="#E91D62" />
           </View>
           <Text className="text-xl font-bold text-light-text-primary dark:text-dark-text-primary mb-2">
             Confirmar Saída
