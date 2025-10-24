@@ -11,7 +11,6 @@ import LoginScreen from "../screens/autentication/LoginScreen";
 import Loading from "../components/ui/Loading";
 import { useAppContext } from "../context/AppContext";
 import { useNavigateTo } from "../hooks/useNavigateTo"
-import SplashScreen from "../screens/SplashScreen";
 
 export default function Router() {
   function NavigationGuard({ children }) {
