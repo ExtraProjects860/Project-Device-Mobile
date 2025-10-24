@@ -10,6 +10,7 @@ import {
 } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import PasswordChange from "../components/PasswordChange";
+import ModalLogout from "./modals/ModalLogout.jsx";
 import { useNavigateTo } from "../hooks/useNavigateTo";
 import { useAppContext } from "../context/AppContext.js";
 import { useThemeColors } from "../hooks/useThemeColors.js";
@@ -27,10 +28,11 @@ import { useThemeColors } from "../hooks/useThemeColors.js";
  */
 export default function Menu({ visible, closeMenu }) {
   const goTo = useNavigateTo();
-  const { isThemeDark, toggleTheme, logout, userData } = useAppContext();
+  const { isThemeDark, toggleTheme, userData, logout } = useAppContext();
   const themeColors = useThemeColors();
 
   const [isPasswordModalVisible, setPasswordModalVisible] = useState(false);
+  const [isLogoutModalVisible, setLogoutModalVisible] = useState(false);
 
   const slideAnim = useRef(new Animated.Value(400)).current;
   const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -52,12 +54,23 @@ export default function Menu({ visible, closeMenu }) {
     ]).start();
   }, [visible, slideAnim, fadeAnim]);
 
+  const handleLogoutConfirm = async () => {
+    setLogoutModalVisible(false);
+    await logout();
+    goTo("/login");
+  };
+
   return (
     <>
-      {/* Modal de Alteração de Senha */}
       <PasswordChange
         visible={isPasswordModalVisible}
         onClose={() => setPasswordModalVisible(false)}
+      />
+
+      <ModalLogout
+        visible={isLogoutModalVisible}
+        onClose={() => setLogoutModalVisible(false)}
+        onConfirm={handleLogoutConfirm}
       />
 
       <Animated.View
@@ -133,14 +146,8 @@ export default function Menu({ visible, closeMenu }) {
                 </Text>
               </TouchableOpacity>
 
-              {/**
-               * TODO fazer modal depois perguntando se o usuário realmente que deslogar
-               */}
               <TouchableOpacity
-                onPress={async () => {
-                  await logout();
-                  goTo("/login");
-                }}
+                onPress={() => setLogoutModalVisible(true)}
                 className="flex-row items-center bg-light-card dark:bg-dark-card rounded-full p-3"
               >
                 <Icon name="logout" size={24} color={themeColors.primary} />
@@ -185,7 +192,7 @@ export default function Menu({ visible, closeMenu }) {
             </View>
           </View>
 
-          {/* Seção do Administrador */}
+          {/* Admin */}
           {isAdmin && (
             <View>
               <Text className="text-light-text-inverted dark:text-dark-text-primary font-bold text-xl mb-0 mt-2">
