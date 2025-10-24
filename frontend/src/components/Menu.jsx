@@ -14,6 +14,7 @@ import ModalWarning from "./modals/ModalWarning";
 import { useNavigateTo } from "../hooks/useNavigateTo";
 import { useAppContext } from "../context/AppContext.js";
 import { useThemeColors } from "../hooks/useThemeColors.js";
+import { useHandleLogoutConfirm } from "../hooks/useHandleLogoutConfirm.js";
 
 /**
  * Componente responsável pelo Menu do app
@@ -28,11 +29,17 @@ import { useThemeColors } from "../hooks/useThemeColors.js";
  */
 export default function Menu({ visible, closeMenu }) {
   const goTo = useNavigateTo();
-  const { isThemeDark, toggleTheme, userData, logout } = useAppContext();
+  const { isThemeDark, toggleTheme, userData } = useAppContext();
   const themeColors = useThemeColors();
+  const handleLogoutConfirm = useHandleLogoutConfirm();
 
   const [isPasswordModalVisible, setPasswordModalVisible] = useState(false);
   const [isLogoutModalVisible, setLogoutModalVisible] = useState(false);
+
+  const handleConfirmLogout = () => {
+    handleLogoutConfirm();
+    setLogoutModalVisible(false);
+  };
 
   const slideAnim = useRef(new Animated.Value(400)).current;
   const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -54,12 +61,6 @@ export default function Menu({ visible, closeMenu }) {
     ]).start();
   }, [visible, slideAnim, fadeAnim]);
 
-  const handleLogoutConfirm = async () => {
-    setLogoutModalVisible(false);
-    await logout();
-    goTo("/login");
-  };
-
   return (
     <>
       <PasswordChange
@@ -71,7 +72,7 @@ export default function Menu({ visible, closeMenu }) {
         visible={isLogoutModalVisible}
         message={"Você tem certeza que deseja sair da sua conta?"}
         onClose={() => setLogoutModalVisible(false)}
-        onConfirm={handleLogoutConfirm}
+        onConfirm={handleConfirmLogout}
       />
 
       <Animated.View
@@ -141,7 +142,11 @@ export default function Menu({ visible, closeMenu }) {
                 onPress={() => setPasswordModalVisible(true)}
                 className="flex-row items-center bg-light-card dark:bg-dark-card rounded-full p-3"
               >
-                <Icon name="lock-outline" size={24} color={themeColors.primary} />
+                <Icon
+                  name="lock-outline"
+                  size={24}
+                  color={themeColors.primary}
+                />
                 <Text className="ml-2 text-light-primary dark:text-dark-text-primary font-semibold text-base">
                   Senha
                 </Text>
@@ -173,7 +178,11 @@ export default function Menu({ visible, closeMenu }) {
                 onPress={() => goTo("/products")}
                 className="flex-row items-center bg-light-card dark:bg-dark-card rounded-full p-3 mb-3"
               >
-                <Icon name="shopping-outline" size={24} color={themeColors.primary} />
+                <Icon
+                  name="shopping-outline"
+                  size={24}
+                  color={themeColors.primary}
+                />
 
                 <Text className="ml-2 text-light-primary dark:text-dark-text-primary font-semibold text-base">
                   Produtos
@@ -184,7 +193,11 @@ export default function Menu({ visible, closeMenu }) {
                 onPress={() => goTo("/wishlist")}
                 className="flex-row items-center bg-light-card dark:bg-dark-card rounded-full p-3"
               >
-                <Icon name="bookmark-outline" size={24} color={themeColors.primary} />
+                <Icon
+                  name="bookmark-outline"
+                  size={24}
+                  color={themeColors.primary}
+                />
 
                 <Text className="ml-2 text-light-primary dark:text-dark-text-primary font-semibold text-base">
                   Lista de Desejos

@@ -1,6 +1,14 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  useCallback,
+} from "react";
 import { useColorScheme } from "nativewind";
 import { Storage } from "../lib/storage.js";
+import { setupAxiosInterceptors } from "../lib/axios.js";
+import { useError } from "./ErrorContext.js";
 
 const AppContext = createContext();
 
@@ -10,6 +18,8 @@ export function AppProvider({ children }) {
   const [userData, setUserData] = useState({});
   const [isLoading, setIsLoading] = useState(true);
   const [_, setTheme] = useState("");
+
+  const { showErrorModal } = useError();
 
   const isThemeDark = colorScheme === "dark";
 
@@ -57,12 +67,29 @@ export function AppProvider({ children }) {
     await updateTheme(newTheme);
   };
 
-  const logout = async () => {
+  const logout = useCallback(async () => {
+    showErrorModal(
+      "Sua sessão expirou. Por favor, faça login novamente.",
+      null,
+    );
+
+    setAccessToken(null);
+    setUserData(null);
+    await Storage.removeItem("token");
+    await Storage.removeItem("user");
+    
+  }, [showErrorModal]);
+
+  const manuallyLogout = async () => {
     setAccessToken(null);
     setUserData(null);
     await Storage.removeItem("token");
     await Storage.removeItem("user");
   };
+
+  useEffect(() => {
+    setupAxiosInterceptors(logout);
+  }, [logout]);
 
   const contexValues = {
     accessToken,
@@ -75,6 +102,7 @@ export function AppProvider({ children }) {
     updateTheme,
     toggleTheme,
     logout,
+    manuallyLogout,
   };
 
   return (
