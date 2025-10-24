@@ -1,17 +1,17 @@
 import React from "react";
 import { View, Text } from "react-native";
-import Background from "../components/ui/Background";
-import { NavBar } from "../components/Navbar";
+import Background from "../../components/ui/Background.jsx";
+import { NavBar } from "../../components/Navbar.jsx";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import SearchBar from "../components/SearchBar.jsx";
-import ListItems from "../components/ListItems.jsx";
-import ButtonAdd from "../components/ui/ButtonAdd.jsx";
-import CardProductList from "../components/ui/CardProductList.jsx";
-import { useThemeColors } from "../hooks/useThemeColors.js";
-import { getProductsRequest } from "../lib/productsRequests.js";
+import SearchBar from "../../components/SearchBar.jsx";
+import ListItems from "../../components/ListItems.jsx";
+import ButtonAdd from "../../components/ui/ButtonAdd.jsx";
+import CardProductList from "../../components/ui/CardProductList.jsx";
+import { useThemeColors } from "../../hooks/useThemeColors.js";
+import { getProductsRequest } from "../../lib/productsRequests.js";
 import { useState } from "react";
-import ModalCreate from "../components/modals/ModalCreateProduct";
-import ModalUpdateProduct from "../components/modals/ModalUpdateProduct.jsx";
+import ModalCreate from "../../components/modals/ModalCreateProduct.jsx";
+import ModalUpdateProduct from "../../components/modals/ModalUpdateProduct.jsx";
 import { useRef } from "react";
 
 export default function ProductsScreen() {

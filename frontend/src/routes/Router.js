@@ -1,12 +1,12 @@
 import { NativeRouter, Routes, Route } from "react-router-native";
 import HomeScreen from "../screens/HomeScreen";
-import ProductsScreen from "../screens/ProductsScreen";
+import ProductsScreen from "../screens/admin/ProductsScreen";
 import NotFoundScreen from "../screens/404";
-import UsersScreen from "../screens/UsersScreen";
+import UsersScreen from "../screens/admin/UsersScreen";
 import WishListScreen from "../screens/WishListScreen";
-import NewPasswordScreen from "../screens/NewPasswordScreen";
-import ForgotPasswordScreen from "../screens/ForgotPasswordScreen";
-import LoginScreen from "../screens/LoginScreen";
+import NewPasswordScreen from "../screens/autentication/NewPasswordScreen";
+import ForgotPasswordScreen from "../screens/autentication/ForgotPasswordScreen";
+import LoginScreen from "../screens/autentication/LoginScreen";
 import SplashScreen from "../screens/SplashScreen";
 
 export default function Router() {

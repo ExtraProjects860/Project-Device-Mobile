@@ -7,9 +7,9 @@ import {
   StatusBar,
 } from "react-native";
 import { MaterialIcons, Feather } from "@expo/vector-icons";
-import Background from "../components/ui/Background";
-import Logo from "../components/ui/Logo";
-import { useNavigateTo } from "../hooks/useNavigateTo";
+import Background from "../../components/ui/Background";
+import Logo from "../../components/ui/Logo";
+import { useNavigateTo } from "../../hooks/useNavigateTo";
 
 export default function NewPasswordScreen() {
   const [showPassword, setShowPassword] = useState(false);

@@ -1,16 +1,16 @@
 import React, { useState } from "react";
 import { View, Text } from "react-native";
-import Background from "../components/ui/Background";
+import Background from "../../components/ui/Background.jsx";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import { NavBar } from "../components/Navbar";
-import SearchBar from "../components/SearchBar.jsx";
-import ListItems from "../components/ListItems.jsx";
-import ButtonAdd from "../components/ui/ButtonAdd.jsx";
-import { getUsersRequest } from "../lib/userRequests.js";
-import { useThemeColors } from "../hooks/useThemeColors.js";
-import CardUserList from "../components/ui/CardUserList.jsx";
-import ModalCreateUser from "../components/modals/ModalCreateUser";
-import ModalUpdateUser from "../components/modals/ModalUpdateUser";
+import { NavBar } from "../../components/Navbar.jsx";
+import SearchBar from "../../components/SearchBar.jsx";
+import ListItems from "../../components/ListItems.jsx";
+import ButtonAdd from "../../components/ui/ButtonAdd.jsx";
+import { getUsersRequest } from "../../lib/userRequests.js";
+import { useThemeColors } from "../../hooks/useThemeColors.js";
+import CardUserList from "../../components/ui/CardUserList.jsx";
+import ModalCreateUser from "../../components/modals/ModalCreateUser.jsx";
+import ModalUpdateUser from "../../components/modals/ModalUpdateUser.jsx";
 
 export default function UsersScreen() {
   const themeColors = useThemeColors();
