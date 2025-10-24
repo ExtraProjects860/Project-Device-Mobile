@@ -1,37 +1,31 @@
-import React from "react";
+import React, { useState } from "react";
 import { View, Text } from "react-native";
-import Background from "../../components/ui/Background.jsx";
-import { NavBar } from "../../components/Navbar.jsx";
+import Background from "../../components/ui/Background";
+import { NavBar } from "../../components/Navbar";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import SearchBar from "../../components/SearchBar.jsx";
-import ListItems from "../../components/ListItems.jsx";
-import ButtonAdd from "../../components/ui/ButtonAdd.jsx";
-import CardProductList from "../../components/ui/CardProductList.jsx";
+import SearchBar from "../../components/SearchBar";
+import ListItems from "../../components/ListItems";
+import ButtonAdd from "../../components/ui/ButtonAdd";
+import CardProductList from "../../components/ui/CardProductList";
 import { useThemeColors } from "../../hooks/useThemeColors.js";
 import { getProductsRequest } from "../../lib/productsRequests.js";
-import { useState } from "react";
-import ModalCreate from "../../components/modals/ModalCreateProduct.jsx";
-import ModalUpdateProduct from "../../components/modals/ModalUpdateProduct.jsx";
-import { useRef } from "react";
+import { useHandleRefresh } from "../../hooks/useHandleRefresh.js";
+import ModalCreate from "../../components/modals/ModalCreateProduct";
+import ModalUpdateProduct from "../../components/modals/ModalUpdateProduct";
 
 export default function ProductsScreen() {
   const themeColors = useThemeColors();
+  const { listKey, handleRefresh } = useHandleRefresh();
+
   const [isCreateProductModalVisible, setCreateProductVisible] =
     useState(false);
   const [isUpdateProductModalVisible, setUpdateProductVisible] =
     useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
-  const listRef = useRef(null);
 
   const handleEditProduct = (product) => {
     setSelectedProduct(product);
     setUpdateProductVisible(true);
-  };
-
-  const handleRefresh = () => {
-    if (listRef.current) {
-      listRef.current.refresh();
-    }
   };
 
   const CardProductRender = ({ item }) => (
@@ -53,7 +47,7 @@ export default function ProductsScreen() {
       <NavBar />
 
       <View className="flex-row gap-2 m-6 items-center justify-center">
-        <Icon name="shopping-outline" size={30} color={themeColors.header} />
+        <Icon name="basket-outline" size={30} color={themeColors.header} />
         <Text className="text-white font-bold text-3xl">Produtos</Text>
       </View>
 
@@ -62,14 +56,14 @@ export default function ProductsScreen() {
           buttonAdd={
             <ButtonAdd
               onPress={() => setCreateProductVisible(true)}
-              name={"shopping-outline"}
+              name={"basket-plus-outline"}
             />
           }
         />
       </View>
 
       <ListItems
-        ref={listRef}
+        ref={listKey}
         callbackFetch={getProductsRequest}
         CardListRender={CardProductRender}
       />

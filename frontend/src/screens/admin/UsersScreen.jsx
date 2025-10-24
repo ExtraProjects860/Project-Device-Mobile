@@ -8,24 +8,22 @@ import ListItems from "../../components/ListItems.jsx";
 import ButtonAdd from "../../components/ui/ButtonAdd.jsx";
 import { getUsersRequest } from "../../lib/userRequests.js";
 import { useThemeColors } from "../../hooks/useThemeColors.js";
+import { useHandleRefresh } from "../../hooks/useHandleRefresh.js";
 import CardUserList from "../../components/ui/CardUserList.jsx";
 import ModalCreateUser from "../../components/modals/ModalCreateUser.jsx";
 import ModalUpdateUser from "../../components/modals/ModalUpdateUser.jsx";
 
 export default function UsersScreen() {
   const themeColors = useThemeColors();
+  const { listKey, handleRefresh } = useHandleRefresh();
+  
   const [isCreateModalVisible, setCreateModalVisible] = useState(false);
   const [isUpdateModalVisible, setUpdateModalVisible] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
-  const [listKey, setListKey] = useState(0);
 
   const handleEditUser = (user) => {
     setSelectedUser(user);
     setUpdateModalVisible(true);
-  };
-
-  const handleRefresh = () => {
-    setListKey((prevKey) => prevKey + 1);
   };
 
   const CardListRender = ({ item }) => (
@@ -61,7 +59,7 @@ export default function UsersScreen() {
           buttonAdd={
             <ButtonAdd
               onPress={() => setCreateModalVisible(true)}
-              name={"account-outline"}
+              name={"account-plus-outline"}
             />
           }
         />

@@ -14,6 +14,7 @@ export default function HomeScreen() {
   return (
     <Background>
       <NavBar />
+
       <View className="flex-col items-center justify-center">
         {/* Nome Cliente */}
         <View className="mt-4 mb-5">
