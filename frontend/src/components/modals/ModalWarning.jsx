@@ -2,7 +2,14 @@ import React from "react";
 import { View, Text, Modal, Pressable } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 
-export default function ModalCheck({ visible, message, onClose }) {
+/**
+ * @param {object} props
+ * @param {string} props.message
+ * @param {boolean} props.visible
+ * @param {function} props.onClose
+ * @param {function} props.onConfirm
+ */
+export default function ModalWarning({ visible, message, onClose, onConfirm }) {
   return (
     <Modal
       animationType="fade"
@@ -12,7 +19,7 @@ export default function ModalCheck({ visible, message, onClose }) {
     >
       <View className="flex-1 justify-center items-center bg-black/50 px-5">
         <View className="w-full max-w-sm bg-light-card dark:bg-dark-card rounded-2xl p-6 items-center shadow-lg">
-          <View className="h-14 w-14 justify-center items-center rounded-full bg-green-100 dark:bg-green-900/50 mb-4">
+          <View className="h-14 w-14 justify-center items-center rounded-full bg-yellow-100 dark:bg-yellow-900/50 mb-4">
             <Icon name="alert-outline" size={30} color="#ffcc00" />
           </View>
 
@@ -31,6 +38,15 @@ export default function ModalCheck({ visible, message, onClose }) {
             >
               <Text className="text-center font-semibold text-light-text-primary dark:text-dark-text-primary">
                 Fechar
+              </Text>
+            </Pressable>
+
+            <Pressable
+              className="flex-1 p-3 rounded-lg bg-light-secondary dark:bg-dark-secondary active:opacity-80"
+              onPress={onConfirm}
+            >
+              <Text className="text-center font-semibold text-white">
+                Concluir
               </Text>
             </Pressable>
           </View>
