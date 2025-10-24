@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import PasswordChange from "../components/PasswordChange";
-import ModalLogout from "./modals/ModalLogout.jsx";
+import ModalWarning from "./modals/ModalWarning";
 import { useNavigateTo } from "../hooks/useNavigateTo";
 import { useAppContext } from "../context/AppContext.js";
 import { useThemeColors } from "../hooks/useThemeColors.js";
@@ -67,8 +67,9 @@ export default function Menu({ visible, closeMenu }) {
         onClose={() => setPasswordModalVisible(false)}
       />
 
-      <ModalLogout
+      <ModalWarning
         visible={isLogoutModalVisible}
+        message={"Você tem certeza que deseja sair da sua conta?"}
         onClose={() => setLogoutModalVisible(false)}
         onConfirm={handleLogoutConfirm}
       />
@@ -96,7 +97,7 @@ export default function Menu({ visible, closeMenu }) {
               onPress={() => goTo("/home")}
               className="p-2 border-2 border-light-text-inverted dark:border-dark-text-primary rounded-xl"
             >
-              <Icon name="home" size={30} color={themeColors.header} />
+              <Icon name="home-outline" size={30} color={themeColors.header} />
             </TouchableOpacity>
 
             <TouchableOpacity
@@ -140,7 +141,7 @@ export default function Menu({ visible, closeMenu }) {
                 onPress={() => setPasswordModalVisible(true)}
                 className="flex-row items-center bg-light-card dark:bg-dark-card rounded-full p-3"
               >
-                <Icon name="lock" size={24} color={themeColors.primary} />
+                <Icon name="lock-outline" size={24} color={themeColors.primary} />
                 <Text className="ml-2 text-light-primary dark:text-dark-text-primary font-semibold text-base">
                   Senha
                 </Text>
@@ -172,7 +173,7 @@ export default function Menu({ visible, closeMenu }) {
                 onPress={() => goTo("/products")}
                 className="flex-row items-center bg-light-card dark:bg-dark-card rounded-full p-3 mb-3"
               >
-                <Icon name="shopping" size={24} color={themeColors.primary} />
+                <Icon name="shopping-outline" size={24} color={themeColors.primary} />
 
                 <Text className="ml-2 text-light-primary dark:text-dark-text-primary font-semibold text-base">
                   Produtos
@@ -183,7 +184,7 @@ export default function Menu({ visible, closeMenu }) {
                 onPress={() => goTo("/wishlist")}
                 className="flex-row items-center bg-light-card dark:bg-dark-card rounded-full p-3"
               >
-                <Icon name="bookmark" size={24} color={themeColors.primary} />
+                <Icon name="bookmark-outline" size={24} color={themeColors.primary} />
 
                 <Text className="ml-2 text-light-primary dark:text-dark-text-primary font-semibold text-base">
                   Lista de Desejos
@@ -207,7 +208,7 @@ export default function Menu({ visible, closeMenu }) {
                   className="flex-row items-center bg-light-card dark:bg-dark-card rounded-full p-3 mb-3"
                 >
                   <Icon
-                    name="account-group"
+                    name="account-group-outline"
                     size={24}
                     color={themeColors.primary}
                   />
