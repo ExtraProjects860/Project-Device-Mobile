@@ -22,9 +22,9 @@ export default function CardWishListItem({ item, onRemove }) {
       )}
 
       <View className="flex-row">
-        <View className="w-1/3 bg-white items-center justify-center">
+        <View className="w-1/3 items-center justify-center">
           <Image
-            className="w-32 h-32 aspect-square rounded-md"
+            className="w-32 h-32 bg-white aspect-square rounded-full"
             source={item?.photo_url ? { uri: item.photo_url } : DefaultProduct}
             resizeMode="contain"
           />
