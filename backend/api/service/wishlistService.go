@@ -47,18 +47,21 @@ func (w *WishListService) Delete(ctx *gin.Context, userID, productID uint) (*dto
 }
 
 func (w *WishListService) GetAll(ctx *gin.Context, userID, itemsPerPage, currentPage uint) (*dto.PaginationDTO, error) {
-	wishlists, totalPages, totalItems, err := w.repo.GetWishListByUserID(ctx, userID, itemsPerPage, currentPage)
+	wishlistEntries, totalPages, totalItems, err := w.repo.GetWishListByUserID(ctx, userID, itemsPerPage, currentPage)
 	if err != nil {
 		w.logger.Error(err.Error())
 		return nil, err
 	}
 
-	wishlistDTO := dto.MakeWishListOutput(wishlists, userID)
+	toDTO := func(wishlistEntrie schemas.WishList) *dto.ProductDTO {
+		return dto.MakeProductOutput(wishlistEntrie.Product)
+	}
 
-	return &dto.PaginationDTO{
-		Data:        wishlistDTO,
-		CurrentPage: currentPage,
-		TotalPages:  totalPages,
-		TotalItems:  totalItems,
-	}, nil
+	return dto.MakePaginationDTO(
+		wishlistEntries,
+		currentPage,
+		totalPages,
+		totalItems,
+		toDTO,
+	)
 }

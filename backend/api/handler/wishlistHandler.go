@@ -85,19 +85,23 @@ func DeleteInWishListHandler(appCtx *appcontext.AppContext, logger *config.Logge
 // @Tags         wishlist
 // @Security     BearerAuth
 // @Produce      json
-// @Param 		 id query string true "User ID"
 // @Param        itemsPerPage query string true "Pagination Items"
 // @Param        currentPage query string true "Pagination Current Page"
-// @Success      200 {array}  dto.WishListDTO
+// @Success      200 {array}  dto.ProductDTO
 // @Failure      400 {object} response.ErrResponse
 // @Failure      500 {object} response.ErrResponse
 // @Router       /api/v1/wishlist [get]
 func GetWishListByUserIDHandler(appCtx *appcontext.AppContext, logger *config.Logger) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		userId, err := request.GetIdQuery(ctx)
-		if err != nil {
-			logger.Error(err.Error())
-			response.SendErr(ctx, http.StatusBadRequest, err)
+		uidRaw, exists := ctx.Get("user_id")
+		if !exists {
+			response.SendErr(ctx, http.StatusUnauthorized, errors.New("user id not found in token"))
+			return
+		}
+
+		uid, ok := uidRaw.(uint)
+		if !ok {
+			response.SendErr(ctx, http.StatusInternalServerError, errors.New("invalid user id type"))
 			return
 		}
 
@@ -110,7 +114,7 @@ func GetWishListByUserIDHandler(appCtx *appcontext.AppContext, logger *config.Lo
 
 		wishlistService := service.GetWishListService(appCtx)
 
-		wishlistEntries, err := wishlistService.GetAll(ctx, userId, itemsPerPage, currentPage)
+		wishlistEntries, err := wishlistService.GetAll(ctx, uid, itemsPerPage, currentPage)
 		if err != nil {
 			logger.Error(err.Error())
 			response.SendErr(ctx, http.StatusInternalServerError, errors.New("error to get wishlist in database"))
