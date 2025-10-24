@@ -944,13 +944,6 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "User ID",
-                        "name": "id",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
                         "description": "Pagination Items",
                         "name": "itemsPerPage",
                         "in": "query",
@@ -970,7 +963,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/dto.WishListDTO"
+                                "$ref": "#/definitions/dto.ProductDTO"
                             }
                         }
                     },
@@ -1319,25 +1312,6 @@ const docTemplate = `{
                 }
             }
         },
-        "dto.WishListDTO": {
-            "type": "object",
-            "properties": {
-                "id": {
-                    "type": "integer",
-                    "example": 1
-                },
-                "item_count": {
-                    "type": "integer",
-                    "example": 1
-                },
-                "products": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/dto.ProductDTO"
-                    }
-                }
-            }
-        },
         "dto.WishListMinimalDTO": {
             "type": "object",
             "properties": {
@@ -1466,8 +1440,8 @@ const docTemplate = `{
                 },
                 "register_number": {
                     "type": "string",
-                    "maxLength": 8,
-                    "minLength": 8
+                    "maxLength": 7,
+                    "minLength": 7
                 },
                 "role_id": {
                     "type": "integer"
