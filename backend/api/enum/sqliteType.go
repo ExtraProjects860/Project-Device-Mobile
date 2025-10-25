@@ -14,6 +14,6 @@ func (t SqliteType) String() string {
 	case Memory:
 		return ":memory"
 	default:
-		return "unknown"
+		return "UNKNOWN"
 	}
 }
