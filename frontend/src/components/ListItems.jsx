@@ -10,7 +10,6 @@ import PageLoader from "../context/PageLoader.js";
 import Loading from "./ui/Loading.jsx";
 import WarningNotFound from "./ui/WarningNotFound.jsx";
 import { usePagination } from "../hooks/usePagination.js";
-import ModalErrors from "./modals/ModalErrors";
 
 /**
  * Componente responsável pela renderização em lista dos itens
@@ -27,12 +26,10 @@ export default function ListItems({ callbackFetch, CardListRender }) {
     flatListRef,
     totalResult,
     allItemsLoaded,
-    error,
     initialLoad,
     loadMore,
     handleRefresh,
     scrollToTop,
-    clearError,
   } = usePagination(callbackFetch);
 
   // Função responsável renderizar o botão de Voltar ao Topo ao final da lista
@@ -61,12 +58,6 @@ export default function ListItems({ callbackFetch, CardListRender }) {
 
   return (
     <PageLoader fetchData={initialLoad}>
-      <ModalErrors
-        visible={!!error}
-        message={error}
-        onClose={clearError}
-        onRetry={handleRefresh}
-      />
 
       {isRefreshing && listItems.length > 0 ? (
         <Loading />
@@ -93,7 +84,7 @@ export default function ListItems({ callbackFetch, CardListRender }) {
                 onRefresh={handleRefresh}
               />
             }
-            ListEmptyComponent={!error && <WarningNotFound />}
+            ListEmptyComponent={<WarningNotFound />}
           />
         </View>
       )}

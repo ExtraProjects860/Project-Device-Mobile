@@ -28,10 +28,6 @@ export default function ProductsScreen() {
     setUpdateProductVisible(true);
   };
 
-  const CardProductRender = ({ item }) => (
-    <CardProductList item={item} onEdit={handleEditProduct} />
-  );
-
   return (
     <Background>
       <ModalCreate
@@ -65,7 +61,9 @@ export default function ProductsScreen() {
       <ListItems
         ref={listKey}
         callbackFetch={getProductsRequest}
-        CardListRender={CardProductRender}
+        CardListRender={({ item }) => (
+          <CardProductList item={item} onEdit={handleEditProduct} />
+        )}
       />
     </Background>
   );

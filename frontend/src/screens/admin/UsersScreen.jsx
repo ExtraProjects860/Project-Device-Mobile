@@ -16,7 +16,7 @@ import ModalUpdateUser from "../../components/modals/ModalUpdateUser.jsx";
 export default function UsersScreen() {
   const themeColors = useThemeColors();
   const { listKey, handleRefresh } = useHandleRefresh();
-  
+
   const [isCreateModalVisible, setCreateModalVisible] = useState(false);
   const [isUpdateModalVisible, setUpdateModalVisible] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
@@ -25,10 +25,6 @@ export default function UsersScreen() {
     setSelectedUser(user);
     setUpdateModalVisible(true);
   };
-
-  const CardListRender = ({ item }) => (
-    <CardUserList item={item} onEdit={handleEditUser} />
-  );
 
   return (
     <Background>
@@ -68,7 +64,9 @@ export default function UsersScreen() {
       <ListItems
         key={listKey}
         callbackFetch={getUsersRequest}
-        CardListRender={CardListRender}
+        CardListRender={({ item }) => (
+          <CardUserList item={item} onEdit={handleEditUser} />
+        )}
       />
     </Background>
   );

@@ -24,13 +24,13 @@ export default function CardWishListItem({ item, onRemove }) {
       <View className="flex-row">
         <View className="w-1/3 items-center justify-center">
           <Image
-            className="w-32 h-32 bg-white aspect-square rounded-full"
+            className="h-32 bg-white aspect-square rounded-full"
             source={item?.photo_url ? { uri: item.photo_url } : DefaultProduct}
             resizeMode="contain"
           />
         </View>
 
-        <View className="flex-1 p-2 justify-between">
+        <View className="flex-1 p-3 justify-between">
           <View>
             <Text
               className="text-light-text-primary dark:text-dark-text-primary font-bold text-base"

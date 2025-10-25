@@ -19,10 +19,6 @@ export default function ProductsScreen() {
 
   const handleRemoveProduct = () => {};
 
-  const CardWishListItemRender = ({ item }) => (
-    <CardWishListItem item={item} onRemove={handleRemoveProduct} />
-  );
-
   return (
     <Background>
       <NavBar />
@@ -39,7 +35,9 @@ export default function ProductsScreen() {
       <ListItems
         ref={listKey}
         callbackFetch={getItemsWishListRequest}
-        CardListRender={CardWishListItemRender}
+        CardListRender={({ item }) => (
+          <CardWishListItem item={item} onRemove={handleRemoveProduct} />
+        )}
       />
     </Background>
   );

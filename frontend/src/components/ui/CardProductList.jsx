@@ -30,7 +30,7 @@ export default function CardProductList({ item, onEdit }) {
       <View className="flex-row">
         <View className="w-1/3 items-center justify-center">
           <Image
-            className="w-32 h-32 bg-white aspect-square rounded-full"
+            className="h-32 bg-white aspect-square rounded-full"
             source={item?.photo_url ? { uri: item.photo_url } : DefaultProduct}
             resizeMode="contain"
           />
@@ -39,7 +39,7 @@ export default function CardProductList({ item, onEdit }) {
         <View className="flex-1 p-3 justify-between">
           <View>
             <Text
-              className="text-light-text-primary dark:text-dark-text-primary font-bold text-lg"
+              className="text-light-text-primary dark:text-dark-text-primary font-bold text-base"
               numberOfLines={2}
             >
               {item?.name || "Nome não disponível"}
@@ -64,7 +64,7 @@ export default function CardProductList({ item, onEdit }) {
 
             <Text
               className="text-light-text-secondary dark:text-dark-text-secondary text-sm"
-              numberOfLines={2}
+              numberOfLines={1}
               ellipsizeMode="tail"
             >
               Descrição: {item.description || "Sem descrição no momento"}
