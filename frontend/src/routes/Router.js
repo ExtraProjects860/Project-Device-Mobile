@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { NativeRouter, Routes, Route, useLocation} from "react-router-native";
+import { NativeRouter, Routes, Route, useLocation } from "react-router-native";
 import HomeScreen from "../screens/HomeScreen";
 import ProductsScreen from "../screens/admin/ProductsScreen";
 import NotFoundScreen from "../screens/404";
@@ -10,63 +10,53 @@ import ForgotPasswordScreen from "../screens/autentication/ForgotPasswordScreen"
 import LoginScreen from "../screens/autentication/LoginScreen";
 import Loading from "../components/ui/Loading";
 import { useAppContext } from "../context/AppContext";
-import { useNavigateTo } from "../hooks/useNavigateTo"
+import { useNavigateTo } from "../hooks/useNavigateTo";
+import ProtectedRoutes from "./ProtectedRoutes";
+import OnlineRoutes from "./OnlineRoutes";
+
+export function AppRoutes() {
+  const { accessToken, checkInternetConection } = useAppContext();
+  return (
+    <Routes>
+      <Route path="/" element={<LoginScreen />} />
+      <Route path="login" element={<LoginScreen />} />
+      <Route path="home" element={<HomeScreen />} />
+
+      <Route
+        element={
+          <OnlineRoutes
+            accessToken={accessToken}
+            checkInternetConection={checkInternetConection}
+          />
+        }
+      >
+        <Route path="new-password" element={<NewPasswordScreen />} />
+        <Route path="forgot-password" element={<ForgotPasswordScreen />} />
+
+        <Route element={<ProtectedRoutes accessToken={accessToken} />}>
+          <Route path="products" element={<ProductsScreen />} />
+          <Route path="users" element={<UsersScreen />} />
+          <Route path="wishlist" element={<WishListScreen />} />
+        </Route>
+      </Route>
+
+      <Route path="*" element={<NotFoundScreen />}></Route>
+    </Routes>
+  );
+}
 
 export default function Router() {
-  function NavigationGuard({ children }) {
-    const { accessToken, isLoading } = useAppContext();
-    const goTo = useNavigateTo();
-    const location = useLocation();
+  const { isLoading } = useAppContext();
 
-    useEffect(() => {
-      if (isLoading) {
-        return;
-      }
-
-      if (!accessToken) {
-        if (
-          location.pathname !== "/login" &&
-          location.pathname !== "/forgot-password" &&
-          location.pathname !== "/new-password"
-        ) {
-          goTo("/login");
-        }
-        return;
-      }
-
-      if (
-        location.pathname === "/login" ||
-        location.pathname === "/forgot-password" ||
-        location.pathname === "/new-password" ||
-        location.pathname === "/"
-      ) {
-        goTo("/home");
-      }
-    }, [isLoading, accessToken, goTo, location.pathname]);
-
-    if (isLoading) {
-      return <Loading />;
-    }
-    return <>{children}</>;
+  if (isLoading) {
+    return <Loading />;
   }
+
   return (
     <NativeRouter
       future={{ v7_startTransition: true, v7_relativeSplatPath: true }}
     >
-      <NavigationGuard>
-        <Routes>
-          <Route path="/" element={<Loading />} />
-
-          <Route path="login" element={<LoginScreen />} />
-          <Route path="home" element={<HomeScreen />} />
-          <Route path="products" element={<ProductsScreen />} />
-          <Route path="users" element={<UsersScreen />} />
-          <Route path="wishlist" element={<WishListScreen />} />
-          <Route path="new-password" element={<NewPasswordScreen />} />
-          <Route path="forgot-password" element={<ForgotPasswordScreen />} />
-          <Route path="*" element={<NotFoundScreen />}></Route>
-        </Routes>
-      </NavigationGuard>
+      <AppRoutes />
     </NativeRouter>
   );
 }

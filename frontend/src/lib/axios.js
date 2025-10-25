@@ -20,7 +20,10 @@ export const setupAxiosInterceptors = (logoutCallback) => {
     },
 
     (error) => {
-      if (error.response && error.response.status === 401) {
+      if (!error.response){
+        return Promise.reject(error);
+      }
+      if (error.response.status === 401) {
         console.warn(
           "Axios Interceptor: Token inválido ou expirado (401). Executando logout.",
         );

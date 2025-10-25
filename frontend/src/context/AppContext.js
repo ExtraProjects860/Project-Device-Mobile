@@ -9,6 +9,7 @@ import { useColorScheme } from "nativewind";
 import { Storage } from "../lib/storage.js";
 import { setupAxiosInterceptors } from "../lib/axios.js";
 import { useError } from "./ErrorContext.js";
+import NetInfo from "@react-native-community/netinfo";
 
 const AppContext = createContext();
 
@@ -17,6 +18,7 @@ export function AppProvider({ children }) {
   const [accessToken, setAccessToken] = useState(null);
   const [userData, setUserData] = useState({});
   const [isLoading, setIsLoading] = useState(true);
+  const [isConnected, setIsConnected] = useState(true);
   const [_, setTheme] = useState("");
 
   const { showErrorModal } = useError();
@@ -41,6 +43,14 @@ export function AppProvider({ children }) {
       }
 
       setIsLoading(false);
+
+      const unsubscribe = NetInfo.addEventListener((state) => {
+        setIsConnected(state.isConnected);
+      });
+
+      return () => {
+        unsubscribe();
+      };
     };
 
     loadingStorageData();
@@ -67,25 +77,21 @@ export function AppProvider({ children }) {
     await updateTheme(newTheme);
   };
 
-  const logout = useCallback(async () => {
-    showErrorModal(
-      "Sua sessão expirou. Por favor, faça login novamente.",
-      null,
-    );
-
-    setAccessToken(null);
-    setUserData(null);
-    await Storage.removeItem("token");
-    await Storage.removeItem("user");
-    
-  }, [showErrorModal]);
-
   const manuallyLogout = async () => {
     setAccessToken(null);
     setUserData(null);
     await Storage.removeItem("token");
     await Storage.removeItem("user");
   };
+
+  const logout = useCallback(async () => {
+    showErrorModal(
+      "Sua sessão expirou. Por favor, faça login novamente.",
+      null,
+    );
+
+    manuallyLogout();
+  }, [showErrorModal]);
 
   useEffect(() => {
     setupAxiosInterceptors(logout);
@@ -103,6 +109,7 @@ export function AppProvider({ children }) {
     toggleTheme,
     logout,
     manuallyLogout,
+    checkInternetConection: isConnected,
   };
 
   return (
