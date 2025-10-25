@@ -3,6 +3,7 @@ package service
 import (
 	"github.com/ExtraProjects860/Project-Device-Mobile/appcontext"
 	"github.com/ExtraProjects860/Project-Device-Mobile/config"
+	"github.com/ExtraProjects860/Project-Device-Mobile/handler/request"
 	"github.com/ExtraProjects860/Project-Device-Mobile/repository"
 	"github.com/ExtraProjects860/Project-Device-Mobile/schemas"
 	"github.com/ExtraProjects860/Project-Device-Mobile/service/dto"
@@ -46,8 +47,12 @@ func (w *WishListService) Delete(ctx *gin.Context, userID, productID uint) (*dto
 	}), nil
 }
 
-func (w *WishListService) GetAll(ctx *gin.Context, userID, itemsPerPage, currentPage uint) (*dto.PaginationDTO, error) {
-	wishlistEntries, totalPages, totalItems, err := w.repo.GetWishListByUserID(ctx, userID, itemsPerPage, currentPage)
+func (w *WishListService) GetAll(ctx *gin.Context, userID uint, paginationSearch request.PaginationSearch) (*dto.PaginationDTO, error) {
+	wishlistEntries, totalPages, totalItems, err := w.repo.GetWishListByUserID(
+		ctx,
+		userID,
+		paginationSearch,
+	)
 	if err != nil {
 		w.logger.Error(err.Error())
 		return nil, err
@@ -59,7 +64,7 @@ func (w *WishListService) GetAll(ctx *gin.Context, userID, itemsPerPage, current
 
 	return dto.MakePaginationDTO(
 		wishlistEntries,
-		currentPage,
+		paginationSearch.CurrentPage,
 		totalPages,
 		totalItems,
 		toDTO,

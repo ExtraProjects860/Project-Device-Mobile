@@ -62,8 +62,11 @@ func (p *ProductService) Update(ctx *gin.Context, id uint, input request.Product
 	return dto.MakeProductOutput(product), nil
 }
 
-func (p *ProductService) GetAll(ctx *gin.Context, itemsPerPage, currentPage uint) (*dto.PaginationDTO, error) {
-	products, totalPages, totalItems, err := p.repo.GetProducts(ctx, itemsPerPage, currentPage)
+func (p *ProductService) GetAll(ctx *gin.Context, paginationSearch request.PaginationSearch) (*dto.PaginationDTO, error) {
+	products, totalPages, totalItems, err := p.repo.GetProducts(
+		ctx,
+		paginationSearch,
+	)
 	if err != nil {
 		p.logger.Error(err.Error())
 		return nil, err
@@ -75,7 +78,7 @@ func (p *ProductService) GetAll(ctx *gin.Context, itemsPerPage, currentPage uint
 
 	return dto.MakePaginationDTO(
 		products,
-		currentPage,
+		paginationSearch.CurrentPage,
 		totalPages,
 		totalItems,
 		toDTO,

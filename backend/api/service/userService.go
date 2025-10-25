@@ -108,8 +108,11 @@ func (u *UserService) Get(ctx *gin.Context, id uint) (*dto.UserDTO, error) {
 	return dto.MakeUserOutput(user), nil
 }
 
-func (u *UserService) GetAll(ctx *gin.Context, itemsPerPage, currentPage uint) (*dto.PaginationDTO, error) {
-	users, totalPages, totalItems, err := u.repo.GetUsers(ctx, itemsPerPage, currentPage)
+func (u *UserService) GetAll(ctx *gin.Context, paginationSearch request.PaginationSearch) (*dto.PaginationDTO, error) {
+	users, totalPages, totalItems, err := u.repo.GetUsers(
+		ctx,
+		paginationSearch,
+	)
 	if err != nil {
 		u.logger.Error(err.Error())
 		return nil, err
@@ -121,7 +124,7 @@ func (u *UserService) GetAll(ctx *gin.Context, itemsPerPage, currentPage uint) (
 
 	return dto.MakePaginationDTO(
 		users,
-		currentPage,
+		paginationSearch.CurrentPage,
 		totalPages,
 		totalItems,
 		toDTO,

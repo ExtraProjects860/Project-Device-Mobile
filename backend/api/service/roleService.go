@@ -56,8 +56,11 @@ func (ro *RoleService) Update(ctx *gin.Context, roleID uint, input request.RoleR
 }
 
 // TODO ficar esperto no frontend, pois vai ter que usar select, porém com paginação
-func (ro *RoleService) GetAll(ctx *gin.Context, itemsPerPage, currentPage uint) (*dto.PaginationDTO, error) {
-	roles, totalPages, totalItems, err := ro.repo.GetRoles(ctx, itemsPerPage, currentPage)
+func (ro *RoleService) GetAll(ctx *gin.Context, paginationSearch request.PaginationSearch) (*dto.PaginationDTO, error) {
+	roles, totalPages, totalItems, err := ro.repo.GetRoles(
+		ctx, 
+		paginationSearch,
+	)
 	if err != nil {
 		ro.logger.Error(err.Error())
 		return nil, err
@@ -69,7 +72,7 @@ func (ro *RoleService) GetAll(ctx *gin.Context, itemsPerPage, currentPage uint) 
 
 	return dto.MakePaginationDTO(
 		roles,
-		currentPage,
+		paginationSearch.CurrentPage,
 		totalPages,
 		totalItems,
 		toDTO,
