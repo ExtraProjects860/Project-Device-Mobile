@@ -77,7 +77,6 @@ func DeleteInWishListHandler(appCtx *appcontext.AppContext, logger *config.Logge
 
 		response.SendSuccess(ctx, http.StatusOK, wishlistEntrie)
 	}
-
 }
 
 // @Summary      Get Wish List Items
@@ -87,6 +86,8 @@ func DeleteInWishListHandler(appCtx *appcontext.AppContext, logger *config.Logge
 // @Produce      json
 // @Param        itemsPerPage query string true "Pagination Items"
 // @Param        currentPage query string true "Pagination Current Page"
+// @Param        searchFilter query string false "Search item by filter"
+// @Param        itemsOrder   query string false "Order direction" Enums(ASC, DESC)
 // @Success      200 {array}  dto.ProductDTO
 // @Failure      400 {object} response.ErrResponse
 // @Failure      500 {object} response.ErrResponse
@@ -105,7 +106,7 @@ func GetWishListByUserIDHandler(appCtx *appcontext.AppContext, logger *config.Lo
 			return
 		}
 
-		itemsPerPage, currentPage, err := request.GetPaginationData(ctx)
+		paginationSearch, err := request.GetPaginationData(ctx)
 		if err != nil {
 			logger.Error(err.Error())
 			response.SendErr(ctx, http.StatusBadRequest, err)
@@ -114,7 +115,7 @@ func GetWishListByUserIDHandler(appCtx *appcontext.AppContext, logger *config.Lo
 
 		wishlistService := service.GetWishListService(appCtx)
 
-		wishlistEntries, err := wishlistService.GetAll(ctx, uid, itemsPerPage, currentPage)
+		wishlistEntries, err := wishlistService.GetAll(ctx, uid, paginationSearch)
 		if err != nil {
 			logger.Error(err.Error())
 			response.SendErr(ctx, http.StatusInternalServerError, errors.New("error to get wishlist in database"))
@@ -123,5 +124,4 @@ func GetWishListByUserIDHandler(appCtx *appcontext.AppContext, logger *config.Lo
 
 		response.SendSuccess(ctx, http.StatusOK, wishlistEntries)
 	}
-
 }

@@ -110,13 +110,15 @@ func UpdateEnterprise(appCtx *appcontext.AppContext, logger *config.Logger) gin.
 // @Produce      json
 // @Param        itemsPerPage query int true "Items per page"
 // @Param        currentPage  query int true "Current page number"
+// @Param        searchFilter query string false "Search item by filter"
+// @Param        itemsOrder   query string false "Order direction" Enums(ASC, DESC)
 // @Success      200 {array}  dto.EnterpriseDTO
 // @Failure      400 {object} response.ErrResponse
 // @Failure      500 {object} response.ErrResponse
 // @Router       /api/v1/enterprises [get]
 func GetEnterprises(appCtx *appcontext.AppContext, logger *config.Logger) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		itemsPerPage, currentPage, err := request.GetPaginationData(ctx)
+		paginationSearch, err := request.GetPaginationData(ctx)
 		if err != nil {
 			logger.Error(err.Error())
 			response.SendErr(ctx, http.StatusBadRequest, err)
@@ -125,7 +127,7 @@ func GetEnterprises(appCtx *appcontext.AppContext, logger *config.Logger) gin.Ha
 
 		enterpriseService := service.GetEnterpriseService(appCtx)
 
-		enterprises, err := enterpriseService.GetAll(ctx, itemsPerPage, currentPage)
+		enterprises, err := enterpriseService.GetAll(ctx, paginationSearch)
 		if err != nil {
 			logger.Error(err.Error())
 			response.SendErr(ctx, http.StatusInternalServerError, errors.New("error to process get enterprises"))

@@ -97,13 +97,15 @@ func GetInfoUserHandler(appCtx *appcontext.AppContext, logger *config.Logger) gi
 // @Produce      json
 // @Param        itemsPerPage query string true "Pagination Items"
 // @Param        currentPage query string true "Pagination Current Page"
+// @Param        searchFilter query string false "Search item by filter"
+// @Param        itemsOrder   query string false "Order direction" Enums(ASC, DESC)
 // @Success      200 {array}  dto.UserDTO
 // @Failure      400 {object} response.ErrResponse
 // @Failure      500 {object} response.ErrResponse
 // @Router       /api/v1/users [get]
 func GetUsersHandler(appCtx *appcontext.AppContext, logger *config.Logger) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		itemsPerPage, currentPage, err := request.GetPaginationData(ctx)
+		paginationSearch, err := request.GetPaginationData(ctx)
 		if err != nil {
 			logger.Error(err.Error())
 			response.SendErr(ctx, http.StatusBadRequest, err)
@@ -112,7 +114,7 @@ func GetUsersHandler(appCtx *appcontext.AppContext, logger *config.Logger) gin.H
 
 		userService := service.GetUserService(appCtx)
 
-		users, err := userService.GetAll(ctx, itemsPerPage, currentPage)
+		users, err := userService.GetAll(ctx, paginationSearch)
 		if err != nil {
 			logger.Error(err.Error())
 			response.SendErr(ctx, http.StatusInternalServerError, errors.New("error to process get users"))
