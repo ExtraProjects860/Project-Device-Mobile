@@ -15,6 +15,7 @@
     "@kichiyaki/react-native-barcode-generator": "^0.6.7",
     "@react-native-async-storage/async-storage": "^2.2.0",
     "@react-native-community/netinfo": "11.4.1",
+    "@react-native-picker/picker": "^2.11.4",
     "axios": "^1.12.2",
     "eslint": "^9.36.0",
     "expo": "^54.0.9",
