@@ -5,6 +5,7 @@ import (
 	"errors"
 	"strings"
 
+	"github.com/ExtraProjects860/Project-Device-Mobile/handler/request"
 	"github.com/ExtraProjects860/Project-Device-Mobile/schemas"
 	"github.com/jackc/pgx/v5/pgconn"
 )
@@ -40,13 +41,12 @@ func (r *PostgresWishListRepository) DeleteInWishList(ctx context.Context, userI
 	)
 }
 
-func (r *PostgresWishListRepository) GetWishListByUserID(ctx context.Context, userID, itemsPerPage, currentPage uint) ([]schemas.WishList, uint, uint, error) {
+func (r *PostgresWishListRepository) GetWishListByUserID(ctx context.Context, userID uint, paginationSearch request.PaginationSearch) ([]schemas.WishList, uint, uint, error) {
 	query := r.db.WithContext(ctx).Where("user_id = ?", userID).Model(&schemas.WishList{}).Preload("Product")
 
 	wishListEntries, totalPages, totalItems, err := getByPagination[schemas.WishList](
 		query,
-		itemsPerPage,
-		currentPage,
+		paginationSearch,
 	)
 	if err != nil {
 		return nil, 0, 0, err

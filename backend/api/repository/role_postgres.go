@@ -5,6 +5,7 @@ import (
 	"errors"
 	"strings"
 
+	"github.com/ExtraProjects860/Project-Device-Mobile/handler/request"
 	"github.com/ExtraProjects860/Project-Device-Mobile/schemas"
 	"github.com/jackc/pgx/v5/pgconn"
 )
@@ -59,13 +60,12 @@ func (r *PostgresRoleRepository) UpdateRole(ctx context.Context, id uint, role *
 	return nil
 }
 
-func (r *PostgresRoleRepository) GetRoles(ctx context.Context, itemsPerPage uint, currentPage uint) ([]schemas.Role, uint, uint, error) {
+func (r *PostgresRoleRepository) GetRoles(ctx context.Context, paginationSearch request.PaginationSearch) ([]schemas.Role, uint, uint, error) {
 	query := r.db.WithContext(ctx).Model(&schemas.Role{})
 
 	roles, totalPages, totalItems, err := getByPagination[schemas.Role](
-		query, 
-		itemsPerPage, 
-		currentPage,
+		query,
+		paginationSearch,
 	)
 	if err != nil {
 		return nil, 0, 0, err

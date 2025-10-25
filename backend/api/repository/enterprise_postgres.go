@@ -5,6 +5,7 @@ import (
 	"errors"
 	"strings"
 
+	"github.com/ExtraProjects860/Project-Device-Mobile/handler/request"
 	"github.com/ExtraProjects860/Project-Device-Mobile/schemas"
 	"github.com/jackc/pgx/v5/pgconn"
 )
@@ -59,13 +60,12 @@ func (r *PostgresEnterpriseRepository) UpdateEnterprise(ctx context.Context, id 
 	return nil
 }
 
-func (r *PostgresEnterpriseRepository) GetEnterprises(ctx context.Context, itemsPerPage uint, currentPage uint) ([]schemas.Enterprise, uint, uint, error) {
+func (r *PostgresEnterpriseRepository) GetEnterprises(ctx context.Context, paginationSearch request.PaginationSearch) ([]schemas.Enterprise, uint, uint, error) {
 	query := r.db.WithContext(ctx).Model(&schemas.Enterprise{})
 
 	enterprises, totalPages, totalItems, err := getByPagination[schemas.Enterprise](
-		query, 
-		itemsPerPage, 
-		currentPage,
+		query,
+		paginationSearch,
 	)
 	if err != nil {
 		return nil, 0, 0, err

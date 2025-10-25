@@ -5,6 +5,7 @@ import (
 	"errors"
 	"strings"
 
+	"github.com/ExtraProjects860/Project-Device-Mobile/handler/request"
 	"github.com/ExtraProjects860/Project-Device-Mobile/schemas"
 	"github.com/jackc/pgx/v5/pgconn"
 )
@@ -48,7 +49,6 @@ func (r *PostgresUserRepository) GetUserByEmail(ctx context.Context, email strin
 	return user, nil
 }
 
-
 func (r *PostgresUserRepository) CreateUser(ctx context.Context, user *schemas.User) error {
 	err := create(ctx, r.db, user)
 	if err != nil {
@@ -80,13 +80,12 @@ func (r *PostgresUserRepository) UpdateUser(ctx context.Context, id uint, user *
 	return nil
 }
 
-func (r *PostgresUserRepository) GetUsers(ctx context.Context, itemsPerPage uint, currentPage uint) ([]schemas.User, uint, uint, error) {
+func (r *PostgresUserRepository) GetUsers(ctx context.Context, paginationSearch request.PaginationSearch) ([]schemas.User, uint, uint, error) {
 	query := r.db.WithContext(ctx).Model(&schemas.User{}).Preload("Role").Preload("Enterprise")
 
 	users, totalPages, totalItems, err := getByPagination[schemas.User](
 		query,
-		itemsPerPage,
-		currentPage,
+		paginationSearch,
 	)
 	if err != nil {
 		return nil, 0, 0, err
