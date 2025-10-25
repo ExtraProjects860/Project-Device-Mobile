@@ -420,6 +420,17 @@ paths:
         name: currentPage
         required: true
         type: integer
+      - description: Search item by filter
+        in: query
+        name: searchFilter
+        type: string
+      - description: Order direction
+        enum:
+        - ASC
+        - DESC
+        in: query
+        name: itemsOrder
+        type: string
       produces:
       - application/json
       responses:
@@ -531,6 +542,17 @@ paths:
         in: query
         name: currentPage
         required: true
+        type: string
+      - description: Search item by filter
+        in: query
+        name: searchFilter
+        type: string
+      - description: Order direction
+        enum:
+        - ASC
+        - DESC
+        in: query
+        name: itemsOrder
         type: string
       produces:
       - application/json
@@ -646,6 +668,17 @@ paths:
         name: currentPage
         required: true
         type: integer
+      - description: Search item by filter
+        in: query
+        name: searchFilter
+        type: string
+      - description: Order direction
+        enum:
+        - ASC
+        - DESC
+        in: query
+        name: itemsOrder
+        type: string
       produces:
       - application/json
       responses:
@@ -778,6 +811,17 @@ paths:
         name: currentPage
         required: true
         type: string
+      - description: Search item by filter
+        in: query
+        name: searchFilter
+        type: string
+      - description: Order direction
+        enum:
+        - ASC
+        - DESC
+        in: query
+        name: itemsOrder
+        type: string
       produces:
       - application/json
       responses:
@@ -846,6 +890,17 @@ paths:
         in: query
         name: currentPage
         required: true
+        type: string
+      - description: Search item by filter
+        in: query
+        name: searchFilter
+        type: string
+      - description: Order direction
+        enum:
+        - ASC
+        - DESC
+        in: query
+        name: itemsOrder
         type: string
       produces:
       - application/json

@@ -338,6 +338,22 @@ const docTemplate = `{
                         "name": "currentPage",
                         "in": "query",
                         "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Search item by filter",
+                        "name": "searchFilter",
+                        "in": "query"
+                    },
+                    {
+                        "enum": [
+                            "ASC",
+                            "DESC"
+                        ],
+                        "type": "string",
+                        "description": "Order direction",
+                        "name": "itemsOrder",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -513,6 +529,22 @@ const docTemplate = `{
                         "name": "currentPage",
                         "in": "query",
                         "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Search item by filter",
+                        "name": "searchFilter",
+                        "in": "query"
+                    },
+                    {
+                        "enum": [
+                            "ASC",
+                            "DESC"
+                        ],
+                        "type": "string",
+                        "description": "Order direction",
+                        "name": "itemsOrder",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -691,6 +723,22 @@ const docTemplate = `{
                         "name": "currentPage",
                         "in": "query",
                         "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Search item by filter",
+                        "name": "searchFilter",
+                        "in": "query"
+                    },
+                    {
+                        "enum": [
+                            "ASC",
+                            "DESC"
+                        ],
+                        "type": "string",
+                        "description": "Order direction",
+                        "name": "itemsOrder",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -899,6 +947,22 @@ const docTemplate = `{
                         "name": "currentPage",
                         "in": "query",
                         "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Search item by filter",
+                        "name": "searchFilter",
+                        "in": "query"
+                    },
+                    {
+                        "enum": [
+                            "ASC",
+                            "DESC"
+                        ],
+                        "type": "string",
+                        "description": "Order direction",
+                        "name": "itemsOrder",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -955,6 +1019,22 @@ const docTemplate = `{
                         "name": "currentPage",
                         "in": "query",
                         "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Search item by filter",
+                        "name": "searchFilter",
+                        "in": "query"
+                    },
+                    {
+                        "enum": [
+                            "ASC",
+                            "DESC"
+                        ],
+                        "type": "string",
+                        "description": "Order direction",
+                        "name": "itemsOrder",
+                        "in": "query"
                     }
                 ],
                 "responses": {
