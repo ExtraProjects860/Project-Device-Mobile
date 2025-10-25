@@ -56,8 +56,11 @@ func (e *EnterpriseService) Update(ctx *gin.Context, enterpriseID uint, input re
 }
 
 // TODO ficar esperto no frontend, pois vai ter que usar select, porém com paginação
-func (e *EnterpriseService) GetAll(ctx *gin.Context, itemsPerPage, currentPage uint) (*dto.PaginationDTO, error) {
-	enterprises, totalPages, totalItems, err := e.repo.GetEnterprises(ctx, itemsPerPage, currentPage)
+func (e *EnterpriseService) GetAll(ctx *gin.Context, paginationSearch request.PaginationSearch) (*dto.PaginationDTO, error) {
+	enterprises, totalPages, totalItems, err := e.repo.GetEnterprises(
+		ctx, 
+		paginationSearch,
+	)
 	if err != nil {
 		e.logger.Error(err.Error())
 		return nil, err
@@ -69,7 +72,7 @@ func (e *EnterpriseService) GetAll(ctx *gin.Context, itemsPerPage, currentPage u
 
 	return dto.MakePaginationDTO(
 		enterprises,
-		currentPage,
+		paginationSearch.CurrentPage,
 		totalPages,
 		totalItems,
 		toDTO,
