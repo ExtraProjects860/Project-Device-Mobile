@@ -108,6 +108,13 @@ definitions:
         example: 1
         type: integer
     type: object
+  request.ChangePasswordInternal:
+    properties:
+      new_password:
+        type: string
+    required:
+    - new_password
+    type: object
   request.EnterpriseRequest:
     properties:
       name:
@@ -299,15 +306,20 @@ paths:
       consumes:
       - application/json
       description: Resets user password log in system
+      parameters:
+      - description: Request body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/request.ChangePasswordInternal'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            type: string
       summary: Reset Password Log In
       tags:
       - auth

@@ -44,9 +44,10 @@ func ResetPasswordHandler(appCtx *appcontext.AppContext, logger *config.Logger) 
 // @Summary      Reset Password Log In
 // @Description  Resets user password log in system
 // @Tags         auth
+// @Param        request body request.ChangePasswordInternal true "Request body"
 // @Accept       json
 // @Produce      json
-// @Success      200 {object} map[string]string
+// @Success      200 {object} string
 // @Router       /api/v1/auth/reset-pass-log-in [post]
 func ResetPasswordLogInHandler(appCtx *appcontext.AppContext, logger *config.Logger) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
