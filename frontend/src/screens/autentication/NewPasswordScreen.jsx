@@ -6,14 +6,17 @@ import {
   TouchableOpacity,
   StatusBar,
 } from "react-native";
-import { MaterialIcons, Feather } from "@expo/vector-icons";
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import Background from "../../components/ui/Background";
 import Logo from "../../components/ui/Logo";
 import { useNavigateTo } from "../../hooks/useNavigateTo";
+import { useThemeColors } from "../../hooks/useThemeColors";
 
 export default function NewPasswordScreen() {
   const [showPassword, setShowPassword] = useState(false);
   const goTo = useNavigateTo();
+
+  const themeColors = useThemeColors();
 
   return (
     <Background>
@@ -37,7 +40,11 @@ export default function NewPasswordScreen() {
         {/* Codigo */}
         <View className="mb-6">
           <View className="flex-row items-center mb-2">
-            <MaterialIcons name="check" size={24} color="white" />
+            <Icon
+              name="check"
+              size={24}
+              color={themeColors.primary === "#FFFFFF" ? "#A0A0A0" : "#6B7280"}
+            />
             <Text className="text-light-text-inverted font-bold pl-2 text-2xl">
               Código:
             </Text>
@@ -46,7 +53,9 @@ export default function NewPasswordScreen() {
             <TextInput
               className="-py-1 ml-2 flex-1 text-light-text-secondary font-semibold text-2xl"
               placeholder="Código"
-              placeholderTextColor="gray"
+              placeholderTextColor={
+                themeColors.primary === "#FFFFFF" ? "#A0A0A0" : "#6B7280"
+              }
             />
           </View>
         </View>
@@ -54,7 +63,11 @@ export default function NewPasswordScreen() {
         {/* Nova senha */}
         <View className="mb-6">
           <View className="flex-row items-center mb-2">
-            <MaterialIcons name="lock" size={24} color="white" />
+            <Icon
+              name="lock-outline"
+              size={24}
+              color={themeColors.primary === "#FFFFFF" ? "#A0A0A0" : "#6B7280"}
+            />
             <Text className="text-light-text-inverted font-bold pl-2 text-2xl">
               Nova senha:
             </Text>
@@ -64,11 +77,13 @@ export default function NewPasswordScreen() {
               className="-py-1 ml-2 flex-1 text-light-text-secondary font-semibold text-2xl"
               secureTextEntry={!showPassword}
               placeholder="*********"
-              placeholderTextColor="gray"
+              placeholderTextColor={
+                themeColors.primary === "#FFFFFF" ? "#A0A0A0" : "#6B7280"
+              }
             />
             <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
-              <Feather
-                name={showPassword ? "eye-off" : "eye"}
+              <Icon
+                name={showPassword ? "eye-off-outline" : "eye"}
                 size={20}
                 color="#475569"
               />
@@ -79,7 +94,11 @@ export default function NewPasswordScreen() {
         {/* Confirmar senha */}
         <View className="mb-6">
           <View className="flex-row items-center mb-2">
-            <MaterialIcons name="lock" size={24} color="white" />
+            <Icon
+              name="lock-outline"
+              size={24}
+              color={themeColors.primary === "#FFFFFF" ? "#A0A0A0" : "#6B7280"}
+            />
             <Text className="text-light-text-inverted font-bold pl-2 text-2xl">
               Confirmar senha:
             </Text>
@@ -89,11 +108,13 @@ export default function NewPasswordScreen() {
               className="-py-1 ml-2 flex-1 text-light-text-secondary font-semibold text-2xl"
               secureTextEntry={!showPassword}
               placeholder="*********"
-              placeholderTextColor="gray"
+              placeholderTextColor={
+                themeColors.primary === "#FFFFFF" ? "#A0A0A0" : "#6B7280"
+              }
             />
             <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
-              <Feather
-                name={showPassword ? "eye-off" : "eye"}
+              <Icon
+                name={showPassword ? "eye-off-outline" : "eye"}
                 size={20}
                 color="#475569"
               />

@@ -6,13 +6,16 @@ import {
   TouchableOpacity,
   StatusBar,
 } from "react-native";
-import { MaterialIcons } from "@expo/vector-icons";
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import Background from "../../components/ui/Background";
 import Logo from "../../components/ui/Logo";
 import { useNavigateTo } from "../../hooks/useNavigateTo";
+import { useThemeColors } from "../../hooks/useThemeColors.js";
 
 export default function ForgotPasswordScreen() {
   const goTo = useNavigateTo();
+
+  const themeColors = useThemeColors();
 
   return (
     <Background>
@@ -36,7 +39,11 @@ export default function ForgotPasswordScreen() {
         {/* Campo E-mail */}
         <View className="mb-6">
           <View className="flex-row items-center mb-2">
-            <MaterialIcons name="email" size={24} color="white" />
+            <Icon
+              name="email-outline"
+              size={24}
+              color={themeColors.primary === "#FFFFFF" ? "#A0A0A0" : "#6B7280"}
+            />
             <Text className="text-light-text-inverted font-bold pl-2 text-2xl">
               E-mail:
             </Text>
@@ -45,7 +52,9 @@ export default function ForgotPasswordScreen() {
             <TextInput
               className="-py-1 ml-2 flex-1 text-light-text-secondary font-semibold text-2xl"
               placeholder="Exemplo@gmail.com"
-              placeholderTextColor="gray"
+              placeholderTextColor={
+                themeColors.primary === "#FFFFFF" ? "#A0A0A0" : "#6B7280"
+              }
               keyboardType="email-address"
             />
           </View>

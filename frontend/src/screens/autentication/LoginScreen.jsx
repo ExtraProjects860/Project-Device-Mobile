@@ -7,7 +7,7 @@ import {
   StatusBar,
   Switch,
 } from "react-native";
-import { MaterialIcons, Feather } from "@expo/vector-icons";
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import Background from "../../components/ui/Background.jsx";
 import Logo from "../../components/ui/Logo.jsx";
 import ModalCheck from "../../components/modals/ModalCheck.jsx";
@@ -129,7 +129,7 @@ export default function LoginScreen() {
         <View className="w-96">
           <View className="mb-6">
             <View className="flex-row items-center mb-2">
-              <MaterialIcons name="email" size={24} color="white" />
+              <Icon name="email-outline" size={24} color="white" />
               <Text className="text-light-text-inverted font-bold pl-2 text-2xl">
                 E-mail:
               </Text>
@@ -149,7 +149,7 @@ export default function LoginScreen() {
 
           <View className="mb-6">
             <View className="flex-row items-center mb-2">
-              <MaterialIcons name="lock" size={24} color="white" />
+              <Icon name="lock-outline" size={24} color="white" />
               <Text className="text-light-text-inverted font-bold pl-2 text-2xl">
                 Senha:
               </Text>
@@ -166,8 +166,8 @@ export default function LoginScreen() {
               />
 
               <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
-                <Feather
-                  name={showPassword ? "eye-off" : "eye"}
+                <Icon
+                  name={showPassword ? "eye-off-outline" : "eye"}
                   size={20}
                   color="#475569"
                 />
