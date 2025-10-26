@@ -12,17 +12,17 @@ import {
 } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import * as ImagePicker from "expo-image-picker";
+import ModalCheck from "./ModalCheck";
 import { createUserRequest } from "../../lib/userRequests.js";
 import { useError } from "../../context/ErrorContext.js";
-import ModalCheck from "./ModalCheck";
-import { useThemeColors } from "../../hooks/useThemeColors.js"; // 1. Importar
+import { useThemeColors } from "../../hooks/useThemeColors.js";
 import { useAppContext } from "../../context/AppContext.js";
 
 export default function ModalCreateUser({ visible, onClose, onUserCreated }) {
   const { accessToken } = useAppContext();
-
   const { showErrorModal } = useError();
-  const themeColors = useThemeColors(); // 2. Usar o hook
+  const themeColors = useThemeColors();
+
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [cpf, setCpf] = useState("");
@@ -30,6 +30,7 @@ export default function ModalCreateUser({ visible, onClose, onUserCreated }) {
   const [roleId, setRoleId] = useState("");
   const [enterpriseId, setEnterpriseId] = useState("");
   const [photoUri, setPhotoUri] = useState(null);
+  
   const [successMessage, setSuccessMessage] = useState("");
   const [isSuccessVisible, setSuccessVisible] = useState(false);
 
@@ -71,7 +72,6 @@ export default function ModalCreateUser({ visible, onClose, onUserCreated }) {
       const errorMessage =
         error.response?.data?.error ||
         "Não foi possível cadastrar o usuário. Verifique os dados e tente novamente.";
-
       showErrorModal(errorMessage);
       console.error("Erro ao criar usuário:", error);
     }

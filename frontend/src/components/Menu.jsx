@@ -9,7 +9,7 @@ import {
   Animated,
 } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import PasswordChange from "../components/PasswordChange";
+import PasswordChange from "./modals/PasswordChange.jsx";
 import ModalWarning from "./modals/ModalWarning";
 import { useNavigateTo } from "../hooks/useNavigateTo";
 import { useAppContext } from "../context/AppContext.js";
