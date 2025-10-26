@@ -1,10 +1,10 @@
-import { instanceMainApi } from "./axios.js";
+import { configsToPagination, requestGet } from "./axios";
 
-export async function addInWishListRequest() {
+export async function addInWishListRequest(userId, productId, accessToken) {
   return;
 }
 
-export async function deleteWishListRequest() {
+export async function deleteWishListRequest(userId, productId, accessToken) {
   return;
 }
 
@@ -14,18 +14,13 @@ export async function deleteWishListRequest() {
  * @param {string} accessToken
  */
 export async function getItemsWishListRequest(
-  itemsPerPage = 20,
-  currentPage = 1,
+  itemsPerPage = configsToPagination.itemsPerPage,
+  currentPage = configsToPagination.currentPage,
   accessToken,
 ) {
-  const response = await instanceMainApi.get(
+  const response = await requestGet(
     `/wishlist?itemsPerPage=${itemsPerPage}&currentPage=${currentPage}`,
-    {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    },
+    accessToken,
   );
-
   return response.data || [];
 }

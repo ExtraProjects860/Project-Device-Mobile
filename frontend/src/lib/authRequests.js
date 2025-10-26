@@ -1,4 +1,4 @@
-import { instanceMainApi } from "./axios.js";
+import { requestPost } from "./axios.js";
 
 export async function requestToken() {
   return;
@@ -8,16 +8,19 @@ export async function resetPasswordRequest() {
   return;
 }
 
+export async function resetPasswordInternalRequest(newPassword, accessToken) {
+  const response = await requestPost(
+    "/auth/reset-pass-log-in",
+    { new_password: newPassword },
+    accessToken,
+  );
+  return response.data;
+}
+
 /**
  * @param {object} userData
  */
 export async function loginRequest(userData) {
-  const response = await instanceMainApi.post("/auth/login", userData);
-  const accessToken = response.data?.access_token;
-
-  return accessToken;
-}
-
-export async function refreshTokenRequest() {
-  return;
+  const response = await requestPost("/auth/login", userData);
+  return response.data?.access_token;
 }

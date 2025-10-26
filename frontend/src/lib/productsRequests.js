@@ -1,15 +1,11 @@
-import { instanceMainApi } from "./axios.js";
+import { requestPost, requestGet, requestPatch } from "./axios.js";
 
 /**
  * @param {object} productData
  * @param {string} accessToken
  */
 export async function createProductRequest(productData, accessToken) {
-  const response = await instanceMainApi.post("/products", productData, {
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-    },
-  });
+  const response = await requestPost("/products", productData, accessToken);
   return response.data;
 }
 
@@ -23,14 +19,10 @@ export async function updateProductRequest(
   updatedProductData,
   accessToken,
 ) {
-  const response = await instanceMainApi.patch(
+  const response = await requestPatch(
     `/products/${productId}`,
     updatedProductData,
-    {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    },
+    accessToken,
   );
   return response.data;
 }
@@ -45,14 +37,9 @@ export async function getProductsRequest(
   currentPage = 1,
   accessToken,
 ) {
-  const response = await instanceMainApi.get(
+  const response = await requestGet(
     `/products?itemsPerPage=${itemsPerPage}&currentPage=${currentPage}`,
-    {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    },
+    accessToken,
   );
-
   return response.data || [];
 }

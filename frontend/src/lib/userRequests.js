@@ -1,25 +1,16 @@
-import { instanceMainApi } from "./axios.js";
-
-export async function getUsersRequest(itemsPerPage = 20, currentPage = 1, accessToken) {
-  const response = await instanceMainApi.get(
-    `/users?itemsPerPage=${itemsPerPage}&currentPage=${currentPage}`,{
-      headers: {
-        Authorization: `Bearer ${accessToken}`
-      }
-    }
-  );
-
-  return response.data || [];
-}
+import {
+  configsToPagination,
+  requestGet,
+  requestPatch,
+  requestPost,
+} from "./axios.js";
 
 /**
  * @param {object} userData
  * @param {string} accessToken
  */
 export async function createUserRequest(userData, accessToken) {
-  const response = await instanceMainApi.post("/user", userData, {
-    Authorization: `Bearer ${accessToken}`,
-  });
+  const response = await requestPost("/user", userData, accessToken);
   return response.data;
 }
 
@@ -27,11 +18,7 @@ export async function createUserRequest(userData, accessToken) {
  * @param {string} accessToken
  */
 export async function getInfoUserRequest(accessToken) {
-  const response = await instanceMainApi.get(`/user`, {
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-    },
-  });
+  const response = await requestGet(`/user`, accessToken);
   return response.data;
 }
 
@@ -41,11 +28,25 @@ export async function getInfoUserRequest(accessToken) {
  * @param {string} accessToken
  */
 export async function updateUserRequest(userId, updatedUserData, accessToken) {
-  const response = await instanceMainApi.patch("/user", updatedUserData, {
+  const response = await requestPatch("/user", updatedUserData, accessToken, {
     params: { id: userId },
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-    },
   });
   return response.data;
+}
+
+/**
+ * @param {number} itemsPerPage
+ * @param {number} currentPage
+ * @param {string} accessToken
+ */
+export async function getUsersRequest(
+  itemsPerPage = configsToPagination.itemsPerPage,
+  currentPage = configsToPagination.currentPage,
+  accessToken,
+) {
+  const response = await requestGet(
+    `/users?itemsPerPage=${itemsPerPage}&currentPage=${currentPage}`,
+    accessToken,
+  );
+  return response.data || [];
 }
