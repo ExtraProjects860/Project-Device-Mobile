@@ -38,15 +38,19 @@ export async function updateUserRequest(userId, updatedUserData, accessToken) {
  * @param {number} itemsPerPage
  * @param {number} currentPage
  * @param {string} accessToken
+ * @param {string} searchFilter
  */
 export async function getUsersRequest(
   itemsPerPage = configsToPagination.itemsPerPage,
   currentPage = configsToPagination.currentPage,
   accessToken,
+  searchFilter = "",
 ) {
-  const response = await requestGet(
-    `/users?itemsPerPage=${itemsPerPage}&currentPage=${currentPage}`,
-    accessToken,
-  );
+  let url = `/users?itemsPerPage=${itemsPerPage}&currentPage=${currentPage}`;
+
+  if (searchFilter && searchFilter.trim() !== "") {
+    url += `&searchFilter=${encodeURIComponent(searchFilter)}`;
+  }
+  const response = await requestGet(url, accessToken);
   return response.data || [];
 }

@@ -18,7 +18,11 @@ import { usePagination } from "../hooks/usePagination.js";
  * O primeiro chamado callbackFetch resposável por receber a função de busca de dados
  * O segundo chamado CardListRender responsável pro receber o componente de rednderização dos itens da lista
  */
-export default function ListItems({ callbackFetch, CardListRender }) {
+export default function ListItems({
+  callbackFetch,
+  CardListRender,
+  searchFilter = "",
+}) {
   const {
     listItems,
     isLoadingMore,
@@ -30,7 +34,7 @@ export default function ListItems({ callbackFetch, CardListRender }) {
     loadMore,
     handleRefresh,
     scrollToTop,
-  } = usePagination(callbackFetch);
+  } = usePagination(callbackFetch, searchFilter);
 
   // Função responsável renderizar o botão de Voltar ao Topo ao final da lista
   const renderInFooter = () => {
@@ -58,7 +62,6 @@ export default function ListItems({ callbackFetch, CardListRender }) {
 
   return (
     <PageLoader fetchData={initialLoad}>
-
       {isRefreshing && listItems.length > 0 ? (
         <Loading />
       ) : (

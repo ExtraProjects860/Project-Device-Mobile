@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { View, Text } from "react-native";
 import Background from "../../components/ui/Background.jsx";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
@@ -12,14 +12,41 @@ import { useHandleRefresh } from "../../hooks/useHandleRefresh.js";
 import CardUserList from "../../components/ui/CardUserList.jsx";
 import ModalCreateUser from "../../components/modals/ModalCreateUser.jsx";
 import ModalUpdateUser from "../../components/modals/ModalUpdateUser.jsx";
+import { useAppContext } from "../../context/AppContext.js";
 
 export default function UsersScreen() {
   const themeColors = useThemeColors();
   const { listKey, handleRefresh } = useHandleRefresh();
+  const { accessToken } = useAppContext();
 
   const [isCreateModalVisible, setCreateModalVisible] = useState(false);
   const [isUpdateModalVisible, setUpdateModalVisible] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
+
+  const [searchTerm, setSearchTerm] = useState("");
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState(searchTerm);
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedSearchTerm(searchTerm);
+    }, 500);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [searchTerm]);
+
+  const fetchUsersCallback = useCallback(
+    (itemsPerPage, currentPage) => {
+      return getUsersRequest(
+        itemsPerPage,
+        currentPage,
+        accessToken,
+        debouncedSearchTerm.toUpperCase()
+      );
+    },
+    [debouncedSearchTerm, accessToken]
+  );
 
   const handleEditUser = (user) => {
     setSelectedUser(user);
@@ -58,12 +85,14 @@ export default function UsersScreen() {
               name={"account-plus-outline"}
             />
           }
+          searchValue={searchTerm}
+          onSearchChange={setSearchTerm}
         />
       </View>
 
       <ListItems
-        key={listKey}
-        callbackFetch={getUsersRequest}
+        ref={listKey}
+        callbackFetch={fetchUsersCallback}
         CardListRender={({ item }) => (
           <CardUserList item={item} onEdit={handleEditUser} />
         )}
