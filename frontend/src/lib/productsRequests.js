@@ -36,10 +36,13 @@ export async function getProductsRequest(
   itemsPerPage = 20,
   currentPage = 1,
   accessToken,
+  searchFilter = "",
 ) {
-  const response = await requestGet(
-    `/products?itemsPerPage=${itemsPerPage}&currentPage=${currentPage}`,
-    accessToken,
-  );
+  let url = `/products?itemsPerPage=${itemsPerPage}&currentPage=${currentPage}`;
+
+  if (searchFilter && searchFilter.trim() !== "") {
+    url += `&searchFilter=${encodeURIComponent(searchFilter)}`;
+  }
+  const response = await requestGet(url, accessToken);
   return response.data || [];
 }

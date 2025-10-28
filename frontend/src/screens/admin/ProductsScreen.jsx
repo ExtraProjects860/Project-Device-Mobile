@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { View, Text } from "react-native";
 import Background from "../../components/ui/Background";
 import { NavBar } from "../../components/Navbar";
@@ -12,16 +12,43 @@ import { getProductsRequest } from "../../lib/productsRequests.js";
 import { useHandleRefresh } from "../../hooks/useHandleRefresh.js";
 import ModalCreate from "../../components/modals/ModalCreateProduct";
 import ModalUpdateProduct from "../../components/modals/ModalUpdateProduct";
+import { useAppContext } from "../../context/AppContext.js";
 
 export default function ProductsScreen() {
   const themeColors = useThemeColors();
   const { listKey, handleRefresh } = useHandleRefresh();
+  const { accessToken } = useAppContext();
 
   const [isCreateProductModalVisible, setCreateProductVisible] =
     useState(false);
   const [isUpdateProductModalVisible, setUpdateProductVisible] =
     useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
+
+  const [searchTerm, setSearchTerm] = useState("");
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState(searchTerm);
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedSearchTerm(searchTerm);
+    }, 500);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [searchTerm]);
+
+  const fetchProductsCallback = useCallback(
+    (itemsPerPage, currentPage) => {
+      return getProductsRequest(
+        itemsPerPage,
+        currentPage,
+        accessToken,
+        debouncedSearchTerm.toUpperCase()
+      );
+    },
+    [debouncedSearchTerm, accessToken]
+  );
 
   const handleEditProduct = (product) => {
     setSelectedProduct(product);
@@ -41,12 +68,10 @@ export default function ProductsScreen() {
         onProductUpdated={handleRefresh}
       />
       <NavBar />
-
       <View className="flex-row gap-2 m-6 items-center justify-center">
         <Icon name="basket-outline" size={30} color={themeColors.header} />
         <Text className="text-white font-bold text-3xl">Produtos</Text>
       </View>
-
       <View className="items-center mb-2">
         <SearchBar
           buttonAdd={
@@ -55,12 +80,14 @@ export default function ProductsScreen() {
               name={"basket-plus-outline"}
             />
           }
+          searchValue={searchTerm}
+          onSearchChange={setSearchTerm}
         />
       </View>
 
       <ListItems
         ref={listKey}
-        callbackFetch={getProductsRequest}
+        callbackFetch={fetchProductsCallback}
         CardListRender={({ item }) => (
           <CardProductList item={item} onEdit={handleEditProduct} />
         )}
