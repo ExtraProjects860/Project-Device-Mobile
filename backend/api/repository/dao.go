@@ -92,7 +92,7 @@ func filterSearch[T any](query *gorm.DB, search string) *gorm.DB {
 	var args []any
 	var whereParts []string
 	for _, col := range fields {
-		whereParts = append(whereParts, col+" LIKE ?")
+		whereParts = append(whereParts, col+" ILIKE ?")
 		args = append(args, "%"+search+"%")
 	}
 
