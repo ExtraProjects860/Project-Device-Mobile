@@ -22,7 +22,7 @@ export default function HomeScreen() {
             {userData?.name || "Nome não disponível"}
           </Text>
         </View>
-        <View className="w-10/12 bg-white rounded-3xl p-12 items-center shadow-lg">
+        <View className="w-10/12 bg-white rounded-3xl p-12 items-center">
           {/* Foto */}
           <View className="w-60 h-60 rounded-full bg-teal p-2 mb-5">
             <Image
@@ -31,7 +31,7 @@ export default function HomeScreen() {
                   ? { uri: userData.photo_url }
                   : DefaultAvatar
               }
-              className="w-full h-full rounded-full"
+              className="w-full bg-white h-full rounded-full"
             />
           </View>
 
