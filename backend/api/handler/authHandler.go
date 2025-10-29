@@ -64,7 +64,7 @@ func ResetPasswordLogInHandler(appCtx *appcontext.AppContext, logger *config.Log
 		}
 
 		var input request.ChangePasswordInternal
-		if err := request.ReadBody(ctx, &input); err != nil {
+		if err := request.ReadBodyJSON(ctx, &input); err != nil {
 			logger.Error(err.Error())
 			response.SendErr(ctx, http.StatusUnprocessableEntity, errors.New("invalid input"))
 			return
@@ -108,7 +108,7 @@ func ResetPasswordLogInHandler(appCtx *appcontext.AppContext, logger *config.Log
 func LoginHandler(appCtx *appcontext.AppContext, logger *config.Logger) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		var input request.LoginRequest
-		if err := request.ReadBody(ctx, &input); err != nil {
+		if err := request.ReadBodyJSON(ctx, &input); err != nil {
 			logger.Error(err.Error())
 			response.SendErr(ctx, http.StatusUnprocessableEntity, errors.New("invalid input"))
 			return
@@ -163,7 +163,7 @@ func LoginHandler(appCtx *appcontext.AppContext, logger *config.Logger) gin.Hand
 func RefreshTokenHandler(appCtx *appcontext.AppContext, logger *config.Logger) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		// var input auth.RequestRefresh
-		// if err := request.ReadBody(ctx, &input); err != nil {
+		// if err := request.ReadBodyJSON(ctx, &input); err != nil {
 		// 	logger.Error(err.Error())
 		// 	response.SendErr(ctx, http.StatusUnprocessableEntity, errors.New("invalid input"))
 		// 	return
