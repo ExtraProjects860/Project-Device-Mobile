@@ -1,6 +1,7 @@
 package request
 
 import (
+	"encoding/json"
 	"fmt"
 	"strconv"
 
@@ -44,9 +45,22 @@ func GetIdQuery(ctx *gin.Context) (uint, error) {
 	return uint(parsedId), nil
 }
 
-func ReadBody[T any](ctx *gin.Context, input *T) error {
+func ReadBodyJSON[T any](ctx *gin.Context, input *T) error {
 	if err := ctx.ShouldBindJSON(&input); err != nil {
 		return fmt.Errorf("error to parsed body to json")
+	}
+
+	return nil
+}
+
+func ReadBodyFORM[T any](ctx *gin.Context, input *T) error {
+	dataString := ctx.PostForm("data")
+	if dataString == "" {
+		return fmt.Errorf("field 'data' contain JSON is required")
+	}
+
+	if err := json.Unmarshal([]byte(dataString), &input); err != nil {
+		return fmt.Errorf("JSON invalid field in 'data': %v", err)
 	}
 
 	return nil
