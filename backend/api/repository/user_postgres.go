@@ -64,8 +64,6 @@ func (r *PostgresUserRepository) CreateUser(ctx context.Context, user *schemas.U
 	return nil
 }
 
-// TODO na hora de atualizar a senha é só meter o update, burro da 0 pra ele
-
 func (r *PostgresUserRepository) UpdateUser(ctx context.Context, id uint, user *schemas.User) error {
 	if err := updateByID(ctx, r.db, user, id); err != nil {
 		return verifyUserDuplicated(err)
