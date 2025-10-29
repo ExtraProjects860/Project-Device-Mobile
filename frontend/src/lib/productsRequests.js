@@ -37,8 +37,9 @@ export async function getProductsRequest(
   currentPage = 1,
   accessToken,
   searchFilter = "",
+  itemsOrder = "ASC",
 ) {
-  let url = `/products?itemsPerPage=${itemsPerPage}&currentPage=${currentPage}`;
+  let url = `/products?itemsPerPage=${itemsPerPage}&currentPage=${currentPage}&itemsOrder=${itemsOrder}`;
 
   if (searchFilter && searchFilter.trim() !== "") {
     url += `&searchFilter=${encodeURIComponent(searchFilter)}`;

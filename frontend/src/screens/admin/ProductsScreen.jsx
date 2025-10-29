@@ -27,6 +27,7 @@ export default function ProductsScreen() {
 
   const [searchTerm, setSearchTerm] = useState("");
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState(searchTerm);
+  const [itemsOrder, setItemsOrder] = useState("ASC");
 
   useEffect(() => {
     const handler = setTimeout(() => {
@@ -44,15 +45,20 @@ export default function ProductsScreen() {
         itemsPerPage,
         currentPage,
         accessToken,
-        debouncedSearchTerm.toUpperCase()
+        debouncedSearchTerm.toUpperCase(),
+        itemsOrder
       );
     },
-    [debouncedSearchTerm, accessToken]
+    [debouncedSearchTerm, accessToken, itemsOrder]
   );
 
   const handleEditProduct = (product) => {
     setSelectedProduct(product);
     setUpdateProductVisible(true);
+  };
+
+  const handleToggleOrder = () => {
+    setItemsOrder((prevOrder) => (prevOrder === "ASC" ? "DESC" : "ASC"));
   };
 
   return (
@@ -82,6 +88,8 @@ export default function ProductsScreen() {
           }
           searchValue={searchTerm}
           onSearchChange={setSearchTerm}
+          itemsOrder={itemsOrder}
+          onToggleOrder={handleToggleOrder}
         />
       </View>
 
