@@ -398,7 +398,7 @@ const docTemplate = `{
                 ],
                 "description": "Creates a new product",
                 "consumes": [
-                    "application/json"
+                    "multipart/form-data"
                 ],
                 "produces": [
                     "application/json"
@@ -409,13 +409,17 @@ const docTemplate = `{
                 "summary": "Create Product",
                 "parameters": [
                     {
-                        "description": "Product info",
-                        "name": "product",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/request.ProductRequest"
-                        }
+                        "type": "file",
+                        "description": "Optional product profile image",
+                        "name": "image",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "JSON string contain product data for create (request.ProductRequest)",
+                        "name": "data",
+                        "in": "formData",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -453,7 +457,7 @@ const docTemplate = `{
                 ],
                 "description": "Updates an existing product",
                 "consumes": [
-                    "application/json"
+                    "multipart/form-data"
                 ],
                 "produces": [
                     "application/json"
@@ -471,13 +475,17 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "description": "Product info to update",
-                        "name": "product",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/request.ProductRequest"
-                        }
+                        "type": "file",
+                        "description": "Optional product profile image",
+                        "name": "image",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "JSON string contain product data for update (request.ProductRequest)",
+                        "name": "data",
+                        "in": "formData",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -818,7 +826,7 @@ const docTemplate = `{
                 ],
                 "description": "Creates a new user",
                 "consumes": [
-                    "application/json"
+                    "multipart/form-data"
                 ],
                 "produces": [
                     "application/json"
@@ -829,12 +837,17 @@ const docTemplate = `{
                 "summary": "Create User",
                 "parameters": [
                     {
-                        "description": "User info",
-                        "name": "user",
-                        "in": "body",
-                        "schema": {
-                            "$ref": "#/definitions/request.UserRequest"
-                        }
+                        "type": "file",
+                        "description": "Optional user profile image",
+                        "name": "image",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "JSON string contain user data for create (request.UserRequest)",
+                        "name": "data",
+                        "in": "formData",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -872,7 +885,7 @@ const docTemplate = `{
                 ],
                 "description": "Updates an existing user",
                 "consumes": [
-                    "application/json"
+                    "multipart/form-data"
                 ],
                 "produces": [
                     "application/json"
@@ -890,12 +903,17 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "description": "User info to update",
-                        "name": "user",
-                        "in": "body",
-                        "schema": {
-                            "$ref": "#/definitions/request.UserRequest"
-                        }
+                        "type": "file",
+                        "description": "Optional user profile image",
+                        "name": "image",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "JSON string contain user data for update (request.UserRequest)",
+                        "name": "data",
+                        "in": "formData",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -1454,46 +1472,6 @@ const docTemplate = `{
                 }
             }
         },
-        "request.ProductRequest": {
-            "type": "object",
-            "required": [
-                "description",
-                "name",
-                "quantity",
-                "value"
-            ],
-            "properties": {
-                "description": {
-                    "type": "string",
-                    "maxLength": 255,
-                    "minLength": 3
-                },
-                "discount": {
-                    "type": "number",
-                    "minimum": 0
-                },
-                "is_avaible": {
-                    "type": "boolean"
-                },
-                "is_promotion_avaible": {
-                    "type": "boolean"
-                },
-                "name": {
-                    "type": "string",
-                    "minLength": 3
-                },
-                "photo_url": {
-                    "type": "string"
-                },
-                "quantity": {
-                    "type": "integer",
-                    "minimum": 0
-                },
-                "value": {
-                    "type": "number"
-                }
-            }
-        },
         "request.RoleRequest": {
             "type": "object",
             "required": [
@@ -1503,47 +1481,6 @@ const docTemplate = `{
                 "name": {
                     "type": "string",
                     "minLength": 3
-                }
-            }
-        },
-        "request.UserRequest": {
-            "type": "object",
-            "required": [
-                "cpf",
-                "email",
-                "name",
-                "password",
-                "register_number",
-                "role_id"
-            ],
-            "properties": {
-                "cpf": {
-                    "type": "string"
-                },
-                "email": {
-                    "type": "string"
-                },
-                "enterprise_id": {
-                    "type": "integer"
-                },
-                "name": {
-                    "type": "string",
-                    "minLength": 3
-                },
-                "password": {
-                    "type": "string",
-                    "minLength": 6
-                },
-                "photo_url": {
-                    "type": "string"
-                },
-                "register_number": {
-                    "type": "string",
-                    "maxLength": 7,
-                    "minLength": 7
-                },
-                "role_id": {
-                    "type": "integer"
                 }
             }
         },
