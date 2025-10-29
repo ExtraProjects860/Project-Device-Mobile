@@ -17,7 +17,6 @@ type UserRequest struct {
 	Password       string  `json:"password" validate:"required,min=6"`
 	Cpf            string  `json:"cpf" validate:"required"`
 	RegisterNumber string  `json:"register_number" validate:"required,min=7,max=7"`
-	PhotoUrl       *string `json:"photo_url"`
 }
 
 func (s *UserRequest) Validate(ctx *gin.Context, validate *validator.Validate) error {
@@ -27,10 +26,6 @@ func (s *UserRequest) Validate(ctx *gin.Context, validate *validator.Validate) e
 
 	if *s.EnterpriseID == 0 {
 		return fmt.Errorf("enterprise can't zero. Try other value")
-	}
-
-	if s.PhotoUrl == nil {
-		return fmt.Errorf("photo can't be empty")
 	}
 
 	return validate.StructCtx(ctx, s)
@@ -43,8 +38,7 @@ func (s *UserRequest) ValidateUpdate() error {
 		s.Cpf != "" ||
 		s.RegisterNumber != "" ||
 		s.RoleID != 0 ||
-		s.EnterpriseID != nil && *s.EnterpriseID != 0 ||
-		s.PhotoUrl != nil
+		s.EnterpriseID != nil && *s.EnterpriseID != 0
 
 	if !hasAtLeastOne {
 		return fmt.Errorf("at least one valid field must be provided")
@@ -68,9 +62,5 @@ func (s *UserRequest) Format() {
 	if s.Password != "" {
 		password := strings.TrimSpace(s.Password)
 		s.Password = password
-	}
-	if s.PhotoUrl != nil && *s.PhotoUrl != "" {
-		photo := strings.TrimSpace(*s.PhotoUrl)
-		s.PhotoUrl = &photo
 	}
 }

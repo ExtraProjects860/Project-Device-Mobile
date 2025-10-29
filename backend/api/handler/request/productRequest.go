@@ -15,7 +15,6 @@ type ProductRequest struct {
 	Quantity           int      `json:"quantity" validate:"required,gte=0"`
 	IsPromotionAvaible *bool    `json:"is_promotion_avaible"`
 	Discount           *float64 `json:"discount" validate:"gte=0"`
-	PhotoUrl           *string  `json:"photo_url"`
 	IsAvaible          *bool    `json:"is_avaible"`
 }
 
@@ -30,7 +29,6 @@ func (s *ProductRequest) ValidateUpdate() error {
 		s.Quantity != 0 ||
 		s.IsPromotionAvaible != nil ||
 		*s.Discount != 0.0 && s.Discount != nil ||
-		*s.PhotoUrl != "" && s.PhotoUrl != nil ||
 		s.IsAvaible != nil
 
 	if !hasAtLeastOne {
@@ -48,9 +46,5 @@ func (s *ProductRequest) Format() {
 	if s.Description != "" {
 		description := strings.TrimSpace(s.Description)
 		s.Description = description
-	}
-	if s.PhotoUrl != nil {
-		photo := strings.TrimSpace(*s.PhotoUrl)
-		s.PhotoUrl = &photo
 	}
 }
