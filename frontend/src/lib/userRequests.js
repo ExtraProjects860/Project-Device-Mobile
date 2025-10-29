@@ -45,8 +45,9 @@ export async function getUsersRequest(
   currentPage = configsToPagination.currentPage,
   accessToken,
   searchFilter = "",
+  itemsOrder = "ASC",
 ) {
-  let url = `/users?itemsPerPage=${itemsPerPage}&currentPage=${currentPage}`;
+  let url = `/users?itemsPerPage=${itemsPerPage}&currentPage=${currentPage}&itemsOrder=${itemsOrder}`;
 
   if (searchFilter && searchFilter.trim() !== "") {
     url += `&searchFilter=${encodeURIComponent(searchFilter)}`;

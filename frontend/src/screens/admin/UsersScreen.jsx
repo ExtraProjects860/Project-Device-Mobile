@@ -25,6 +25,7 @@ export default function UsersScreen() {
 
   const [searchTerm, setSearchTerm] = useState("");
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState(searchTerm);
+  const [itemsOrder, setItemsOrder] = useState("ASC");
 
   useEffect(() => {
     const handler = setTimeout(() => {
@@ -42,15 +43,20 @@ export default function UsersScreen() {
         itemsPerPage,
         currentPage,
         accessToken,
-        debouncedSearchTerm.toUpperCase()
+        debouncedSearchTerm.toUpperCase(),
+        itemsOrder
       );
     },
-    [debouncedSearchTerm, accessToken]
+    [debouncedSearchTerm, accessToken, itemsOrder]
   );
 
   const handleEditUser = (user) => {
     setSelectedUser(user);
     setUpdateModalVisible(true);
+  };
+
+  const handleToggleOrder = () => {
+    setItemsOrder((prevOrder) => (prevOrder === "ASC" ? "DESC" : "ASC"));
   };
 
   return (
@@ -87,6 +93,8 @@ export default function UsersScreen() {
           }
           searchValue={searchTerm}
           onSearchChange={setSearchTerm}
+          itemsOrder={itemsOrder}
+          onToggleOrder={handleToggleOrder}
         />
       </View>
 
