@@ -12,15 +12,21 @@ export async function deleteWishListRequest(userId, productId, accessToken) {
  * @param {number} itemsPerPage
  * @param {number} currentPage
  * @param {string} accessToken
+ * @param {string} searchFilter
  */
 export async function getItemsWishListRequest(
   itemsPerPage = configsToPagination.itemsPerPage,
   currentPage = configsToPagination.currentPage,
   accessToken,
+  searchFilter,
+  itemsOrder = "ASC",
 ) {
-  const response = await requestGet(
-    `/wishlist?itemsPerPage=${itemsPerPage}&currentPage=${currentPage}`,
-    accessToken,
-  );
+  let url = `/wishlist?itemsPerPage=${itemsPerPage}&currentPage=${currentPage}&itemsOrder=${itemsOrder}`;
+
+  if (searchFilter) {
+    url += `&searchFilter=${searchFilter}`;
+  }
+
+  const response = await requestGet(url, accessToken);
   return response.data || [];
 }
