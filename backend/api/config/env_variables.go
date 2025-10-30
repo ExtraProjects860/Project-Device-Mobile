@@ -18,6 +18,7 @@ type APIConfig struct {
 	RefreshKey   string
 	Port         string
 	EmailService string
+	Cloudnary    string
 }
 
 type EnvVariables struct {
@@ -53,6 +54,7 @@ func InitilizeEnvVariables(paths ...string) (*EnvVariables, error) {
 			RefreshKey:   os.Getenv("REFRESH_KEY"),
 			Port:         os.Getenv("API_PORT"),
 			EmailService: os.Getenv("EMAIL_SERVICE"),
+			Cloudnary:    os.Getenv("CLOUDINARY_URL"),
 		},
 	}
 

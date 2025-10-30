@@ -3,10 +3,9 @@ package main
 import (
 	"fmt"
 
-	"github.com/ExtraProjects860/Project-Device-Mobile/config"
 	"github.com/ExtraProjects860/Project-Device-Mobile/appcontext"
+	"github.com/ExtraProjects860/Project-Device-Mobile/config"
 	"github.com/ExtraProjects860/Project-Device-Mobile/routes"
-	"gorm.io/gorm"
 )
 
 // @title Project Device Mobile API
@@ -20,13 +19,6 @@ import (
 // @name Authorization
 // @description Type "Bearer" followed by a space and JWT token.
 
-func setupContext(env *config.EnvVariables, db *gorm.DB) *appcontext.AppContext {
-	return &appcontext.AppContext{
-		Env: env,
-		DB:  db,
-	}
-}
-
 func main() {
 	logger := config.NewLogger("main")
 
@@ -36,7 +28,11 @@ func main() {
 		panic(err)
 	}
 
-	appCtx := setupContext(env, db)
+	appCtx, err := appcontext.SetupContext(env, db)
+	if err != nil {
+		logger.Errorf("Failed to initialize Cloudinary: %v", err)
+		panic(err)
+	}
 
 	r := routes.InitializeRouter(appCtx)
 	r.Run(fmt.Sprintf(":%v", env.API.Port))

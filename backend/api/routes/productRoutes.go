@@ -10,7 +10,6 @@ import (
 
 func registerProductRoutes(rg *gin.RouterGroup, appCtx *appcontext.AppContext) {
 	logger := config.NewLogger("MIDDLEWARE")
-
 	{
 		rg.GET("/products",
 			middleware.JWTMiddleware(appCtx, logger),
@@ -22,6 +21,7 @@ func registerProductRoutes(rg *gin.RouterGroup, appCtx *appcontext.AppContext) {
 		rg.POST("/product",
 			middleware.JWTMiddleware(appCtx, logger),
 			middleware.AdminPermission(appCtx, logger),
+			middleware.ImageOptional(appCtx, logger),
 			handler.CreateProductHandler(
 				appCtx,
 				config.NewLogger("POST - PRODUCT"),
@@ -30,6 +30,7 @@ func registerProductRoutes(rg *gin.RouterGroup, appCtx *appcontext.AppContext) {
 		rg.PATCH("/product",
 			middleware.JWTMiddleware(appCtx, logger),
 			middleware.AdminPermission(appCtx, logger),
+			middleware.ImageOptional(appCtx, logger),
 			handler.UpdateProductHandler(
 				appCtx,
 				config.NewLogger("PATCH - PRODUCT"),

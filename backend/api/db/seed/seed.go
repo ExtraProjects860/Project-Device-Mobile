@@ -82,7 +82,7 @@ func seedUser(db *gorm.DB, logger *config.Logger, quantity int) {
 	for range quantity {
 		re := roles[rng.IntN(len(roles))]
 		en := enterprises[rng.IntN(len(enterprises))]
-		url := utils.GenerateRandomPhoto(faker.Username(), 300, 300)
+		url := utils.GenerateRandomImage(faker.Username(), 300, 300)
 
 		user := schemas.User{
 			Name:           strings.ToUpper(faker.Name()),
@@ -206,7 +206,7 @@ func seedProduct(db *gorm.DB, logger *config.Logger, quantity int) {
 
 	logger.Infof("Seeding table '%s' with %d records...", modelName, quantity)
 	for range quantity {
-		url := utils.GenerateRandomPhoto(faker.Username(), 300, 300)
+		url := utils.GenerateRandomImage(faker.Username(), 300, 300)
 		discount := faker.Price(5, 50) / 100
 		randAvaiable := rng.IntN(2) == 1
 

@@ -4,8 +4,8 @@ import (
 	"errors"
 	"net/http"
 
-	"github.com/ExtraProjects860/Project-Device-Mobile/config"
 	"github.com/ExtraProjects860/Project-Device-Mobile/appcontext"
+	"github.com/ExtraProjects860/Project-Device-Mobile/config"
 	"github.com/ExtraProjects860/Project-Device-Mobile/handler/request"
 	"github.com/ExtraProjects860/Project-Device-Mobile/handler/response"
 	"github.com/ExtraProjects860/Project-Device-Mobile/service"
@@ -29,7 +29,7 @@ func CreateEnterprise(appCtx *appcontext.AppContext, logger *config.Logger) gin.
 	return func(ctx *gin.Context) {
 		var input request.EnterpriseRequest
 
-		if err := request.ReadBody(ctx, &input); err != nil {
+		if err := request.ReadBodyJSON(ctx, &input); err != nil {
 			logger.Error(err.Error())
 			response.SendErr(ctx, http.StatusUnprocessableEntity, err)
 			return
@@ -77,7 +77,7 @@ func UpdateEnterprise(appCtx *appcontext.AppContext, logger *config.Logger) gin.
 		}
 
 		var input request.EnterpriseRequest
-		if err := request.ReadBody(ctx, &input); err != nil {
+		if err := request.ReadBodyJSON(ctx, &input); err != nil {
 			logger.Error(err.Error())
 			response.SendErr(ctx, http.StatusUnprocessableEntity, err)
 			return

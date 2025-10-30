@@ -52,15 +52,19 @@ func (u *UserService) ValidateAndUpdateFields(user *schemas.User, input request.
 
 		user.EnterpriseID = input.EnterpriseID
 	}
-	if input.PhotoUrl != nil && *input.PhotoUrl != "" {
-		user.PhotoUrl = input.PhotoUrl
-	}
 	return nil
 }
 
-func (u *UserService) Create(ctx *gin.Context, input request.UserRequest) (*dto.UserDTO, error) {
+func (u *UserService) Create(ctx *gin.Context, imageService ImageService, input request.UserRequest) (*dto.UserDTO, error) {
 	hashedPassword, err := utils.GenerateHashPassword(input.Password)
 	if err != nil {
+		u.logger.Errorf("Failed to gerenerate HashPassword: %v", err)
+		return nil, err
+	}
+
+	secureURL, publicID, err := imageService.UploadImage(ctx, FolderUser)
+	if err != nil {
+		u.logger.Errorf("Failed during image upload process: %v", err)
 		return nil, err
 	}
 
@@ -72,17 +76,21 @@ func (u *UserService) Create(ctx *gin.Context, input request.UserRequest) (*dto.
 		Password:       hashedPassword,
 		Cpf:            input.Cpf,
 		RegisterNumber: input.RegisterNumber,
-		PhotoUrl:       input.PhotoUrl,
+		PhotoUrl:       secureURL,
 	}
 
 	if err = u.repo.CreateUser(ctx, &user); err != nil {
+		u.logger.Errorf("Failed to create user in database: %v", err)
+		if removeErr := imageService.RemoveImage(publicID); removeErr != nil {
+			u.logger.Errorf("CRITICAL: DB creation failed AND image rollback failed: %v", removeErr)
+		}
 		return nil, err
 	}
 
 	return dto.MakeUserOutput(user), nil
 }
 
-func (u *UserService) Update(ctx *gin.Context, id uint, input request.UserRequest) (*dto.UserDTO, error) {
+func (u *UserService) Update(ctx *gin.Context, imageService ImageService, id uint, input request.UserRequest) (*dto.UserDTO, error) {
 	user, err := u.repo.GetInfoUser(ctx, id)
 	if err != nil {
 		return nil, err
@@ -92,7 +100,18 @@ func (u *UserService) Update(ctx *gin.Context, id uint, input request.UserReques
 		return nil, err
 	}
 
+	secureURL, publicID, err := imageService.UploadImage(ctx, FolderUser)
+	if err != nil {
+		u.logger.Errorf("Failed during image upload process: %v", err)
+		return nil, err
+	}
+	user.PhotoUrl = secureURL
+
 	if err = u.repo.UpdateUser(ctx, id, &user); err != nil {
+		u.logger.Errorf("Failed to update user in database: %v", err)
+		if removeErr := imageService.RemoveImage(publicID); removeErr != nil {
+			u.logger.Errorf("CRITICAL: DB updated failed AND image rollback failed: %v", removeErr)
+		}
 		return nil, err
 	}
 

@@ -135,35 +135,6 @@ definitions:
     - email
     - password
     type: object
-  request.ProductRequest:
-    properties:
-      description:
-        maxLength: 255
-        minLength: 3
-        type: string
-      discount:
-        minimum: 0
-        type: number
-      is_avaible:
-        type: boolean
-      is_promotion_avaible:
-        type: boolean
-      name:
-        minLength: 3
-        type: string
-      photo_url:
-        type: string
-      quantity:
-        minimum: 0
-        type: integer
-      value:
-        type: number
-    required:
-    - description
-    - name
-    - quantity
-    - value
-    type: object
   request.RoleRequest:
     properties:
       name:
@@ -171,36 +142,6 @@ definitions:
         type: string
     required:
     - name
-    type: object
-  request.UserRequest:
-    properties:
-      cpf:
-        type: string
-      email:
-        type: string
-      enterprise_id:
-        type: integer
-      name:
-        minLength: 3
-        type: string
-      password:
-        minLength: 6
-        type: string
-      photo_url:
-        type: string
-      register_number:
-        maxLength: 7
-        minLength: 7
-        type: string
-      role_id:
-        type: integer
-    required:
-    - cpf
-    - email
-    - name
-    - password
-    - register_number
-    - role_id
     type: object
   response.ErrResponse:
     properties:
@@ -468,7 +409,7 @@ paths:
   /api/v1/product:
     patch:
       consumes:
-      - application/json
+      - multipart/form-data
       description: Updates an existing product
       parameters:
       - description: Product ID
@@ -476,12 +417,15 @@ paths:
         name: id
         required: true
         type: string
-      - description: Product info to update
-        in: body
-        name: product
+      - description: Optional product profile image
+        in: formData
+        name: image
+        type: file
+      - description: JSON string contain product data for update (request.ProductRequest)
+        in: formData
+        name: data
         required: true
-        schema:
-          $ref: '#/definitions/request.ProductRequest'
+        type: string
       produces:
       - application/json
       responses:
@@ -508,15 +452,18 @@ paths:
       - products
     post:
       consumes:
-      - application/json
+      - multipart/form-data
       description: Creates a new product
       parameters:
-      - description: Product info
-        in: body
-        name: product
+      - description: Optional product profile image
+        in: formData
+        name: image
+        type: file
+      - description: JSON string contain product data for create (request.ProductRequest)
+        in: formData
+        name: data
         required: true
-        schema:
-          $ref: '#/definitions/request.ProductRequest'
+        type: string
       produces:
       - application/json
       responses:
@@ -738,7 +685,7 @@ paths:
       - users
     patch:
       consumes:
-      - application/json
+      - multipart/form-data
       description: Updates an existing user
       parameters:
       - description: User ID
@@ -746,11 +693,15 @@ paths:
         name: id
         required: true
         type: string
-      - description: User info to update
-        in: body
-        name: user
-        schema:
-          $ref: '#/definitions/request.UserRequest'
+      - description: Optional user profile image
+        in: formData
+        name: image
+        type: file
+      - description: JSON string contain user data for update (request.UserRequest)
+        in: formData
+        name: data
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -777,14 +728,18 @@ paths:
       - users
     post:
       consumes:
-      - application/json
+      - multipart/form-data
       description: Creates a new user
       parameters:
-      - description: User info
-        in: body
-        name: user
-        schema:
-          $ref: '#/definitions/request.UserRequest'
+      - description: Optional user profile image
+        in: formData
+        name: image
+        type: file
+      - description: JSON string contain user data for create (request.UserRequest)
+        in: formData
+        name: data
+        required: true
+        type: string
       produces:
       - application/json
       responses:

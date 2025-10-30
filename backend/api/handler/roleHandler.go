@@ -29,7 +29,7 @@ func CreateRole(appCtx *appcontext.AppContext, logger *config.Logger) gin.Handle
 	return func(ctx *gin.Context) {
 		var input request.RoleRequest
 
-		if err := request.ReadBody(ctx, &input); err != nil {
+		if err := request.ReadBodyJSON(ctx, &input); err != nil {
 			logger.Error(err.Error())
 			response.SendErr(ctx, http.StatusUnprocessableEntity, err)
 			return
@@ -77,7 +77,7 @@ func UpdateRole(appCtx *appcontext.AppContext, logger *config.Logger) gin.Handle
 		}
 
 		var input request.RoleRequest
-		if err := request.ReadBody(ctx, &input); err != nil {
+		if err := request.ReadBodyJSON(ctx, &input); err != nil {
 			logger.Error(err.Error())
 			response.SendErr(ctx, http.StatusUnprocessableEntity, err)
 			return

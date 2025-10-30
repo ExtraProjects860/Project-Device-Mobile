@@ -22,11 +22,37 @@ func GetProductService(appCtx *appcontext.AppContext) ProductService {
 	}
 }
 
-func (p *ProductService) ValidateAndUpdateFields(product *schemas.Product, input request.ProductRequest) error {
-	return nil
+func (p *ProductService) ValidateAndUpdateFields(product *schemas.Product, input request.ProductRequest) {
+	if input.Name != "" {
+		product.Name = input.Name
+	}
+	if input.Description != "" {
+		product.Description = input.Description
+	}
+	if input.Value > 0 {
+		product.Value = input.Value
+	}
+	if input.Quantity >= 0 {
+		product.Quantity = input.Quantity
+	}
+	if input.IsPromotionAvaible != nil {
+		product.IsPromotionAvaible = input.IsPromotionAvaible
+	}
+	if input.Discount != nil && *input.Discount >= 0 {
+		product.Discount = input.Discount
+	}
+	if input.IsAvaible != nil {
+		product.IsAvaible = input.IsAvaible
+	}
 }
 
-func (p *ProductService) Create(ctx *gin.Context, input request.ProductRequest) (*dto.ProductDTO, error) {
+func (p *ProductService) Create(ctx *gin.Context, imageService ImageService, input request.ProductRequest) (*dto.ProductDTO, error) {
+	secureURL, publicID, err := imageService.UploadImage(ctx, FolderProduct)
+	if err != nil {
+		p.logger.Errorf("Failed during image upload process: %v", err)
+		return nil, err
+	}
+
 	product := schemas.Product{
 		Name:               input.Name,
 		Description:        input.Description,
@@ -34,28 +60,42 @@ func (p *ProductService) Create(ctx *gin.Context, input request.ProductRequest) 
 		Quantity:           input.Quantity,
 		IsPromotionAvaible: input.IsPromotionAvaible,
 		Discount:           input.Discount,
-		PhotoUrl:           input.PhotoUrl,
 		IsAvaible:          input.IsAvaible,
+		PhotoUrl:           secureURL,
 	}
 
 	if err := p.repo.CreateProduct(ctx, &product); err != nil {
+		p.logger.Warningf("Failed to create product in database: %v", publicID)
+		if removeErr := imageService.RemoveImage(publicID); removeErr != nil {
+			p.logger.Errorf("CRITICAL: DB creation failed AND image rollback failed: %v", removeErr)
+		}
 		return nil, err
 	}
 
 	return dto.MakeProductOutput(product), nil
 }
 
-func (p *ProductService) Update(ctx *gin.Context, id uint, input request.ProductRequest) (*dto.ProductDTO, error) {
+func (p *ProductService) Update(ctx *gin.Context, imageService ImageService, id uint, input request.ProductRequest) (*dto.ProductDTO, error) {
 	product, err := p.repo.GetProduct(ctx, id)
 	if err != nil {
 		return nil, err
 	}
 
-	if err = p.ValidateAndUpdateFields(&product, input); err != nil {
+	secureURL, publicID, err := imageService.UploadImage(ctx, FolderProduct)
+	if err != nil {
+		p.logger.Errorf("Failed during image upload process: %v", err)
 		return nil, err
 	}
 
+	p.ValidateAndUpdateFields(&product, input)
+
+	product.PhotoUrl = secureURL
+
 	if err = p.repo.UpdateProducts(ctx, id, &product); err != nil {
+		p.logger.Errorf("Failed to update product in database: %v", err)
+		if removeErr := imageService.RemoveImage(publicID); removeErr != nil {
+			p.logger.Errorf("CRITICAL: DB updated failed AND image rollback failed: %v", removeErr)
+		}
 		return nil, err
 	}
 
