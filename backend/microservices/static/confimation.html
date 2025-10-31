@@ -1,11 +1,249 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CONFIRMATION</title>
-</head>
-<body>
-    
-</body>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sua Senha Foi Alterada - Drogaria Jocy</title>
+    <style type="text/css">
+      /* Cores Base do Projeto */
+      :root {
+        --color-primary-dark: #087975; /* Fundo principal (similar ao dark-primary) */
+        --color-secondary-pink: #e91d62; /* Cor de destaque (similar ao light-secondary) */
+        --color-card-light: #ffffff; /* Fundo do corpo da mensagem */
+      }
+
+      /* Estilos Reset e Globais */
+      body,
+      table,
+      td,
+      a {
+        -webkit-text-size-adjust: 100%;
+        -ms-text-size-adjust: 100%;
+      }
+      table,
+      td {
+        mso-table-lspace: 0pt;
+        mso-table-rspace: 0pt;
+      }
+      img {
+        -ms-interpolation-mode: bicubic;
+        border: 0;
+        height: auto;
+        line-height: 100%;
+        outline: none;
+        text-decoration: none;
+      }
+      a {
+        text-decoration: none;
+      }
+
+      /* Estilos para Mobile */
+      @media screen and (max-width: 600px) {
+        .mobile-padding {
+          padding: 25px 20px !important;
+        }
+        .content-table {
+          width: 100% !important;
+        }
+        .logo-img {
+          max-width: 180px !important;
+          height: auto !important;
+        }
+      }
+    </style>
+  </head>
+
+  <body style="margin: 0; padding: 0; background-color: #f4f4f4">
+    <table
+      border="0"
+      cellpadding="0"
+      cellspacing="0"
+      width="100%"
+      style="background-color: #087975"
+    >
+      <tr>
+        <td align="center" style="padding: 30px 0 10px 0">
+          <table
+            border="0"
+            cellpadding="0"
+            cellspacing="0"
+            width="600"
+            class="content-table"
+            style="max-width: 600px"
+          >
+            <tr>
+              <td align="center" style="padding: 20px 0 20px 0">
+                <img
+                  src="https://res.cloudinary.com/dwcymqoto/image/upload/v1761876072/logo_tchiw3.png"
+                  alt="Drogaria Jocy"
+                  class="logo-img"
+                  width="200"
+                  style="
+                    display: block;
+                    width: 200px;
+                    max-width: 100%;
+                    height: auto;
+                    border: 0;
+                  "
+                />
+              </td>
+            </tr>
+
+            <tr>
+              <td
+                align="center"
+                class="mobile-padding"
+                style="
+                  padding: 40px;
+                  background-color: #ffffff;
+                  border-radius: 12px;
+                  font-family: Arial, sans-serif;
+                  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+                "
+              >
+                <table
+                  border="0"
+                  cellpadding="0"
+                  cellspacing="0"
+                  style="margin-bottom: 20px"
+                >
+                  <tr>
+                    <td
+                      align="center"
+                      style="
+                        width: 50px;
+                        height: 50px;
+                        border-radius: 50%;
+                        background-color: #e91d62;
+                        padding: 5px;
+                      "
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="30"
+                        height="30"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="#FFFFFF"
+                        stroke-width="3"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                      </svg>
+                    </td>
+                  </tr>
+                </table>
+
+                <h1
+                  style="
+                    color: #087975;
+                    margin: 0;
+                    font-size: 26px;
+                    line-height: 34px;
+                    font-weight: bold;
+                    margin-bottom: 25px;
+                  "
+                >
+                  Senha Alterada com Sucesso!
+                </h1>
+
+                <p
+                  style="
+                    color: #444444;
+                    margin: 0;
+                    font-size: 16px;
+                    line-height: 24px;
+                    margin-bottom: 20px;
+                    text-align: left;
+                  "
+                >
+                  Olá {{user_name}},
+                  <br /><br />
+                  Confirmamos que a senha da sua conta foi alterada com sucesso.
+                  A partir de agora, use sua nova senha para acessar o
+                  aplicativo da Drogaria Jocy.
+                </p>
+
+                <p
+                  style="
+                    color: #e91d62;
+                    margin-top: 30px;
+                    font-size: 14px;
+                    line-height: 20px;
+                    text-align: left;
+                    font-weight: bold;
+                  "
+                >
+                  Dica de Segurança:
+                  <br />
+                  Se você não realizou esta alteração de senha, por favor, entre
+                  em contato conosco imediatamente.
+                </p>
+
+                <p
+                  style="
+                    color: #444444;
+                    margin-top: 40px;
+                    font-size: 14px;
+                    line-height: 20px;
+                    text-align: left;
+                    border-top: 1px solid #eeeeee;
+                    padding-top: 20px;
+                  "
+                >
+                  Para qualquer dúvida ou suporte, você pode nos contatar
+                  através do e-mail:
+                  <br />
+                  <a
+                    href="mailto:contato@drogariajocy.com.br"
+                    style="color: #e91d62; font-weight: bold"
+                    >projectdevicemobile@gmail.com</a
+                  >
+                </p>
+              </td>
+            </tr>
+
+            <tr>
+              <td height="30" style="font-size: 1px; line-height: 1px">
+                &nbsp;
+              </td>
+            </tr>
+
+            <tr>
+              <td
+                align="center"
+                style="
+                  padding: 20px;
+                  font-family: Arial, sans-serif;
+                  color: #aaaaaa;
+                "
+              >
+                <p
+                  style="
+                    font-size: 14px;
+                    margin: 0;
+                    color: #ffffff;
+                    font-weight: bold;
+                  "
+                >
+                  Drogaria Jocy
+                </p>
+
+                <p style="font-size: 12px; margin: 5px 0 0 0; color: #cccccc">
+                  Rua Nelson Viana, 652 - Centro, Três Rios
+                  <br />
+                  WhatsApp: (24) 99255-6024
+                </p>
+
+                <p style="font-size: 12px; margin-top: 15px; color: #999999">
+                  © Direitos Reservados
+                </p>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </body>
 </html>
