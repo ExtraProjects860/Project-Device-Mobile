@@ -43,9 +43,9 @@ func CreateUserHandler(appCtx *appcontext.AppContext, logger *config.Logger) gin
 		}
 
 		userService := service.GetUserService(appCtx)
-		imageService := service.GetImageService(appCtx)
 
-		user, err := userService.Create(ctx, imageService, input)
+		user, err := userService.Create(
+			ctx, service.GetImageService(appCtx), input)
 		if err != nil {
 			logger.Error(err.Error())
 			response.SendErr(ctx, http.StatusInternalServerError, err)
@@ -75,7 +75,7 @@ func GetInfoUserHandler(appCtx *appcontext.AppContext, logger *config.Logger) gi
 
 		uid, ok := uidRaw.(uint)
 		if !ok {
-			response.SendErr(ctx, http.StatusInternalServerError, errors.New("invalid user id type"))
+			response.SendErr(ctx, http.StatusInternalServerError, errors.New("invalid convert user id type"))
 			return
 		}
 
