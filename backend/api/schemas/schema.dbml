@@ -53,6 +53,7 @@ Table TokenPassword {
 }
 
 Table WishList {
+  Id     serial [pk]
   IdUser    int [ref: > Users.Id]
   IdProduct int [ref: > Products.Id]
 
