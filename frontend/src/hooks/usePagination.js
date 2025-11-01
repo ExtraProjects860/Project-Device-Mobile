@@ -53,10 +53,10 @@ export function usePagination(callbackFetch, searchFilter) {
       }
     } catch (err) {
       console.error("Erro ao buscar dados iniciais:", err);
-      const message =
-        err.message ||
-        "Não foi possível carregar os itens. Verifique sua conexão.";
-      showErrorModal(message, initialLoad);
+      showErrorModal(
+        "Não foi possível carregar os itens. Verifique sua conexão.",
+        initialLoad,
+      );
     }
   }, [callbackFetch, showErrorModal, accessToken, searchFilter]);
 
@@ -76,7 +76,7 @@ export function usePagination(callbackFetch, searchFilter) {
       if (result.data && result.data.length > 0) {
         setListItems((prevItems) => [...prevItems, ...result.data]);
         setCurrentPage(result.current_page);
-      } else{
+      } else {
         setTotalPages(currentPage);
       }
     } catch (err) {

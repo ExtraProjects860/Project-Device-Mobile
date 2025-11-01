@@ -85,10 +85,7 @@ export function AppProvider({ children }) {
   };
 
   const logout = useCallback(async () => {
-    showErrorModal(
-      "Sua sessão expirou. Por favor, faça login novamente.",
-      null,
-    );
+    showErrorModal("Sua sessão expirou. Por favor, faça login novamente.");
 
     manuallyLogout();
   }, [showErrorModal]);

@@ -50,10 +50,9 @@ export default function PasswordChangeModal({ visible, onClose }) {
       );
       setSuccessVisible(true);
     } catch (error) {
-      const errorMessage =
-        error.response?.data?.error ||
-        "Não foi possível realizar a troca da senha. Verifique os dados e tente novamente.";
-      showErrorModal(errorMessage);
+      showErrorModal(
+        "Não foi possível realizar a troca da senha. Verifique os dados e tente novamente."
+      );
       console.error("Erro ao trocar a senha:", error);
     }
   };

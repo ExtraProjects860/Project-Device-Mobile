@@ -67,7 +67,7 @@ export default function ModalUpdateUser({
       !enterpriseId &&
       !photoUri
     ) {
-      showErrorModal("Nenhum campo Vazio para atualizar.");
+      showErrorModal("Nenhum atualizado.");
       return;
     }
 
@@ -101,10 +101,9 @@ export default function ModalUpdateUser({
       setSuccessMessage("Usuário atualizado com sucesso!");
       setSuccessVisible(true);
     } catch (error) {
-      const errorMessage =
-        error.response?.data?.error ||
-        "Não foi possível atualizar o usuário. Verifique os dados e tente novamente.";
-      showErrorModal(errorMessage);
+      showErrorModal(
+        "Não foi possível atualizar o usuário. Verifique os dados e tente novamente."
+      );
       console.error("Erro ao atualizar usuário:", error);
     }
   };
