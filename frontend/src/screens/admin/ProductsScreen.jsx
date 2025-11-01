@@ -17,8 +17,9 @@ import { useAppContext } from "../../context/AppContext.js";
 export default function ProductsScreen() {
   const themeColors = useThemeColors();
   const { listKey, handleRefresh } = useHandleRefresh();
-  const { accessToken } = useAppContext();
+  const { accessToken, userData } = useAppContext();
 
+  const isAdmin = userData?.role === "ADMIN" || userData?.role === "SUPERADMIN";
   const [isCreateProductModalVisible, setCreateProductVisible] =
     useState(false);
   const [isUpdateProductModalVisible, setUpdateProductVisible] =
@@ -81,10 +82,12 @@ export default function ProductsScreen() {
       <View className="items-center mb-2">
         <SearchBar
           buttonAdd={
-            <ButtonAdd
-              onPress={() => setCreateProductVisible(true)}
-              name={"basket-plus-outline"}
-            />
+            isAdmin && (
+              <ButtonAdd
+                onPress={() => setCreateProductVisible(true)}
+                name={"basket-plus-outline"}
+              />
+            )
           }
           searchValue={searchTerm}
           onSearchChange={setSearchTerm}

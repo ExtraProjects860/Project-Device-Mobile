@@ -4,6 +4,7 @@ import { formatPromotion } from "../../lib/utils.js";
 import { useThemeColors } from "../../hooks/useThemeColors.js";
 import DefaultProduct from "../../assets/images/shopping-bag.png";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import { useAppContext } from "../../context/AppContext.js";
 
 /**
  * Componente responsável pelo card de Produto
@@ -18,6 +19,8 @@ import Icon from "react-native-vector-icons/MaterialCommunityIcons";
  */
 export default function CardProductList({ item, onEdit }) {
   const themeColors = useThemeColors();
+  const { userData } = useAppContext();
+  const isAdmin = userData?.role === "ADMIN" || userData?.role === "SUPERADMIN";
 
   return (
     <View className="bg-light-card dark:bg-dark-card rounded-xl m-2 overflow-hidden">
@@ -72,17 +75,19 @@ export default function CardProductList({ item, onEdit }) {
           </View>
 
           <View className="m-2">
-            <TouchableOpacity
-              onPress={() => onEdit(item)}
-              className="flex-row gap-1 items-center justify-center py-2 px-5 rounded-full bg-light-secondary dark:bg-dark-secondary"
-            >
-              <Icon
-                name="square-edit-outline"
-                size={20}
-                color={themeColors.header}
-              />
-              <Text className="text-white font-bold text-center">Editar</Text>
-            </TouchableOpacity>
+            {isAdmin && (
+              <TouchableOpacity
+                onPress={() => onEdit(item)}
+                className="flex-row gap-1 items-center justify-center py-2 px-5 rounded-full bg-light-secondary dark:bg-dark-secondary"
+              >
+                <Icon
+                  name="square-edit-outline"
+                  size={20}
+                  color={themeColors.header}
+                />
+                <Text className="text-white font-bold text-center">Editar</Text>
+              </TouchableOpacity>
+            )}
           </View>
         </View>
       </View>
