@@ -140,6 +140,51 @@ class User {
     return errors;
   }
 
+  /**
+   * Compara o usuário original com os dados do formulário e retorna
+   * um objeto contendo apenas os campos que mudaram.
+   * @param {object} originalUser
+   * @param {object} newFormData
+   * @returns {object}
+   */
+  static getChangedFields(originalUser, newFormData) {
+    const updatedUserData = {};
+
+    const { name, email, cpf, registerNumber, roleId, enterpriseId, photoUri } =
+      newFormData;
+
+    const cpfDigits = cpf ? cpf.replace(/\D/g, "") : "";
+    const roleIdInt = parseInt(roleId, 10);
+    const enterpriseIdInt = enterpriseId ? parseInt(enterpriseId, 10) : null;
+
+    if (name !== originalUser.name) {
+      updatedUserData.name = name;
+    }
+    if (email !== originalUser.email) {
+      updatedUserData.email = email;
+    }
+    if (cpfDigits !== originalUser.cpf) {
+      updatedUserData.cpf = cpfDigits;
+    }
+    if (registerNumber !== originalUser.register_number?.toString()) {
+      updatedUserData.register_number = registerNumber;
+    }
+    if (roleIdInt !== originalUser.role_id) {
+      updatedUserData.role_id = roleIdInt;
+    }
+    if (enterpriseIdInt !== originalUser.enterprise_id) {
+      updatedUserData.enterprise_id = enterpriseIdInt;
+    }
+    if (photoUri !== originalUser.photo_url) {
+      updatedUserData.photo_url = photoUri || "";
+    }
+
+    return updatedUserData;
+  }
+
+  /**
+   * Retorna um objeto simples para ser enviado como JSON (para CRIALÇÂO)
+   */
   toJSON() {
     return {
       name: this.name,

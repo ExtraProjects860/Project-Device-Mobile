@@ -17,6 +17,7 @@ import { useError } from "../../context/ErrorContext.js";
 import { useThemeColors } from "../../hooks/useThemeColors.js";
 import ModalCheck from "./ModalCheck";
 import { useAppContext } from "../../context/AppContext.js";
+import User from "../../lib/class/User.js";
 
 export default function ModalUpdateUser({
   visible,
@@ -25,9 +26,9 @@ export default function ModalUpdateUser({
   onUserUpdated,
 }) {
   const { accessToken } = useAppContext();
-
   const { showErrorModal } = useError();
   const themeColors = useThemeColors();
+
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [cpf, setCpf] = useState("");
@@ -39,6 +40,8 @@ export default function ModalUpdateUser({
   const [isSuccessVisible, setSuccessVisible] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
 
+  const [errors, setErrors] = useState({});
+
   useEffect(() => {
     if (user) {
       setName(user.name || "");
@@ -48,6 +51,7 @@ export default function ModalUpdateUser({
       setRoleId(user.role_id?.toString() || "");
       setEnterpriseId(user.enterprise_id?.toString() || "");
       setPhotoUri(user.photo_url || null);
+      setErrors({});
     }
   }, [user]);
 
@@ -57,38 +61,28 @@ export default function ModalUpdateUser({
     onClose();
   };
 
+  const handleBlur = (fieldName, value) => {
+    const error = User.validateField(fieldName, value);
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      [fieldName]: error,
+    }));
+  };
+
   const handleUpdateUser = async () => {
-    if (
-      !name &&
-      !email &&
-      !cpf &&
-      !registerNumber &&
-      !roleId &&
-      !enterpriseId &&
-      !photoUri
-    ) {
-      showErrorModal("Nenhum atualizado.");
+    const formData = { name, cpf, email, registerNumber, roleId };
+    const validationErrors = User.validateAll(formData);
+    const hasErrors = Object.values(validationErrors).some(
+      (error) => error !== null
+    );
+
+    if (hasErrors) {
+      setErrors(validationErrors);
       return;
     }
 
-    const updatedUserData = {};
-    if (name !== user.name && name !== "") updatedUserData.name = name;
-    if (email !== user.email && email !== "") updatedUserData.email = email;
-    if (cpf !== user.cpf && cpf !== "") updatedUserData.cpf = cpf;
-    if (registerNumber !== user.register_number && registerNumber !== "")
-      updatedUserData.register_number = registerNumber;
-    if (parseInt(roleId, 10) !== user.role_id && roleId !== "")
-      updatedUserData.role_id = parseInt(roleId, 10);
-    if (
-      parseInt(enterpriseId, 10) !== user.enterprise_id &&
-      enterpriseId !== ""
-    )
-      updatedUserData.enterprise_id = enterpriseId
-        ? parseInt(enterpriseId, 10)
-        : null;
-    if (photoUri !== user.photo_url) {
-      updatedUserData.photo_url = photoUri || "";
-    }
+    const newFormData = { ...formData, enterpriseId, photoUri };
+    const updatedUserData = User.getChangedFields(user, newFormData);
 
     if (Object.keys(updatedUserData).length === 0) {
       setSuccessMessage("Nenhum campo foi modificado.");
@@ -117,14 +111,12 @@ export default function ModalUpdateUser({
       );
       return;
     }
-
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       aspect: [1, 1],
       quality: 1,
     });
-
     if (!result.canceled) {
       setPhotoUri(result.assets[0].uri);
     }
@@ -164,14 +156,22 @@ export default function ModalUpdateUser({
                   Nome:
                 </Text>
                 <TextInput
-                  className="bg-gray-soft rounded-lg p-4 text-base text-light-text-primary "
+                  className={`bg-gray-soft rounded-lg p-4 text-base text-light-text-primary 
+                    ${errors.name ? "border border-red-500" : ""}
+                  `}
                   placeholder="Nome Completo"
                   placeholderTextColor={
                     themeColors.primary === "#FFFFFF" ? "#A0A0A0" : "#6B7280"
                   }
                   value={name}
                   onChangeText={setName}
+                  onBlur={() => handleBlur("name", name)}
                 />
+                {errors.name && (
+                  <Text className="text-red-500 text-sm ml-2 mt-1">
+                    {errors.name}
+                  </Text>
+                )}
               </View>
 
               {/* E-mail */}
@@ -180,7 +180,9 @@ export default function ModalUpdateUser({
                   E-mail:
                 </Text>
                 <TextInput
-                  className="bg-gray-soft rounded-lg p-4 text-base text-light-text-primary"
+                  className={`bg-gray-soft rounded-lg p-4 text-base text-light-text-primary
+                    ${errors.email ? "border border-red-500" : ""}
+                  `}
                   placeholder="exemplo@email.com"
                   placeholderTextColor={
                     themeColors.primary === "#FFFFFF" ? "#A0A0A0" : "#6B7280"
@@ -189,7 +191,13 @@ export default function ModalUpdateUser({
                   autoCapitalize="none"
                   value={email}
                   onChangeText={setEmail}
+                  onBlur={() => handleBlur("email", email)}
                 />
+                {errors.email && (
+                  <Text className="text-red-500 text-sm ml-2 mt-1">
+                    {errors.email}
+                  </Text>
+                )}
               </View>
 
               {/* CPF */}
@@ -198,15 +206,23 @@ export default function ModalUpdateUser({
                   CPF:
                 </Text>
                 <TextInput
-                  className="bg-gray-soft rounded-lg p-4 text-base text-light-text-primary"
+                  className={`bg-gray-soft rounded-lg p-4 text-base text-light-text-primary
+                    ${errors.cpf ? "border border-red-500" : ""}
+                  `}
                   placeholder="000.000.000-00"
                   placeholderTextColor={
-                    themeColors.primary === "#FFFFFF" ? "#A0A0A0" : "#6B7280"
+                    themeColors.primary === "#FFFFFF" ? "#A0A0A0" : "#6B7D80"
                   }
                   keyboardType="numeric"
                   value={cpf}
                   onChangeText={setCpf}
+                  onBlur={() => handleBlur("cpf", cpf)}
                 />
+                {errors.cpf && (
+                  <Text className="text-red-500 text-sm ml-2 mt-1">
+                    {errors.cpf}
+                  </Text>
+                )}
               </View>
 
               {/* Número de Registro */}
@@ -215,15 +231,24 @@ export default function ModalUpdateUser({
                   Nº de Registro:
                 </Text>
                 <TextInput
-                  className="bg-gray-soft rounded-lg p-4 text-base text-light-text-primary"
-                  placeholder="Apenas números"
+                  className={`bg-gray-soft rounded-lg p-4 text-base text-light-text-primary
+                    ${errors.registerNumber ? "border border-red-500" : ""}
+                  `}
+                  placeholder="7 dígitos"
                   placeholderTextColor={
                     themeColors.primary === "#FFFFFF" ? "#A0A0A0" : "#6B7280"
                   }
                   keyboardType="numeric"
                   value={registerNumber}
                   onChangeText={setRegisterNumber}
+                  maxLength={7}
+                  onBlur={() => handleBlur("registerNumber", registerNumber)}
                 />
+                {errors.registerNumber && (
+                  <Text className="text-red-500 text-sm ml-2 mt-1">
+                    {errors.registerNumber}
+                  </Text>
+                )}
               </View>
 
               {/* Role ID */}
@@ -232,7 +257,9 @@ export default function ModalUpdateUser({
                   ID da Função:
                 </Text>
                 <TextInput
-                  className="bg-gray-soft rounded-lg p-4 text-base text-light-text-primary"
+                  className={`bg-gray-soft rounded-lg p-4 text-base text-light-text-primary
+                    ${errors.roleId ? "border border-red-500" : ""}
+                  `}
                   placeholder="Ex: 1 para Admin, 2 para Usuário"
                   placeholderTextColor={
                     themeColors.primary === "#FFFFFF" ? "#A0A0A0" : "#6B7280"
@@ -240,7 +267,13 @@ export default function ModalUpdateUser({
                   keyboardType="numeric"
                   value={roleId}
                   onChangeText={setRoleId}
+                  onBlur={() => handleBlur("roleId", roleId)}
                 />
+                {errors.roleId && (
+                  <Text className="text-red-500 text-sm ml-2 mt-1">
+                    {errors.roleId}
+                  </Text>
+                )}
               </View>
 
               {/* Enterprise ID (Opcional) */}
