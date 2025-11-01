@@ -55,7 +55,11 @@ func (u *UserService) ValidateAndUpdateFields(user *schemas.User, input request.
 	return nil
 }
 
-func (u *UserService) Create(ctx *gin.Context, imageService ImageService, input request.UserRequest) (*dto.UserDTO, error) {
+func (u *UserService) Create(
+	ctx *gin.Context,
+	imageService ImageService,
+	input request.UserRequest,
+) (*dto.UserDTO, error) {
 	hashedPassword, err := utils.GenerateHashPassword(input.Password)
 	if err != nil {
 		u.logger.Errorf("Failed to gerenerate HashPassword: %v", err)
@@ -81,7 +85,7 @@ func (u *UserService) Create(ctx *gin.Context, imageService ImageService, input 
 
 	if err = u.repo.CreateUser(ctx, &user); err != nil {
 		u.logger.Errorf("Failed to create user in database: %v", err)
-		if removeErr := imageService.RemoveImage(publicID); removeErr != nil {
+		if removeErr := imageService.RemoveImage(ctx, publicID); removeErr != nil {
 			u.logger.Errorf("CRITICAL: DB creation failed AND image rollback failed: %v", removeErr)
 		}
 		return nil, err
@@ -90,7 +94,12 @@ func (u *UserService) Create(ctx *gin.Context, imageService ImageService, input 
 	return dto.MakeUserOutput(user), nil
 }
 
-func (u *UserService) Update(ctx *gin.Context, imageService ImageService, id uint, input request.UserRequest) (*dto.UserDTO, error) {
+func (u *UserService) Update(
+	ctx *gin.Context,
+	imageService ImageService,
+	id uint,
+	input request.UserRequest,
+) (*dto.UserDTO, error) {
 	user, err := u.repo.GetInfoUser(ctx, id)
 	if err != nil {
 		return nil, err
@@ -109,7 +118,7 @@ func (u *UserService) Update(ctx *gin.Context, imageService ImageService, id uin
 
 	if err = u.repo.UpdateUser(ctx, id, &user); err != nil {
 		u.logger.Errorf("Failed to update user in database: %v", err)
-		if removeErr := imageService.RemoveImage(publicID); removeErr != nil {
+		if removeErr := imageService.RemoveImage(ctx, publicID); removeErr != nil {
 			u.logger.Errorf("CRITICAL: DB updated failed AND image rollback failed: %v", removeErr)
 		}
 		return nil, err
@@ -120,6 +129,15 @@ func (u *UserService) Update(ctx *gin.Context, imageService ImageService, id uin
 
 func (u *UserService) Get(ctx *gin.Context, id uint) (*dto.UserDTO, error) {
 	user, err := u.repo.GetInfoUser(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+
+	return dto.MakeUserOutput(user), nil
+}
+
+func (u *UserService) GetByEmail(ctx *gin.Context, email string) (*dto.UserDTO, error) {
+	user, err := u.repo.GetUserByEmail(ctx, email)
 	if err != nil {
 		return nil, err
 	}
