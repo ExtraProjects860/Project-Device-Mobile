@@ -13,11 +13,14 @@ import CardUserList from "../../components/ui/CardUserList.jsx";
 import ModalCreateUser from "../../components/modals/ModalCreateUser.jsx";
 import ModalUpdateUser from "../../components/modals/ModalUpdateUser.jsx";
 import { useAppContext } from "../../context/AppContext.js";
+import { useFormOptions } from "../../hooks/useFormOptions.js";
 
 export default function UsersScreen() {
   const themeColors = useThemeColors();
   const { listKey, handleRefresh } = useHandleRefresh();
   const { accessToken } = useAppContext();
+
+  const { roles, enterprises, isLoading: isLoadingOptions } = useFormOptions();
 
   const [isCreateModalVisible, setCreateModalVisible] = useState(false);
   const [isUpdateModalVisible, setUpdateModalVisible] = useState(false);
@@ -65,12 +68,16 @@ export default function UsersScreen() {
         visible={isCreateModalVisible}
         onClose={() => setCreateModalVisible(false)}
         onUserCreated={handleRefresh}
+        roles={roles || []}
+        enterprises={enterprises || []}
       />
       <ModalUpdateUser
         visible={isUpdateModalVisible}
         onClose={() => setUpdateModalVisible(false)}
         user={selectedUser}
         onUserUpdated={handleRefresh}
+        roles={roles || []}
+        enterprises={enterprises || []}
       />
       <NavBar />
 

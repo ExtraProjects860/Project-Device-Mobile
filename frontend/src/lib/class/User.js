@@ -21,7 +21,7 @@ class User {
     this.cpf = cpf;
     this.email = email;
     this.registerNumber = registerNumber;
-    this.passWord = cpf;
+    this.passWord = cpf; 
     this.roleId = roleId;
     this.enterpriseId = enterpriseId;
     this.photoAsset = photoAsset;
@@ -38,7 +38,7 @@ class User {
     return this.#cpf;
   }
   set cpf(value) {
-    this.#cpf = value.replace(/\D/g, "");
+    this.#cpf = value ? value.replace(/\D/g, "") : null;
   }
 
   get email() {
@@ -59,14 +59,14 @@ class User {
     return this.#passWord;
   }
   set passWord(value) {
-    this.#passWord = value;
+    this.#passWord = value ? value.replace(/\D/g, "") : null;
   }
 
   get roleId() {
     return this.#roleId;
   }
   set roleId(value) {
-    this.#roleId = parseInt(value, 10);
+    this.#roleId = value ? parseInt(value, 10) : null;
   }
 
   get enterpriseId() {
@@ -83,12 +83,6 @@ class User {
     this.#photoAsset = value ? value : null;
   }
 
-  /**
-   * Valida um único campo.
-   * @param {string} fieldName
-   * @param {string} value
-   * @returns {string|null}
-   */
   static validateField(fieldName, value) {
     let error = null;
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -113,17 +107,12 @@ class User {
         else if (!emailRegex.test(value)) error = "Formato de e-mail inválido.";
         break;
       case "roleId":
-        if (!value) error = "ID da Função é obrigatório.";
+        if (!value) error = "Função é obrigatória."; 
         break;
     }
     return error;
   }
 
-  /**
-   * Valida todos os campos obrigatórios do formulário.
-   * @param {object} formData
-   * @returns {object}
-   */
   static validateAll(formData) {
     const errors = {};
     const { name, cpf, email, registerNumber, roleId } = formData;
@@ -140,21 +129,13 @@ class User {
     return errors;
   }
 
-  /**
-   * Compara o usuário original com os dados do formulário e retorna
-   * um objeto contendo apenas os campos que mudaram.
-   * @param {object} originalUser
-   * @param {object} newFormData
-   * @returns {object}
-   */
   static getChangedFields(originalUser, newFormData) {
     const updatedUserData = {};
-
     const { name, email, cpf, registerNumber, roleId, enterpriseId, photoUri } =
       newFormData;
 
-    const cpfDigits = cpf ? cpf.replace(/\D/g, "") : "";
-    const roleIdInt = parseInt(roleId, 10);
+    const cpfDigits = cpf ? cpf.replace(/\D/g, "") : null;
+    const roleIdInt = roleId ? parseInt(roleId, 10) : null;
     const enterpriseIdInt = enterpriseId ? parseInt(enterpriseId, 10) : null;
 
     if (name !== originalUser.name) {
@@ -182,9 +163,6 @@ class User {
     return updatedUserData;
   }
 
-  /**
-   * Retorna um objeto simples para ser enviado como JSON (para CRIALÇÂO)
-   */
   toJSON() {
     return {
       name: this.name,

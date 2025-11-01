@@ -19,11 +19,15 @@ import ModalCheck from "./ModalCheck";
 import { useAppContext } from "../../context/AppContext.js";
 import User from "../../lib/class/User.js";
 
+import { Picker } from "@react-native-picker/picker";
+
 export default function ModalUpdateUser({
   visible,
   onClose,
   user,
   onUserUpdated,
+  roles, 
+  enterprises, 
 }) {
   const { accessToken } = useAppContext();
   const { showErrorModal } = useError();
@@ -111,12 +115,14 @@ export default function ModalUpdateUser({
       );
       return;
     }
+
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       aspect: [1, 1],
       quality: 1,
     });
+
     if (!result.canceled) {
       setPhotoUri(result.assets[0].uri);
     }
@@ -211,7 +217,7 @@ export default function ModalUpdateUser({
                   `}
                   placeholder="000.000.000-00"
                   placeholderTextColor={
-                    themeColors.primary === "#FFFFFF" ? "#A0A0A0" : "#6B7D80"
+                    themeColors.primary === "#FFFFFF" ? "#A0A0A0" : "#6B7280"
                   }
                   keyboardType="numeric"
                   value={cpf}
@@ -251,24 +257,40 @@ export default function ModalUpdateUser({
                 )}
               </View>
 
-              {/* Role ID */}
+              {/* 4. SUBSTITUIR TEXTINPUT POR PICKER (ROLE ID) */}
               <View className="mb-4">
                 <Text className="ml-2 text-light-text-primary dark:text-dark-text-primary text-xl font-semibold mb-2">
-                  ID da Função:
+                  Função:
                 </Text>
-                <TextInput
-                  className={`bg-gray-soft rounded-lg p-4 text-base text-light-text-primary
+                <View
+                  className={`bg-gray-soft rounded-lg text-base 
                     ${errors.roleId ? "border border-red-500" : ""}
                   `}
-                  placeholder="Ex: 1 para Admin, 2 para Usuário"
-                  placeholderTextColor={
-                    themeColors.primary === "#FFFFFF" ? "#A0A0A0" : "#6B7280"
-                  }
-                  keyboardType="numeric"
-                  value={roleId}
-                  onChangeText={setRoleId}
-                  onBlur={() => handleBlur("roleId", roleId)}
-                />
+                >
+                  <Picker
+                    selectedValue={roleId}
+                    onValueChange={(itemValue) => setRoleId(itemValue)}
+                    onBlur={() => handleBlur("roleId", roleId)}
+                    dropdownIconColor={
+                      themeColors.primary === "#FFFFFF" ? "#A0A0A0" : "#6B7280"
+                    }
+                    style={{
+                      color:
+                        themeColors.primary === "#FFFFFF"
+                          ? "#000000"
+                          : "#000000",
+                    }}
+                  >
+                    <Picker.Item label="Selecione uma função..." value="" />
+                    {roles.map((role) => (
+                      <Picker.Item
+                        key={role.id}
+                        label={role.name}
+                        value={role.id.toString()}
+                      />
+                    ))}
+                  </Picker>
+                </View>
                 {errors.roleId && (
                   <Text className="text-red-500 text-sm ml-2 mt-1">
                     {errors.roleId}
@@ -276,21 +298,35 @@ export default function ModalUpdateUser({
                 )}
               </View>
 
-              {/* Enterprise ID (Opcional) */}
+              {/* 5. SUBSTITUIR TEXTINPUT POR PICKER (ENTERPRISE ID) */}
               <View className="mb-4">
                 <Text className="ml-2 text-light-text-primary dark:text-dark-text-primary text-xl font-semibold mb-2">
-                  ID da Empresa (Opcional):
+                  Empresa (Opcional):
                 </Text>
-                <TextInput
-                  className="bg-gray-soft rounded-lg p-4 text-base text-light-text-primary"
-                  placeholder="Deixe em branco se não aplicável"
-                  placeholderTextColor={
-                    themeColors.primary === "#FFFFFF" ? "#A0A0A0" : "#6B7280"
-                  }
-                  keyboardType="numeric"
-                  value={enterpriseId}
-                  onChangeText={setEnterpriseId}
-                />
+                <View className="bg-gray-soft rounded-lg text-base">
+                  <Picker
+                    selectedValue={enterpriseId}
+                    onValueChange={(itemValue) => setEnterpriseId(itemValue)}
+                    dropdownIconColor={
+                      themeColors.primary === "#FFFFFF" ? "#A0A0A0" : "#6B7280"
+                    }
+                    style={{
+                      color:
+                        themeColors.primary === "#FFFFFF"
+                          ? "#000000"
+                          : "#000000",
+                    }}
+                  >
+                    <Picker.Item label="Nenhuma (opcional)" value="" />
+                    {enterprises.map((enterprise) => (
+                      <Picker.Item
+                        key={enterprise.id}
+                        label={enterprise.name}
+                        value={enterprise.id.toString()}
+                      />
+                    ))}
+                  </Picker>
+                </View>
               </View>
 
               {/* Campo de foto */}
