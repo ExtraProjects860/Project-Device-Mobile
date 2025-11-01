@@ -16,3 +16,7 @@ type WishList struct {
 	User    User
 	Product Product
 }
+
+func (w WishList) GetSearchableFields() []string {
+    return []string{`"Product"."name"`, `"Product"."description"`}
+}

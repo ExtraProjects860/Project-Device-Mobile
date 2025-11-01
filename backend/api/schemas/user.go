@@ -20,3 +20,12 @@ type User struct {
 	TokenPassword   TokenPassword `gorm:"foreignKey:UserID;references:ID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 	WishListEntries []WishList    `gorm:"foreignKey:UserID"`
 }
+
+func (u User) GetSearchableFields() []string {
+	return []string{
+		"users.name",
+		"users.email",
+		"users.cpf",
+		"users.register_number",
+	}
+}

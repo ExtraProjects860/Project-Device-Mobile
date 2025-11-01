@@ -6,5 +6,10 @@ import (
 
 type Enterprise struct {
 	gorm.Model
-	Name string `gorm:"uniqueIndex;not null" validate:"required,min=3"`
+	Name  string `gorm:"unique;not null" validate:"required,min=3"`
+	Users []User `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+}
+
+func (e Enterprise) GetSearchableFields() []string {
+	return []string{"name"}
 }

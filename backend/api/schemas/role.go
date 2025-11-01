@@ -9,3 +9,7 @@ type Role struct {
 	Name  string `gorm:"unique;not null" validate:"required,min=3"`
 	Users []User `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 }
+
+func (u Role) GetSearchableFields() []string {
+	return []string{"name"}
+}
