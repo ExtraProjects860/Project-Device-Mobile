@@ -42,15 +42,11 @@ func (r *PostgresWishListRepository) DeleteInWishList(ctx context.Context, userI
 }
 
 func (r *PostgresWishListRepository) GetWishListByUserID(ctx context.Context, userID uint, paginationSearch request.PaginationSearch) ([]schemas.WishList, uint, uint, error) {
-	query := r.db.WithContext(ctx).Where("user_id = ?", userID).Model(&schemas.WishList{}).Preload("Product")
-
-	if paginationSearch.SearchFilter != "" {
-		searchTerm := "%" + paginationSearch.SearchFilter + "%"
-
-		query = query.
-			Joins("JOIN products ON products.id = wish_lists.product_id").
-			Where("products.name ILIKE ?", searchTerm)
-	}
+	query := r.db.WithContext(ctx).
+		Model(&schemas.WishList{}).
+		InnerJoins("Product").
+		Where("wish_lists.user_id = ?", userID).
+		Preload("Product")
 
 	wishListEntries, totalPages, totalItems, err := getByPagination[schemas.WishList](
 		query,

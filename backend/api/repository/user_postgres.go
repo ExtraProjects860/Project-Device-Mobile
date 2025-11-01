@@ -79,7 +79,12 @@ func (r *PostgresUserRepository) UpdateUser(ctx context.Context, id uint, user *
 }
 
 func (r *PostgresUserRepository) GetUsers(ctx context.Context, paginationSearch request.PaginationSearch) ([]schemas.User, uint, uint, error) {
-	query := r.db.WithContext(ctx).Model(&schemas.User{}).Preload("Role").Preload("Enterprise")
+	query := r.db.WithContext(ctx).
+		Model(&schemas.User{}).
+		InnerJoins("Role").
+		InnerJoins("Enterprise").
+		Preload("Role").
+		Preload("Enterprise")
 
 	users, totalPages, totalItems, err := getByPagination[schemas.User](
 		query,
