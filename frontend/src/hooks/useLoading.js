@@ -12,11 +12,7 @@ export function useLoading(initialState = false) {
         await asyncFunction();
       } catch (error) {
         console.error("Erro capturado pelo withLoading:", error);
-        const errorMessage =
-          error.response?.data?.message ||
-          error.message ||
-          "Erro desconhecido.";
-        showErrorModal(errorMessage);
+        showErrorModal("Erro ao carregar componente.");
       } finally {
         setIsLoading(false);
       }
