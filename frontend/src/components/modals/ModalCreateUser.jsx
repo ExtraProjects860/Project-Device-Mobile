@@ -17,6 +17,7 @@ import { createUserRequest } from "../../lib/userRequests.js";
 import { useError } from "../../context/ErrorContext.js";
 import { useThemeColors } from "../../hooks/useThemeColors.js";
 import { useAppContext } from "../../context/AppContext.js";
+import User from "../../lib/class/User.js";
 
 export default function ModalCreateUser({ visible, onClose, onUserCreated }) {
   const { accessToken } = useAppContext();
@@ -29,10 +30,12 @@ export default function ModalCreateUser({ visible, onClose, onUserCreated }) {
   const [registerNumber, setRegisterNumber] = useState("");
   const [roleId, setRoleId] = useState("");
   const [enterpriseId, setEnterpriseId] = useState("");
-  const [photoUri, setPhotoUri] = useState(null);
-  
+  const [photoAsset, setPhotoAsset] = useState(null);
+
   const [successMessage, setSuccessMessage] = useState("");
   const [isSuccessVisible, setSuccessVisible] = useState(false);
+
+  const [errors, setErrors] = useState({});
 
   const handleCloseSuccessModal = () => {
     setSuccessVisible(false);
@@ -40,39 +43,45 @@ export default function ModalCreateUser({ visible, onClose, onUserCreated }) {
     onClose();
   };
 
-  const handleCreateUser = async () => {
-    if (!name || !email || !cpf || !registerNumber || !roleId) {
-      showErrorModal("Por favor, preencha todos os campos obrigatórios.");
-      return;
-    }
+  const handleBlur = (fieldName, value) => {
+    const error = User.validateField(fieldName, value);
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      [fieldName]: error,
+    }));
+  };
 
-    const temporaryPassword = cpf.replace(/\D/g, "");
-    if (temporaryPassword.length !== 11) {
-      showErrorModal("O CPF deve conter 11 dígitos.");
-      return;
+  const handleCreateUser = async () => {
+    const formData = { name, cpf, email, registerNumber, roleId };
+    const validationErrors = User.validateAll(formData);
+
+    const hasErrors = Object.values(validationErrors).some(
+      (error) => error !== null
+    );
+
+    if (hasErrors) {
+      setErrors(validationErrors);
+      return; 
     }
 
     try {
-      const userData = {
+      const userData = new User(
         name,
+        cpf, 
         email,
-        cpf,
-        password: temporaryPassword,
-        register_number: registerNumber,
-        role_id: parseInt(roleId, 10),
-        enterprise_id: enterpriseId ? parseInt(enterpriseId, 10) : null,
-        photo_url: photoUri || "",
-      };
+        registerNumber,
+        roleId,
+        enterpriseId,
+        photoAsset
+      );
 
-      await createUserRequest(userData, accessToken);
-
+      await createUserRequest(userData.toJSON(), accessToken);
       setSuccessMessage("Usuário cadastrado com sucesso!");
       setSuccessVisible(true);
     } catch (error) {
-      const errorMessage =
-        error.response?.data?.error ||
-        "Não foi possível cadastrar o usuário. Verifique os dados e tente novamente.";
-      showErrorModal(errorMessage);
+      showErrorModal(
+        "Não foi possível cadastrar o usuário. Verifique os dados e tente novamente."
+      );
       console.error("Erro ao criar usuário:", error);
     }
   };
@@ -95,7 +104,7 @@ export default function ModalCreateUser({ visible, onClose, onUserCreated }) {
     });
 
     if (!result.canceled) {
-      setPhotoUri(result.assets[0].uri);
+      setPhotoAsset(result.assets[0].uri);
     }
   };
 
@@ -133,14 +142,22 @@ export default function ModalCreateUser({ visible, onClose, onUserCreated }) {
                   Nome:
                 </Text>
                 <TextInput
-                  className="bg-gray-soft rounded-lg p-4 text-base text-light-text-primary dark:text-dark-text-primary"
+                  className={`bg-gray-soft rounded-lg p-4 text-base text-light-text-primary 
+                    ${errors.name ? "border border-red-500" : ""}
+                  `}
                   placeholder="Nome Completo"
                   placeholderTextColor={
                     themeColors.primary === "#FFFFFF" ? "#A0A0A0" : "#6B7280"
                   }
                   value={name}
                   onChangeText={setName}
+                  onBlur={() => handleBlur("name", name)}
                 />
+                {errors.name && (
+                  <Text className="text-red-500 text-sm ml-2 mt-1">
+                    {errors.name}
+                  </Text>
+                )}
               </View>
 
               {/* E-mail */}
@@ -149,7 +166,9 @@ export default function ModalCreateUser({ visible, onClose, onUserCreated }) {
                   E-mail:
                 </Text>
                 <TextInput
-                  className="bg-gray-soft rounded-lg p-4 text-base text-light-text-primary dark:text-dark-text-primary"
+                  className={`bg-gray-soft rounded-lg p-4 text-base text-light-text-primary
+                    ${errors.email ? "border border-red-500" : ""}
+                  `}
                   placeholder="exemplo@email.com"
                   placeholderTextColor={
                     themeColors.primary === "#FFFFFF" ? "#A0A0A0" : "#6B7280"
@@ -158,7 +177,13 @@ export default function ModalCreateUser({ visible, onClose, onUserCreated }) {
                   autoCapitalize="none"
                   value={email}
                   onChangeText={setEmail}
+                  onBlur={() => handleBlur("email", email)}
                 />
+                {errors.email && (
+                  <Text className="text-red-500 text-sm ml-2 mt-1">
+                    {errors.email}
+                  </Text>
+                )}
               </View>
 
               {/* CPF */}
@@ -167,7 +192,9 @@ export default function ModalCreateUser({ visible, onClose, onUserCreated }) {
                   CPF:
                 </Text>
                 <TextInput
-                  className="bg-gray-soft rounded-lg p-4 text-base text-light-text-primary dark:text-dark-text-primary"
+                  className={`bg-gray-soft rounded-lg p-4 text-base text-light-text-primary
+                    ${errors.cpf ? "border border-red-500" : ""}
+                  `}
                   placeholder="000.000.000-00"
                   placeholderTextColor={
                     themeColors.primary === "#FFFFFF" ? "#A0A0A0" : "#6B7280"
@@ -175,7 +202,13 @@ export default function ModalCreateUser({ visible, onClose, onUserCreated }) {
                   keyboardType="numeric"
                   value={cpf}
                   onChangeText={setCpf}
+                  onBlur={() => handleBlur("cpf", cpf)}
                 />
+                {errors.cpf && (
+                  <Text className="text-red-500 text-sm ml-2 mt-1">
+                    {errors.cpf}
+                  </Text>
+                )}
               </View>
 
               {/* Número de Registro */}
@@ -184,15 +217,24 @@ export default function ModalCreateUser({ visible, onClose, onUserCreated }) {
                   Nº de Registro:
                 </Text>
                 <TextInput
-                  className="bg-gray-soft rounded-lg p-4 text-base text-light-text-primary dark:text-dark-text-primary"
-                  placeholder="Apenas números"
+                  className={`bg-gray-soft rounded-lg p-4 text-base text-light-text-primary
+                    ${errors.registerNumber ? "border border-red-500" : ""}
+                  `}
+                  placeholder="7 dígitos"
                   placeholderTextColor={
                     themeColors.primary === "#FFFFFF" ? "#A0A0A0" : "#6B7280"
                   }
                   keyboardType="numeric"
                   value={registerNumber}
                   onChangeText={setRegisterNumber}
+                  maxLength={7}
+                  onBlur={() => handleBlur("registerNumber", registerNumber)}
                 />
+                {errors.registerNumber && (
+                  <Text className="text-red-500 text-sm ml-2 mt-1">
+                    {errors.registerNumber}
+                  </Text>
+                )}
               </View>
 
               {/* Role ID */}
@@ -201,7 +243,9 @@ export default function ModalCreateUser({ visible, onClose, onUserCreated }) {
                   ID da Funcionário:
                 </Text>
                 <TextInput
-                  className="bg-gray-soft rounded-lg p-4 text-base text-light-text-primary dark:text-dark-text-primary"
+                  className={`bg-gray-soft rounded-lg p-4 text-base text-light-text-primary
+                    ${errors.roleId ? "border border-red-500" : ""}
+                  `}
                   placeholder="Ex: 1 para Admin, 2 para Usuário"
                   placeholderTextColor={
                     themeColors.primary === "#FFFFFF" ? "#A0A0A0" : "#6B7280"
@@ -209,16 +253,22 @@ export default function ModalCreateUser({ visible, onClose, onUserCreated }) {
                   keyboardType="numeric"
                   value={roleId}
                   onChangeText={setRoleId}
+                  onBlur={() => handleBlur("roleId", roleId)}
                 />
+                {errors.roleId && (
+                  <Text className="text-red-500 text-sm ml-2 mt-1">
+                    {errors.roleId}
+                  </Text>
+                )}
               </View>
 
-              {/* Enterprise ID */}
+              {/* Enterprise ID (Opcional) */}
               <View className="mb-4">
                 <Text className="ml-2 text-light-text-primary dark:text-dark-text-primary text-xl font-semibold mb-2">
-                  ID da Empresa:
+                  ID da Empresa (Opcional):
                 </Text>
                 <TextInput
-                  className="bg-gray-soft rounded-lg p-4 text-base text-light-text-primary dark:text-dark-text-primary"
+                  className="bg-gray-soft rounded-lg p-4 text-base text-light-text-primary"
                   placeholder="Deixe em branco se não aplicável"
                   placeholderTextColor={
                     themeColors.primary === "#FFFFFF" ? "#A0A0A0" : "#6B7280"
@@ -232,16 +282,16 @@ export default function ModalCreateUser({ visible, onClose, onUserCreated }) {
               {/* Campo de foto */}
               <View className="mb-6">
                 <Text className="ml-2 text-light-text-primary dark:text-dark-text-primary text-xl font-semibold mb-2">
-                  Foto:
+                  Foto (Opcional):
                 </Text>
 
                 <TouchableOpacity
                   onPress={pickImage}
                   className="bg-gray-soft h-32 rounded-lg items-center justify-center"
                 >
-                  {photoUri ? (
+                  {photoAsset ? (
                     <Image
-                      source={{ uri: photoUri }}
+                      source={{ uri: photoAsset }}
                       className="w-full h-full rounded-lg"
                     />
                   ) : (
@@ -256,11 +306,12 @@ export default function ModalCreateUser({ visible, onClose, onUserCreated }) {
                         }
                       />
                       <Text
-                        color={
-                          themeColors.primary === "#FFFFFF"
-                            ? "#A0A0A0"
-                            : "#6B7280"
-                        }
+                        style={{
+                          color:
+                            themeColors.primary === "#FFFFFF"
+                              ? "#A0A0A0"
+                              : "#6B7280",
+                        }}
                       >
                         Adicionar foto
                       </Text>
