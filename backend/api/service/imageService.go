@@ -1,7 +1,6 @@
 package service
 
 import (
-	"context"
 	"fmt"
 	"mime/multipart"
 
@@ -42,7 +41,7 @@ func (s *ImageService) UploadImage(ctx *gin.Context, folderToSave string) (*stri
 	}
 
 	s.logger.Infof("Photo provided, uploading to folder: %s", folderToSave)
-	secureURL, publicID, err := s.savePhoto(file, folderToSave)
+	secureURL, publicID, err := s.savePhoto(ctx, file, folderToSave)
 	if err != nil {
 		return nil, "", err
 	}
@@ -50,14 +49,14 @@ func (s *ImageService) UploadImage(ctx *gin.Context, folderToSave string) (*stri
 	return &secureURL, publicID, nil
 }
 
-func (s *ImageService) RemoveImage(publicID string) error {
+func (s *ImageService) RemoveImage(ctx *gin.Context, publicID string) error {
 	if publicID == "" {
 		return nil
 	}
 
 	s.logger.Warningf("Rolling back photo upload: %s", publicID)
 	response, err := s.cld.Upload.Destroy(
-		context.Background(),
+		ctx,
 		uploader.DestroyParams{
 			PublicID: publicID,
 		},
@@ -92,7 +91,7 @@ func (s *ImageService) managerPhotoUrl(ctx *gin.Context, imageKey string) (*mult
 	return file, nil
 }
 
-func (s *ImageService) savePhoto(file *multipart.FileHeader, folderToSave string) (string, string, error) {
+func (s *ImageService) savePhoto(ctx *gin.Context, file *multipart.FileHeader, folderToSave string) (string, string, error) {
 	src, err := file.Open()
 	if err != nil {
 		s.logger.Errorf("Failed to open uploaded file: %v", err)
@@ -105,7 +104,7 @@ func (s *ImageService) savePhoto(file *multipart.FileHeader, folderToSave string
 	}
 
 	uploadResult, err := s.cld.Upload.Upload(
-		context.Background(),
+		ctx,
 		src,
 		uploadParams,
 	)

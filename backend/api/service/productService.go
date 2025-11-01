@@ -66,7 +66,7 @@ func (p *ProductService) Create(ctx *gin.Context, imageService ImageService, inp
 
 	if err := p.repo.CreateProduct(ctx, &product); err != nil {
 		p.logger.Warningf("Failed to create product in database: %v", publicID)
-		if removeErr := imageService.RemoveImage(publicID); removeErr != nil {
+		if removeErr := imageService.RemoveImage(ctx, publicID); removeErr != nil {
 			p.logger.Errorf("CRITICAL: DB creation failed AND image rollback failed: %v", removeErr)
 		}
 		return nil, err
@@ -93,7 +93,7 @@ func (p *ProductService) Update(ctx *gin.Context, imageService ImageService, id 
 
 	if err = p.repo.UpdateProducts(ctx, id, &product); err != nil {
 		p.logger.Errorf("Failed to update product in database: %v", err)
-		if removeErr := imageService.RemoveImage(publicID); removeErr != nil {
+		if removeErr := imageService.RemoveImage(ctx, publicID); removeErr != nil {
 			p.logger.Errorf("CRITICAL: DB updated failed AND image rollback failed: %v", removeErr)
 		}
 		return nil, err
