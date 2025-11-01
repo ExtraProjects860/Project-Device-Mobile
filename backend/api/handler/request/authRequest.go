@@ -13,7 +13,7 @@ type LoginRequest struct {
 	RememberMe *bool  `json:"remember_me"`
 }
 
-type ChangePasswordInternal struct {
+type ChangePassword struct {
 	NewPassword string `json:"new_password" validate:"required"`
 }
 
