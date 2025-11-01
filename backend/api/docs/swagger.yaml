@@ -108,7 +108,7 @@ definitions:
         example: 1
         type: integer
     type: object
-  request.ChangePasswordInternal:
+  request.ChangePassword:
     properties:
       new_password:
         type: string
@@ -201,44 +201,24 @@ paths:
       summary: User Login
       tags:
       - auth
-  /api/v1/auth/refresh-token:
-    post:
-      consumes:
-      - application/json
-      deprecated: true
-      description: Refreshes the authentication token
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            $ref: '#/definitions/response.TokenResponse'
-        "422":
-          description: Unprocessable Entity
-          schema:
-            $ref: '#/definitions/response.ErrResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/response.ErrResponse'
-      summary: Refresh Token
-      tags:
-      - auth
   /api/v1/auth/request-token:
     post:
       consumes:
       - application/json
       description: Requests a reset token for user password
+      parameters:
+      - description: Email to search user
+        in: query
+        name: email
+        required: true
+        type: string
       produces:
       - application/json
       responses:
         "200":
-          description: OK
+          description: Email to change Password Sent!
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            type: string
       summary: Request Password Token
       tags:
       - auth
@@ -253,12 +233,12 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/request.ChangePasswordInternal'
+          $ref: '#/definitions/request.ChangePassword'
       produces:
       - application/json
       responses:
         "200":
-          description: OK
+          description: Change Password Successfully!
           schema:
             type: string
       summary: Reset Password Log In
@@ -269,15 +249,30 @@ paths:
       consumes:
       - application/json
       description: Resets user password using the token
+      parameters:
+      - description: Email to search user
+        in: query
+        name: email
+        required: true
+        type: string
+      - description: Token to change user password
+        in: query
+        name: token
+        required: true
+        type: string
+      - description: Request body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/request.ChangePassword'
       produces:
       - application/json
       responses:
         "200":
-          description: OK
+          description: Change Password Successfully!
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            type: string
       summary: Reset Password
       tags:
       - auth

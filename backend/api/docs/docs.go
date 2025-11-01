@@ -73,42 +73,6 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/v1/auth/refresh-token": {
-            "post": {
-                "description": "Refreshes the authentication token",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "auth"
-                ],
-                "summary": "Refresh Token",
-                "deprecated": true,
-                "responses": {
-                    "201": {
-                        "description": "Created",
-                        "schema": {
-                            "$ref": "#/definitions/response.TokenResponse"
-                        }
-                    },
-                    "422": {
-                        "description": "Unprocessable Entity",
-                        "schema": {
-                            "$ref": "#/definitions/response.ErrResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/response.ErrResponse"
-                        }
-                    }
-                }
-            }
-        },
         "/api/v1/auth/request-token": {
             "post": {
                 "description": "Requests a reset token for user password",
@@ -122,14 +86,20 @@ const docTemplate = `{
                     "auth"
                 ],
                 "summary": "Request Password Token",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Email to search user",
+                        "name": "email",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
-                        "description": "OK",
+                        "description": "Email to change Password Sent!",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "type": "string"
                         }
                     }
                 }
@@ -155,13 +125,13 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/request.ChangePasswordInternal"
+                            "$ref": "#/definitions/request.ChangePassword"
                         }
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK",
+                        "description": "Change Password Successfully!",
                         "schema": {
                             "type": "string"
                         }
@@ -182,14 +152,36 @@ const docTemplate = `{
                     "auth"
                 ],
                 "summary": "Reset Password",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Email to search user",
+                        "name": "email",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Token to change user password",
+                        "name": "token",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "description": "Request body",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request.ChangePassword"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
-                        "description": "OK",
+                        "description": "Change Password Successfully!",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "type": "string"
                         }
                     }
                 }
@@ -1431,7 +1423,7 @@ const docTemplate = `{
                 }
             }
         },
-        "request.ChangePasswordInternal": {
+        "request.ChangePassword": {
             "type": "object",
             "required": [
                 "new_password"
