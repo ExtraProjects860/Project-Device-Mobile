@@ -1,11 +1,16 @@
 import { requestPost } from "./axios.js";
 
-export async function requestToken() {
-  return;
+export async function requestToken(email) {
+  const response = await requestPost(`/auth/request-token?email=${email}` );
+  return response.data;
 }
-
-export async function resetPasswordRequest() {
-  return;
+{/*AINDA NAO SEI SE FUNCIONA*/}
+export async function resetPasswordRequest(email, token, newPassword) {
+  const response = await requestPost(`/auth/reset-password?email=${email}&token=${token}`,
+      {
+        new_password: newPassword,
+      } );
+  return response.data;
 }
 
 export async function resetPasswordInternalRequest(newPassword, accessToken) {
