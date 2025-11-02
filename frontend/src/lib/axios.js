@@ -61,7 +61,16 @@ const baseRequest = async (
 ) => {
   const headers = accessToken
     ? { ...authorizedHeader(accessToken), ...(config.headers || {}) }
-    : config.headers;
+    : { ...(config.headers || {}) };
+
+  if (data instanceof FormData) {
+    headers["Content-Type"] = "multipart/form-data";
+  } else {
+    if (!headers["Content-Type"]) {
+      headers["Content-Type"] = "application/json";
+    }
+  }
+
   const finalConfig = { ...config, headers };
 
   switch (method.toLowerCase()) {

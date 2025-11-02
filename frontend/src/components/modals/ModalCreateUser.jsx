@@ -25,8 +25,8 @@ export default function ModalCreateUser({
   visible,
   onClose,
   onUserCreated,
-  roles, 
-  enterprises, 
+  roles,
+  enterprises,
 }) {
   const { accessToken } = useAppContext();
   const { showErrorModal } = useError();
@@ -83,7 +83,11 @@ export default function ModalCreateUser({
         photoAsset
       );
 
-      await createUserRequest(userData.toJSON(), accessToken);
+      await createUserRequest(
+        userData.toJSON(),
+        userData.photoAsset,
+        accessToken
+      );
       setSuccessMessage("Usuário cadastrado com sucesso!");
       setSuccessVisible(true);
     } catch (error) {
@@ -112,7 +116,7 @@ export default function ModalCreateUser({
     });
 
     if (!result.canceled) {
-      setPhotoAsset(result.assets[0].uri);
+      setPhotoAsset(result.assets[0]);
     }
   };
 
@@ -245,7 +249,6 @@ export default function ModalCreateUser({
                 )}
               </View>
 
-              {/* 3. SUBSTITUIR TEXTINPUT POR PICKER (ROLE ID) */}
               <View className="mb-4">
                 <Text className="ml-2 text-light-text-primary dark:text-dark-text-primary text-xl font-semibold mb-2">
                   Função:
@@ -286,7 +289,6 @@ export default function ModalCreateUser({
                 )}
               </View>
 
-              {/* 4. SUBSTITUIR TEXTINPUT POR PICKER (ENTERPRISE ID) */}
               <View className="mb-4">
                 <Text className="ml-2 text-light-text-primary dark:text-dark-text-primary text-xl font-semibold mb-2">
                   Empresa (Opcional):
@@ -329,7 +331,7 @@ export default function ModalCreateUser({
                 >
                   {photoAsset ? (
                     <Image
-                      source={{ uri: photoAsset }}
+                      source={{ uri: photoAsset.uri }}
                       className="w-full h-full rounded-lg"
                     />
                   ) : (

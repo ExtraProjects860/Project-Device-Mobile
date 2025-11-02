@@ -26,8 +26,8 @@ export default function ModalUpdateUser({
   onClose,
   user,
   onUserUpdated,
-  roles, 
-  enterprises, 
+  roles,
+  enterprises,
 }) {
   const { accessToken } = useAppContext();
   const { showErrorModal } = useError();
@@ -257,7 +257,6 @@ export default function ModalUpdateUser({
                 )}
               </View>
 
-              {/* 4. SUBSTITUIR TEXTINPUT POR PICKER (ROLE ID) */}
               <View className="mb-4">
                 <Text className="ml-2 text-light-text-primary dark:text-dark-text-primary text-xl font-semibold mb-2">
                   Função:
@@ -298,7 +297,6 @@ export default function ModalUpdateUser({
                 )}
               </View>
 
-              {/* 5. SUBSTITUIR TEXTINPUT POR PICKER (ENTERPRISE ID) */}
               <View className="mb-4">
                 <Text className="ml-2 text-light-text-primary dark:text-dark-text-primary text-xl font-semibold mb-2">
                   Empresa (Opcional):
