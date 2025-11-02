@@ -45,6 +45,20 @@ func GetIdQuery(ctx *gin.Context) (uint, error) {
 	return uint(parsedId), nil
 }
 
+func GetIdByToken(ctx *gin.Context) (uint, error) {
+	uidRaw, exists := ctx.Get("user_id")
+	if !exists {
+		return 0, ErrParamIsRequired("user_id", "token")
+	}
+
+	uid, ok := uidRaw.(uint)
+	if !ok {
+		return 0, fmt.Errorf("invalid convert user id type")
+	}
+
+	return uid, nil
+}
+
 func ReadBodyJSON[T any](ctx *gin.Context, input *T) error {
 	if err := ctx.ShouldBindJSON(&input); err != nil {
 		return fmt.Errorf("error to parsed body to json")

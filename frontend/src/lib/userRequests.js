@@ -76,7 +76,7 @@ export async function getUsersRequest(
   currentPage = configsToPagination.currentPage,
   accessToken,
   searchFilter = "",
-  itemsOrder = "ASC",
+  itemsOrder = "DESC",
 ) {
   let url = `/users?itemsPerPage=${itemsPerPage}&currentPage=${currentPage}&itemsOrder=${itemsOrder}`;
 

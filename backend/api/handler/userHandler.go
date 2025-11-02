@@ -67,16 +67,11 @@ func CreateUserHandler(appCtx *appcontext.AppContext, logger *config.Logger) gin
 // @Router       /api/v1/user [get]
 func GetInfoUserHandler(appCtx *appcontext.AppContext, logger *config.Logger) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		uidRaw, exists := ctx.Get("user_id")
-		if !exists {
-			response.SendErr(ctx, http.StatusUnauthorized, errors.New("user id not found in token"))
-			return
-		}
-
-		uid, ok := uidRaw.(uint)
-		if !ok {
-			response.SendErr(ctx, http.StatusInternalServerError, errors.New("invalid convert user id type"))
-			return
+		uid, err := request.GetIdByToken(ctx)
+		if err != nil {
+			logger.Error(err.Error())
+			response.SendErr(ctx, http.StatusUnauthorized, err)
+			return 
 		}
 
 		userService := service.GetUserService(appCtx)

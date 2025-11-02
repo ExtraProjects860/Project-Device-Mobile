@@ -1,28 +1,51 @@
 import { requestPost, requestGet, requestPatch } from "./axios.js";
 
 /**
- * @param {object} productData
+ * @param {object} productData 
+ * @param {string | null} photoUri 
  * @param {string} accessToken
  */
-export async function createProductRequest(productData, accessToken) {
-  const response = await requestPost("/products", productData, accessToken);
+export async function createProductRequest(productData, photoUri, accessToken) {
+  const formData = new FormData();
+  formData.append("data", JSON.stringify(productData)); 
+
+  if (photoUri) {
+    const filename = photoUri.split("/").pop();
+    const fileType = filename.endsWith(".png") ? "image/png" : "image/jpeg";
+    formData.append("image", { 
+      uri: photoUri,
+      name: filename,
+      type: fileType,
+    });
+  }
+  const response = await requestPost("/product", formData, accessToken);
   return response.data;
 }
 
 /**
  * @param {string} productId
  * @param {object} updatedProductData
+ * @param {string | null} photoUri 
  * @param {string} accessToken
  */
-export async function updateProductRequest(
-  productId,
-  updatedProductData,
-  accessToken,
-) {
+export async function updateProductRequest(productId, updatedProductData, photoUri, accessToken) {
+  const formData = new FormData();
+  formData.append("data", JSON.stringify(updatedProductData));
+
+  if (photoUri) {
+    const filename = photoUri.split("/").pop();
+    const fileType = filename.endsWith(".png") ? "image/png" : "image/jpeg";
+    formData.append("image", {
+      uri: photoUri,
+      name: filename,
+      type: fileType,
+    });
+  }
+
   const response = await requestPatch(
-    `/products/${productId}`,
-    updatedProductData,
-    accessToken,
+    `/product?id=${productId}`,
+    formData,
+    accessToken
   );
   return response.data;
 }
@@ -37,7 +60,7 @@ export async function getProductsRequest(
   currentPage = 1,
   accessToken,
   searchFilter = "",
-  itemsOrder = "ASC",
+  itemsOrder = "DESC",
 ) {
   let url = `/products?itemsPerPage=${itemsPerPage}&currentPage=${currentPage}&itemsOrder=${itemsOrder}`;
 
