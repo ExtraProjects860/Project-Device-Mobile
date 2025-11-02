@@ -18,7 +18,6 @@ import (
 // @Security     BearerAuth
 // @Accept       json
 // @Produce      json
-// @Param 		 user_id query string true "User ID"
 // @Param 		 product_id query string true "Product ID"
 // @Success      201 {object} dto.WishListMinimalDTO
 // @Failure      400 {object} response.ErrResponse
@@ -51,7 +50,6 @@ func AddInWishListHandler(appCtx *appcontext.AppContext, logger *config.Logger) 
 // @Tags         wishlist
 // @Security     BearerAuth
 // @Produce      json
-// @Param 		 user_id query string true "User ID"
 // @Param 		 product_id query string true "Product ID"
 // @Success      200 {object} dto.WishListMinimalDTO
 // @Failure      400 {object} response.ErrResponse
@@ -94,16 +92,11 @@ func DeleteInWishListHandler(appCtx *appcontext.AppContext, logger *config.Logge
 // @Router       /api/v1/wishlist [get]
 func GetWishListByUserIDHandler(appCtx *appcontext.AppContext, logger *config.Logger) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		uidRaw, exists := ctx.Get("user_id")
-		if !exists {
-			response.SendErr(ctx, http.StatusUnauthorized, errors.New("user id not found in token"))
-			return
-		}
-
-		uid, ok := uidRaw.(uint)
-		if !ok {
-			response.SendErr(ctx, http.StatusInternalServerError, errors.New("invalid user id type"))
-			return
+		uid, err := request.GetIdByToken(ctx)
+		if err != nil {
+			logger.Error(err.Error())
+			response.SendErr(ctx, http.StatusUnauthorized, err)
+			return 
 		}
 
 		paginationSearch, err := request.GetPaginationData(ctx)
