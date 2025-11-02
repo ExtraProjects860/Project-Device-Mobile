@@ -810,11 +810,6 @@ paths:
     delete:
       description: Delete a product from the user wish list
       parameters:
-      - description: User ID
-        in: query
-        name: user_id
-        required: true
-        type: string
       - description: Product ID
         in: query
         name: product_id
@@ -891,11 +886,6 @@ paths:
       - application/json
       description: Adds a product to the user wish list
       parameters:
-      - description: User ID
-        in: query
-        name: user_id
-        required: true
-        type: string
       - description: Product ID
         in: query
         name: product_id

@@ -1099,13 +1099,6 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "User ID",
-                        "name": "user_id",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
                         "description": "Product ID",
                         "name": "product_id",
                         "in": "query",
@@ -1148,13 +1141,6 @@ const docTemplate = `{
                 ],
                 "summary": "Delete Product from Wish List",
                 "parameters": [
-                    {
-                        "type": "string",
-                        "description": "User ID",
-                        "name": "user_id",
-                        "in": "query",
-                        "required": true
-                    },
                     {
                         "type": "string",
                         "description": "Product ID",
