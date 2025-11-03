@@ -28,7 +28,7 @@ export default function UsersScreen() {
 
   const [searchTerm, setSearchTerm] = useState("");
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState(searchTerm);
-  const [itemsOrder, setItemsOrder] = useState("ASC");
+  const [itemsOrder, setItemsOrder] = useState("DESC");
 
   useEffect(() => {
     const handler = setTimeout(() => {
