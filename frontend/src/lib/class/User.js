@@ -21,7 +21,7 @@ class User {
     this.cpf = cpf;
     this.email = email;
     this.registerNumber = registerNumber;
-    this.passWord = cpf; 
+    this.passWord = cpf;
     this.roleId = roleId;
     this.enterpriseId = enterpriseId;
     this.photoAsset = photoAsset;
@@ -107,7 +107,7 @@ class User {
         else if (!emailRegex.test(value)) error = "Formato de e-mail inválido.";
         break;
       case "roleId":
-        if (!value) error = "Função é obrigatória."; 
+        if (!value) error = "Função é obrigatória.";
         break;
     }
     return error;
@@ -131,8 +131,15 @@ class User {
 
   static getChangedFields(originalUser, newFormData) {
     const updatedUserData = {};
-    const { name, email, cpf, registerNumber, roleId, enterpriseId, photoUri } =
-      newFormData;
+    const {
+      name,
+      email,
+      cpf,
+      registerNumber,
+      roleId,
+      enterpriseId,
+      photoAsset,
+    } = newFormData;
 
     const cpfDigits = cpf ? cpf.replace(/\D/g, "") : null;
     const roleIdInt = roleId ? parseInt(roleId, 10) : null;
@@ -156,8 +163,11 @@ class User {
     if (enterpriseIdInt !== originalUser.enterprise_id) {
       updatedUserData.enterprise_id = enterpriseIdInt;
     }
-    if (photoUri !== originalUser.photo_url) {
-      updatedUserData.photo_url = photoUri || "";
+
+    if (photoAsset !== originalUser.photo_url) {
+      if (typeof photoAsset !== "object") {
+        updatedUserData.photo_url = photoAsset || "";
+      }
     }
 
     return updatedUserData;

@@ -39,7 +39,7 @@ export default function ModalUpdateUser({
   const [registerNumber, setRegisterNumber] = useState("");
   const [roleId, setRoleId] = useState("");
   const [enterpriseId, setEnterpriseId] = useState("");
-  const [photoUri, setPhotoUri] = useState(null);
+  const [photoAsset, setPhotoAsset] = useState(null);
 
   const [isSuccessVisible, setSuccessVisible] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
@@ -54,7 +54,7 @@ export default function ModalUpdateUser({
       setRegisterNumber(user.register_number?.toString() || "");
       setRoleId(user.role_id?.toString() || "");
       setEnterpriseId(user.enterprise_id?.toString() || "");
-      setPhotoUri(user.photo_url || null);
+      setPhotoAsset(user.photo_url || null);
       setErrors({});
     }
   }, [user]);
@@ -85,17 +85,34 @@ export default function ModalUpdateUser({
       return;
     }
 
-    const newFormData = { ...formData, enterpriseId, photoUri };
+    const newFormData = { ...formData, enterpriseId, photoAsset: photoAsset };
     const updatedUserData = User.getChangedFields(user, newFormData);
 
-    if (Object.keys(updatedUserData).length === 0) {
+    let imageAssetToSend = null;
+    if (
+      photoAsset !== user.photo_url &&
+      typeof photoAsset === "object" &&
+      photoAsset !== null
+    ) {
+      imageAssetToSend = photoAsset;
+    }
+
+    if (
+      Object.keys(updatedUserData).length === 0 &&
+      imageAssetToSend === null
+    ) {
       setSuccessMessage("Nenhum campo foi modificado.");
       setSuccessVisible(true);
       return;
     }
 
     try {
-      await updateUserRequest(user.id, updatedUserData, accessToken);
+      await updateUserRequest(
+        user.id,
+        updatedUserData,
+        imageAssetToSend,
+        accessToken
+      );
       setSuccessMessage("Usuário atualizado com sucesso!");
       setSuccessVisible(true);
     } catch (error) {
@@ -124,7 +141,7 @@ export default function ModalUpdateUser({
     });
 
     if (!result.canceled) {
-      setPhotoUri(result.assets[0].uri);
+      setPhotoAsset(result.assets[0]);
     }
   };
 
@@ -336,9 +353,14 @@ export default function ModalUpdateUser({
                   onPress={pickImage}
                   className="bg-gray-soft h-32 rounded-lg items-center justify-center"
                 >
-                  {photoUri ? (
+                  {photoAsset ? (
                     <Image
-                      source={{ uri: photoUri }}
+                      source={{
+                        uri:
+                          typeof photoAsset === "string"
+                            ? photoAsset
+                            : photoAsset.uri,
+                      }}
                       className="w-full h-full rounded-lg"
                     />
                   ) : (

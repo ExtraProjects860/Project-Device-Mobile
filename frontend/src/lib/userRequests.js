@@ -38,24 +38,24 @@ export async function getInfoUserRequest(accessToken) {
 /**
  * @param {string} userId
  * @param {object} updatedUserData
+ * @param {object} image
  * @param {string} accessToken
  */
-export async function updateUserRequest(userId, updatedUserData, accessToken) {
+export async function updateUserRequest(
+  userId,
+  updatedUserData,
+  image,
+  accessToken,
+) {
   const formData = new FormData();
-  let photoAssetObject = null;
-
-  if (updatedUserData.hasOwnProperty("photo_asset")) {
-    photoAssetObject = updatedUserData.photo_asset;
-    delete updatedUserData.photo_asset;
-  }
 
   formData.append("data", JSON.stringify(updatedUserData));
 
-  if (photoAssetObject) {
+  if (image) {
     formData.append("image", {
-      uri: photoAssetObject.uri,
-      name: photoAssetObject.fileName || photoAssetObject.uri.split("/").pop(),
-      type: photoAssetObject.mimeType || "image/jpeg",
+      uri: image.uri,
+      name: image.fileName || image.uri.split("/").pop(),
+      type: image.mimeType || "image/jpeg",
     });
   }
 
