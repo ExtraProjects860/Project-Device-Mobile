@@ -69,7 +69,7 @@ func (r *PostgresUserRepository) UpdateUser(ctx context.Context, id uint, user *
 		return verifyUserDuplicated(err)
 	}
 
-	u, err := r.GetInfoUser(ctx, user.ID)
+	u, err := r.GetInfoUser(ctx, id)
 	if err != nil {
 		return err
 	}

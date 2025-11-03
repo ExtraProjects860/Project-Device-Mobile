@@ -60,7 +60,7 @@ func (r *PostgresProductRepository) GetProducts(ctx context.Context, paginationS
 	return products, totalPages, totalItems, err
 }
 
-func (r *PostgresProductRepository) UpdateProducts(ctx context.Context, id uint, product *schemas.Product) error {
+func (r *PostgresProductRepository) UpdateProduct(ctx context.Context, id uint, product *schemas.Product) error {
 	if err := updateByID(ctx, r.db, product, id); err != nil {
 		return verifyProductDuplicated(err)
 	}

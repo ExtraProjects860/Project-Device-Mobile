@@ -51,7 +51,7 @@ func (r *PostgresEnterpriseRepository) UpdateEnterprise(ctx context.Context, id 
 		return verifyEnterpriseDuplicated(err)
 	}
 
-	e, err := r.GetEnterprise(ctx, enterprise.ID)
+	e, err := r.GetEnterprise(ctx, id)
 	if err != nil {
 		return err
 	}
