@@ -3,6 +3,7 @@ package request
 import (
 	"encoding/json"
 	"fmt"
+	"mime/multipart"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
@@ -78,4 +79,18 @@ func ReadBodyFORM[T any](ctx *gin.Context, input *T) error {
 	}
 
 	return nil
+}
+
+func GetFileHeader(ctx *gin.Context, imageKey string) (*multipart.FileHeader, error) {
+	fileAny, exists := ctx.Get(imageKey)
+	if !exists {
+		return nil, nil
+	}
+
+	file, ok := fileAny.(*multipart.FileHeader)
+	if !ok {
+		return nil, fmt.Errorf("invalid photo type in context")
+	}
+
+	return file, nil
 }

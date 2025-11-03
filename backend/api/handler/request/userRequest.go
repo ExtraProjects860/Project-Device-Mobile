@@ -10,13 +10,13 @@ import (
 )
 
 type UserRequest struct {
-	RoleID         uint    `json:"role_id" validate:"required,gt=0"`
-	EnterpriseID   *uint   `json:"enterprise_id"`
-	Name           string  `json:"name" validate:"required,min=3"`
-	Email          string  `json:"email" validate:"required,email"`
-	Password       string  `json:"password" validate:"required,min=6"`
-	Cpf            string  `json:"cpf" validate:"required"`
-	RegisterNumber string  `json:"register_number" validate:"required,min=7,max=7"`
+	RoleID         uint   `json:"role_id" validate:"required,gt=0"`
+	EnterpriseID   *uint  `json:"enterprise_id"`
+	Name           string `json:"name" validate:"required,min=3"`
+	Email          string `json:"email" validate:"required,email"`
+	Password       string `json:"password" validate:"required,min=6"`
+	Cpf            string `json:"cpf" validate:"required"`
+	RegisterNumber string `json:"register_number" validate:"required,min=7,max=7"`
 }
 
 func (s *UserRequest) Validate(ctx *gin.Context, validate *validator.Validate) error {
@@ -24,8 +24,10 @@ func (s *UserRequest) Validate(ctx *gin.Context, validate *validator.Validate) e
 		return fmt.Errorf("invalid cpf. Try other value")
 	}
 
-	if *s.EnterpriseID == 0 {
-		return fmt.Errorf("enterprise can't zero. Try other value")
+	if s.EnterpriseID != nil {
+		if *s.EnterpriseID == 0 {
+			return fmt.Errorf("enterprise can't zero. Try other value")
+		}
 	}
 
 	return validate.StructCtx(ctx, s)
