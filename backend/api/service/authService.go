@@ -2,6 +2,7 @@ package service
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -52,12 +53,12 @@ func GetAuthService(appCtx *appcontext.AppContext) AuthService {
 
 func (s *AuthService) generateTempAndCode() (string, time.Time) {
 	code := utils.GenerateRandomCode(6)
-	timeUp := time.Now().Add(1 * time.Minute)
+	timeUp := time.Now().Add(30 * time.Minute)
 
 	return code, timeUp
 }
 
-func (s *AuthService) sendMailPassword(ctx *gin.Context, apiURI string, payload PayloadEmail) error {
+func (s *AuthService) sendMailPassword(apiURI string, payload PayloadEmail) error {
 	jsonData, err := json.Marshal(payload)
 	if err != nil {
 		s.logger.Errorf("Error marshaling JSON: %v", err)
@@ -65,7 +66,7 @@ func (s *AuthService) sendMailPassword(ctx *gin.Context, apiURI string, payload 
 	}
 
 	req, err := http.NewRequestWithContext(
-		ctx,
+		context.Background(),
 		http.MethodPost,
 		apiURI+"/email",
 		bytes.NewBuffer(jsonData),
@@ -92,7 +93,7 @@ func (s *AuthService) sendMailPassword(ctx *gin.Context, apiURI string, payload 
 	return nil
 }
 
-func (s *AuthService) verifyTimesUpToken(ctx *gin.Context, tokenSchema *schemas.TokenPassword) bool {
+func (s *AuthService) verifyTimesUpToken(tokenSchema *schemas.TokenPassword) bool {
 	return !(tokenSchema.TimeUp == nil || time.Now().After(*tokenSchema.TimeUp))
 }
 
@@ -127,7 +128,7 @@ func (s *AuthService) CreateToken(ctx *gin.Context, apiURI string, user *dto.Use
 			return errors.New("error saving new token")
 		}
 	} else {
-		isUp := s.verifyTimesUpToken(ctx, &tokenSchema)
+		isUp := s.verifyTimesUpToken(&tokenSchema)
 		if isUp {
 			return errors.New("token already exists and is still valid, wait until it expires")
 		}
@@ -141,15 +142,16 @@ func (s *AuthService) CreateToken(ctx *gin.Context, apiURI string, user *dto.Use
 		}
 	}
 
-	err = s.sendMailPassword(ctx, apiURI, PayloadEmail{
-		Subject:      "Token para troca de senha",
-		SendTo:       user.Email,
-		TemplateName: "change_password",
-		Data:         map[string]any{"token": code},
-	})
-	if err != nil {
-		return err
-	}
+	go func(apiURI, email, code string) {
+		if err := s.sendMailPassword(apiURI, PayloadEmail{
+			Subject:      "Token para troca de senha",
+			SendTo:       email,
+			TemplateName: "change_password",
+			Data:         map[string]any{"token": code},
+		}); err != nil {
+			s.logger.Error(err.Error())
+		}
+	}(apiURI, user.Email, code)
 
 	return nil
 }
@@ -167,7 +169,7 @@ func (s *AuthService) ChangePassword(
 		return err
 	}
 
-	isUp := s.verifyTimesUpToken(ctx, &tokenSchema)
+	isUp := s.verifyTimesUpToken(&tokenSchema)
 	if !isUp {
 		return errors.New("token is expired")
 	}
@@ -182,15 +184,16 @@ func (s *AuthService) ChangePassword(
 	}
 
 	//TODO posso mover isso para um serviço de email separado depois para melhorar o código
-	err = s.sendMailPassword(ctx, apiURI, PayloadEmail{
-		Subject:      "Senha Alterada com Sucesso",
-		SendTo:       user.Email,
-		TemplateName: "confirmation",
-		Data:         map[string]any{"token": code},
-	})
-	if err != nil {
-		return err
-	}
+	go func(apiURI, email, code string) {
+		if err := s.sendMailPassword(apiURI, PayloadEmail{
+			Subject:      "Senha Alterada com Sucesso",
+			SendTo:       email,
+			TemplateName: "confirmation",
+			Data:         map[string]any{"token": code},
+		}); err != nil {
+			s.logger.Error(err.Error())
+		}
+	}(apiURI, user.Email, code)
 
 	return nil
 }

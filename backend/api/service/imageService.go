@@ -1,6 +1,7 @@
 package service
 
 import (
+	"context"
 	"fmt"
 	"mime/multipart"
 
@@ -8,7 +9,6 @@ import (
 	"github.com/ExtraProjects860/Project-Device-Mobile/config"
 	"github.com/cloudinary/cloudinary-go/v2"
 	"github.com/cloudinary/cloudinary-go/v2/api/uploader"
-	"github.com/gin-gonic/gin"
 )
 
 var (
@@ -28,20 +28,14 @@ func GetImageService(appCtx *appcontext.AppContext) ImageService {
 	}
 }
 
-func (s *ImageService) UploadImage(ctx *gin.Context, folderToSave string) (*string, string, error) {
-	file, err := s.managerPhotoUrl(ctx, "image")
-	if err != nil {
-		s.logger.Errorf("Error managing photo from context: %v", err)
-		return nil, "", err
-	}
-
+func (s *ImageService) UploadImage(file *multipart.FileHeader, folderToSave string) (*string, string, error) {
 	if file == nil {
 		s.logger.Info("No photo provided, skipping upload.")
 		return nil, "", nil
 	}
 
 	s.logger.Infof("Photo provided, uploading to folder: %s", folderToSave)
-	secureURL, publicID, err := s.savePhoto(ctx, file, folderToSave)
+	secureURL, publicID, err := s.savePhoto(file, folderToSave)
 	if err != nil {
 		return nil, "", err
 	}
@@ -49,14 +43,14 @@ func (s *ImageService) UploadImage(ctx *gin.Context, folderToSave string) (*stri
 	return &secureURL, publicID, nil
 }
 
-func (s *ImageService) RemoveImage(ctx *gin.Context, publicID string) error {
+func (s *ImageService) RemoveImage(publicID string) error {
 	if publicID == "" {
 		return nil
 	}
 
 	s.logger.Warningf("Rolling back photo upload: %s", publicID)
 	response, err := s.cld.Upload.Destroy(
-		ctx,
+		context.Background(),
 		uploader.DestroyParams{
 			PublicID: publicID,
 		},
@@ -76,22 +70,7 @@ func (s *ImageService) RemoveImage(ctx *gin.Context, publicID string) error {
 	return nil
 }
 
-func (s *ImageService) managerPhotoUrl(ctx *gin.Context, imageKey string) (*multipart.FileHeader, error) {
-	fileAny, exists := ctx.Get(imageKey)
-	if !exists {
-		return nil, nil
-	}
-
-	file, ok := fileAny.(*multipart.FileHeader)
-	if !ok {
-		s.logger.Error("Error to convert fileAny to FileHeader type")
-		return nil, fmt.Errorf("invalid photo type in context")
-	}
-
-	return file, nil
-}
-
-func (s *ImageService) savePhoto(ctx *gin.Context, file *multipart.FileHeader, folderToSave string) (string, string, error) {
+func (s *ImageService) savePhoto(file *multipart.FileHeader, folderToSave string) (string, string, error) {
 	src, err := file.Open()
 	if err != nil {
 		s.logger.Errorf("Failed to open uploaded file: %v", err)
@@ -104,7 +83,7 @@ func (s *ImageService) savePhoto(ctx *gin.Context, file *multipart.FileHeader, f
 	}
 
 	uploadResult, err := s.cld.Upload.Upload(
-		ctx,
+		context.Background(),
 		src,
 		uploadParams,
 	)
