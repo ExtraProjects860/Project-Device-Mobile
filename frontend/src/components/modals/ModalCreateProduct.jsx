@@ -15,12 +15,10 @@ import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import * as ImagePicker from "expo-image-picker";
 
 import ModalCheck from "./ModalCheck";
-// Use o nome de arquivo que você tem (productsRequests ou productRequests)
 import { createProductRequest } from "../../lib/productsRequests.js";
 import { useError } from "../../context/ErrorContext.js";
 import { useThemeColors } from "../../hooks/useThemeColors.js";
 import { useAppContext } from "../../context/AppContext.js";
-// Use o nome de classe que você tem (Products ou Product)
 import Product from "../../lib/class/Product.js";
 
 export default function ModalCreateProduct({

@@ -1,11 +1,35 @@
-import { configsToPagination, requestGet } from "./axios";
+import {
+  configsToPagination,
+  requestDelete,
+  requestGet,
+  requestPost,
+} from "./axios";
 
-export async function addInWishListRequest(userId, productId, accessToken) {
-  return;
+/**
+ * @param {number} productId 
+ * @param {string} accessToken 
+ */
+export async function addInWishListRequest(productId, accessToken) {
+  const response = await requestPost(
+    `wishlist?product_id=${productId}`,
+    {},
+    accessToken,
+  );
+
+  return response.data;
 }
 
-export async function deleteWishListRequest(userId, productId, accessToken) {
-  return;
+/**
+ * @param {number} productId 
+ * @param {string} accessToken 
+ */
+export async function deleteWishListRequest(productId, accessToken) {
+  const response = await requestDelete(
+    `wishlist?product_id=${productId}`,
+    accessToken,
+  );
+
+  return response.data;
 }
 
 /**

@@ -1,7 +1,9 @@
 package service
 
 import (
+	"context"
 	"fmt"
+	"mime/multipart"
 
 	"github.com/ExtraProjects860/Project-Device-Mobile/appcontext"
 	"github.com/ExtraProjects860/Project-Device-Mobile/config"
@@ -66,12 +68,6 @@ func (u *UserService) Create(
 		return nil, err
 	}
 
-	secureURL, publicID, err := imageService.UploadImage(ctx, FolderUser)
-	if err != nil {
-		u.logger.Errorf("Failed during image upload process: %v", err)
-		return nil, err
-	}
-
 	user := schemas.User{
 		RoleID:         input.RoleID,
 		EnterpriseID:   input.EnterpriseID,
@@ -80,16 +76,38 @@ func (u *UserService) Create(
 		Password:       hashedPassword,
 		Cpf:            input.Cpf,
 		RegisterNumber: input.RegisterNumber,
-		PhotoUrl:       secureURL,
 	}
 
 	if err = u.repo.CreateUser(ctx, &user); err != nil {
 		u.logger.Errorf("Failed to create user in database: %v", err)
-		if removeErr := imageService.RemoveImage(ctx, publicID); removeErr != nil {
-			u.logger.Errorf("CRITICAL: DB creation failed AND image rollback failed: %v", removeErr)
-		}
 		return nil, err
 	}
+
+	file, err := request.GetFileHeader(ctx, "image")
+	if err != nil {
+		u.logger.Error(err.Error())
+		return nil, err
+	}
+
+	go func(user *schemas.User, file *multipart.FileHeader) {
+		secureURL, _, err := imageService.UploadImage(file, FolderUser)
+		if err != nil {
+			u.logger.Errorf("Failed during image upload process: %v", err)
+			return
+		}
+
+		if secureURL != nil {
+			user.PhotoUrl = secureURL
+			if err := u.repo.UpdateUser(
+				context.Background(),
+				user.ID,
+				user,
+			); err != nil {
+				u.logger.Errorf("Failed to create photo for user %d: %v", user.ID, err)
+				return
+			}
+		}
+	}(&user, file)
 
 	return dto.MakeUserOutput(user), nil
 }
@@ -109,20 +127,36 @@ func (u *UserService) Update(
 		return nil, err
 	}
 
-	secureURL, publicID, err := imageService.UploadImage(ctx, FolderUser)
-	if err != nil {
-		u.logger.Errorf("Failed during image upload process: %v", err)
-		return nil, err
-	}
-	user.PhotoUrl = secureURL
-
 	if err = u.repo.UpdateUser(ctx, id, &user); err != nil {
 		u.logger.Errorf("Failed to update user in database: %v", err)
-		if removeErr := imageService.RemoveImage(ctx, publicID); removeErr != nil {
-			u.logger.Errorf("CRITICAL: DB updated failed AND image rollback failed: %v", removeErr)
-		}
 		return nil, err
 	}
+
+	file, err := request.GetFileHeader(ctx, "image")
+	if err != nil {
+		u.logger.Error(err.Error())
+		return nil, err
+	}
+
+	go func(user *schemas.User, file *multipart.FileHeader) {
+		secureURL, _, err := imageService.UploadImage(file, FolderUser)
+		if err != nil {
+			u.logger.Errorf("Failed during image upload process: %v", err)
+			return
+		}
+
+		if secureURL != nil {
+			user.PhotoUrl = secureURL
+			if err := u.repo.UpdateUser(
+				context.Background(),
+				user.ID,
+				user,
+			); err != nil {
+				u.logger.Errorf("Failed to update photo for user %d: %v", user.ID, err)
+				return
+			}
+		}
+	}(&user, file)
 
 	return dto.MakeUserOutput(user), nil
 }

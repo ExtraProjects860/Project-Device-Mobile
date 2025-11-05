@@ -1,6 +1,9 @@
 package service
 
 import (
+	"context"
+	"mime/multipart"
+
 	"github.com/ExtraProjects860/Project-Device-Mobile/appcontext"
 	"github.com/ExtraProjects860/Project-Device-Mobile/config"
 	"github.com/ExtraProjects860/Project-Device-Mobile/handler/request"
@@ -47,12 +50,6 @@ func (p *ProductService) ValidateAndUpdateFields(product *schemas.Product, input
 }
 
 func (p *ProductService) Create(ctx *gin.Context, imageService ImageService, input request.ProductRequest) (*dto.ProductDTO, error) {
-	secureURL, publicID, err := imageService.UploadImage(ctx, FolderProduct)
-	if err != nil {
-		p.logger.Errorf("Failed during image upload process: %v", err)
-		return nil, err
-	}
-
 	product := schemas.Product{
 		Name:               input.Name,
 		Description:        input.Description,
@@ -61,16 +58,38 @@ func (p *ProductService) Create(ctx *gin.Context, imageService ImageService, inp
 		IsPromotionAvaible: input.IsPromotionAvaible,
 		Discount:           input.Discount,
 		IsAvaible:          input.IsAvaible,
-		PhotoUrl:           secureURL,
 	}
 
 	if err := p.repo.CreateProduct(ctx, &product); err != nil {
-		p.logger.Warningf("Failed to create product in database: %v", publicID)
-		if removeErr := imageService.RemoveImage(ctx, publicID); removeErr != nil {
-			p.logger.Errorf("CRITICAL: DB creation failed AND image rollback failed: %v", removeErr)
-		}
+		p.logger.Warningf("Failed to create product in database: %v", err)
 		return nil, err
 	}
+
+	file, err := request.GetFileHeader(ctx, "image")
+	if err != nil {
+		p.logger.Error(err.Error())
+		return nil, err
+	}
+
+	go func(product *schemas.Product, file *multipart.FileHeader) {
+		secureURL, _, err := imageService.UploadImage(file, FolderUser)
+		if err != nil {
+			p.logger.Errorf("Failed during image upload process: %v", err)
+			return
+		}
+
+		if secureURL != nil {
+			product.PhotoUrl = secureURL
+			if err := p.repo.UpdateProduct(
+				context.Background(),
+				product.ID,
+				product,
+			); err != nil {
+				p.logger.Errorf("Failed to create photo for product %d: %v", product.ID, err)
+				return
+			}
+		}
+	}(&product, file)
 
 	return dto.MakeProductOutput(product), nil
 }
@@ -81,23 +100,38 @@ func (p *ProductService) Update(ctx *gin.Context, imageService ImageService, id 
 		return nil, err
 	}
 
-	secureURL, publicID, err := imageService.UploadImage(ctx, FolderProduct)
-	if err != nil {
-		p.logger.Errorf("Failed during image upload process: %v", err)
-		return nil, err
-	}
-
 	p.ValidateAndUpdateFields(&product, input)
 
-	product.PhotoUrl = secureURL
-
-	if err = p.repo.UpdateProducts(ctx, id, &product); err != nil {
+	if err = p.repo.UpdateProduct(ctx, id, &product); err != nil {
 		p.logger.Errorf("Failed to update product in database: %v", err)
-		if removeErr := imageService.RemoveImage(ctx, publicID); removeErr != nil {
-			p.logger.Errorf("CRITICAL: DB updated failed AND image rollback failed: %v", removeErr)
-		}
 		return nil, err
 	}
+
+	file, err := request.GetFileHeader(ctx, "image")
+	if err != nil {
+		p.logger.Error(err.Error())
+		return nil, err
+	}
+
+	go func(product *schemas.Product, file *multipart.FileHeader) {
+		secureURL, _, err := imageService.UploadImage(file, FolderUser)
+		if err != nil {
+			p.logger.Errorf("Failed during image upload process: %v", err)
+			return
+		}
+
+		if secureURL != nil {
+			product.PhotoUrl = secureURL
+			if err := p.repo.UpdateProduct(
+				context.Background(),
+				product.ID,
+				product,
+			); err != nil {
+				p.logger.Errorf("Failed to update photo for product %d: %v", product.ID, err)
+				return
+			}
+		}
+	}(&product, file)
 
 	return dto.MakeProductOutput(product), nil
 }

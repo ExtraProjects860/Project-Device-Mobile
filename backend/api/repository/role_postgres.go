@@ -51,7 +51,7 @@ func (r *PostgresRoleRepository) UpdateRole(ctx context.Context, id uint, role *
 		return verifyRoleDuplicated(err)
 	}
 
-	ro, err := r.GetRole(ctx, role.ID)
+	ro, err := r.GetRole(ctx, id)
 	if err != nil {
 		return err
 	}

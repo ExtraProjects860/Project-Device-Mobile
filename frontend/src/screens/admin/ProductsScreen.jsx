@@ -20,6 +20,7 @@ export default function ProductsScreen() {
   const { accessToken, userData } = useAppContext();
 
   const isAdmin = userData?.role === "ADMIN" || userData?.role === "SUPERADMIN";
+  
   const [isCreateProductModalVisible, setCreateProductVisible] =
     useState(false);
   const [isUpdateProductModalVisible, setUpdateProductVisible] =
@@ -28,7 +29,7 @@ export default function ProductsScreen() {
 
   const [searchTerm, setSearchTerm] = useState("");
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState(searchTerm);
-  const [itemsOrder, setItemsOrder] = useState("ASC");
+  const [itemsOrder, setItemsOrder] = useState("DESC");
 
   useEffect(() => {
     const handler = setTimeout(() => {
