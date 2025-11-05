@@ -1,10 +1,5 @@
 import React, { useState } from "react";
-import {
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-} from "react-native";
+import { View, Text, TextInput, TouchableOpacity } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import Background from "../../components/ui/Background";
 import Logo from "../../components/ui/Logo";
@@ -23,7 +18,6 @@ export default function ForgotPasswordScreen() {
   const { showErrorModal } = useError();
   const themeColors = useThemeColors();
 
-
   const handleChangeEmail = async () => {
     try {
       if (!handleVerifyEmail()) return;
@@ -40,7 +34,7 @@ export default function ForgotPasswordScreen() {
         `Ocorreu um erro ao tentar enviar o e-mail. Por favor, tente novamente. ${error}`
       );
     }
-  }
+  };
 
   const handleCloseSuccessModal = () => {
     setSuccessVisible(false);
@@ -51,18 +45,14 @@ export default function ForgotPasswordScreen() {
   const handleVerifyEmail = () => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!email.match(emailRegex)) {
-      ;
       setErro("Por favor, insira um e-mail válido.");
       return false;
     }
     return true;
-  }
-
-
+  };
 
   return (
     <Background>
-
       <ModalCheck
         visible={isSuccessVisible}
         message={successMessage}
@@ -87,7 +77,7 @@ export default function ForgotPasswordScreen() {
             <Icon
               name="email-outline"
               size={24}
-              color={themeColors.primary === "#FFFFFF" ? "#A0A0A0" : "#6B7280"}
+              color="#fff"
             />
             <Text className="text-light-text-inverted font-bold pl-2 text-2xl">
               E-mail:
@@ -105,8 +95,7 @@ export default function ForgotPasswordScreen() {
               onChangeText={setEmail}
             />
           </View>
-          <Text
-            className="ml-2 text-light-text-inverted dark:text-dark-text-primary text-xl font-semibold mb-2">
+          <Text className="ml-2 text-light-text-inverted dark:text-dark-text-primary text-xl font-semibold mb-2">
             {erro}
           </Text>
         </View>
@@ -115,18 +104,20 @@ export default function ForgotPasswordScreen() {
         <View className="w-full items-center flex-1">
           <View className="flex mt-6 flex-row gap-4">
             <TouchableOpacity
-              onPress={() => handleChangeEmail()}
-              className="mb-3 py-2 px-16 bg-light-secondary rounded-full items-center"
+              onPress={() => goTo("/login")}
+              className="mb-3 py-2 px-16 bg-light-text-inverted rounded-full items-center"
             >
-              {/*       //////////////////////////////////////////       */}
-
-              <Text className="text-white text-2xl font-bold">Enviar</Text>
+              <Text className="text-light-text-primary text-2xl font-bold">
+                Voltar
+              </Text>
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={() => goTo("/login")}
-              className="mb-3 py-2 px-16 h-12 bg-dark-primary dark:bg-light-primary rounded-full items-center"
+              onPress={() => handleChangeEmail()}
+              className="mb-3 py-2 px-16 bg-light-secondary dark:bg-light-secondary rounded-full items-center"
             >
-              <Text className="text-white text-2xl font-bold">Voltar</Text>
+              <Text className="text-light-text-inverted text-2xl font-bold">
+                Enviar
+              </Text>
             </TouchableOpacity>
           </View>
           <Text className="text-white text-s py-2 px-20">
