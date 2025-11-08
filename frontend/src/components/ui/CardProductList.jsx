@@ -17,7 +17,7 @@ import { useAppContext } from "../../context/AppContext.js";
  * @param {object} props.item
  * @param {function} props.onEdit
  */
-export default function CardProductList({ item, onEdit }) {
+export default function CardProductList({ item, onClick, isAdded }) {
   const themeColors = useThemeColors();
   const { userData } = useAppContext();
   const isAdmin = userData?.role === "ADMIN" || userData?.role === "SUPERADMIN";
@@ -75,9 +75,31 @@ export default function CardProductList({ item, onEdit }) {
           </View>
 
           <View className="m-2">
+            {!isAdmin && (
+              <TouchableOpacity
+                onPress={() => onClick(item)}
+                disabled={isAdded}
+                className={`flex-row gap-1 items-center justify-center py-2 px-5 rounded-full 
+                  ${
+                    isAdded
+                      ? "bg-gray-400 dark:bg-gray-600"
+                      : "bg-light-secondary dark:bg-dark-secondary"
+                  }
+                `}
+              >
+                <Icon
+                  name={isAdded ? "check" : "basket-plus-outline"}
+                  size={20}
+                  color={themeColors.header}
+                />
+                <Text className="text-white font-bold text-center">
+                  {isAdded ? "Adicionado" : "Add WishList"}
+                </Text>
+              </TouchableOpacity>
+            )}
             {isAdmin && (
               <TouchableOpacity
-                onPress={() => onEdit(item)}
+                onPress={() => onClick(item)}
                 className="flex-row gap-1 items-center justify-center py-2 px-5 rounded-full bg-light-secondary dark:bg-dark-secondary"
               >
                 <Icon

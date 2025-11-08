@@ -10,18 +10,23 @@ import { useThemeColors } from "../hooks/useThemeColors.js";
 import { useHandleRefresh } from "../hooks/useHandleRefresh.js";
 import { getItemsWishListRequest } from "../lib/wishListRequests.js";
 import { useAppContext } from "../context/AppContext.js";
+import { Alert } from "react-native";
+import { deleteWishListRequest } from "../lib/wishListRequests.js";
+import { useError } from "../context/ErrorContext.js";
+import ModalWarning from "../components/modals/ModalWarning.jsx";
 
 export default function WishListScreen() {
-  // TODO essa lista aqui, falta o modal de deletar items
   const themeColors = useThemeColors();
   const { listKey, handleRefresh } = useHandleRefresh();
   const { accessToken } = useAppContext();
-
-  const [selectedWishListItem, setSelectedWishListItem] = useState(null);
+  const { showErrorModal } = useError();
 
   const [searchTerm, setSearchTerm] = useState("");
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState(searchTerm);
   const [itemsOrder, setItemsOrder] = useState("ASC");
+
+  const [itemToRemove, setItemToRemove] = useState(null);
+  const [isWarningVisible, setWarningVisible] = useState(false);
 
   useEffect(() => {
     const handler = setTimeout(() => {
@@ -50,10 +55,45 @@ export default function WishListScreen() {
     setItemsOrder((prevOrder) => (prevOrder === "ASC" ? "DESC" : "ASC"));
   };
 
-  const handleRemoveProduct = () => {};
+  const handleRemoveProduct = (item) => {
+    if (!item?.id) {
+      showErrorModal("Item inválido.");
+      return;
+    }
+    setItemToRemove(item);
+    setWarningVisible(true);
+  };
+
+  const confirmRemoveProduct = async () => {
+    if (!itemToRemove) return;
+
+    try {
+      await deleteWishListRequest(itemToRemove.id, accessToken);
+
+      handleRefresh();
+    } catch (error) {
+      console.error("Erro ao remover da wishlist:", error);
+      const errorMessage =
+        error.response?.data?.error ||
+        "Não foi possível remover o item. Tente novamente.";
+      showErrorModal(errorMessage);
+    } finally {
+      setWarningVisible(false);
+      setItemToRemove(null);
+    }
+  };
 
   return (
     <Background>
+      <ModalWarning
+        visible={isWarningVisible}
+        message="Tem certeza que deseja remover este item da sua lista de desejos?"
+        onClose={() => {
+          setWarningVisible(false);
+          setItemToRemove(null);
+        }}
+        onConfirm={confirmRemoveProduct}
+      />
       <NavBar />
 
       <View className="flex-row gap-2 m-6 items-center justify-center">
@@ -71,10 +111,13 @@ export default function WishListScreen() {
       </View>
 
       <ListItems
-        ref={listKey}
+        key={listKey}
         callbackFetch={fetchWishListCallback}
         CardListRender={({ item }) => (
-          <CardWishListItem item={item} onRemove={handleRemoveProduct} />
+          <CardWishListItem
+            item={item}
+            onRemove={() => handleRemoveProduct(item)}
+          />
         )}
       />
     </Background>
