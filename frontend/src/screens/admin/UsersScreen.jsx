@@ -106,7 +106,7 @@ export default function UsersScreen() {
       </View>
 
       <ListItems
-        ref={listKey}
+        key={listKey}
         callbackFetch={fetchUsersCallback}
         CardListRender={({ item }) => (
           <CardUserList item={item} onEdit={handleEditUser} />
