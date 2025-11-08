@@ -36,7 +36,6 @@ export default function ListItems({
     scrollToTop,
   } = usePagination(callbackFetch, searchFilter);
 
-  // Função responsável renderizar o botão de Voltar ao Topo ao final da lista
   const renderInFooter = () => {
     if (isLoadingMore) {
       return <Loading />;

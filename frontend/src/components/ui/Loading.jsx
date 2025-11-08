@@ -7,7 +7,6 @@ import { ActivityIndicator, View, Text, StatusBar } from "react-native";
 export default function Loading() {
   const [dots, setDots] = useState("");
 
-  // Funcão para carregar os 3 pontos durante o loading
   useEffect(() => {
     let count = 0;
     const interval = setInterval(() => {

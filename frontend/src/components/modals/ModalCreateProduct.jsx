@@ -79,13 +79,10 @@ export default function ModalCreateProduct({
         quantity,
         isAvailable,
         isPromotionAvailable,
-        null, // Passa null aqui, pois a foto não vai mais no JSON
+        null, 
       );
 
-      // --- INÍCIO DA CORREÇÃO ---
-      // Envia o JSON e a photoUrl (URI) como argumentos separados
       await createProductRequest(productData.toJSON(), photoUrl, accessToken);
-      // --- FIM DA CORREÇÃO ---
 
       setSuccessMessage("Produto cadastrado com sucesso!");
       setSuccessVisible(true);
@@ -114,15 +111,12 @@ export default function ModalCreateProduct({
       return;
     }
 
-    // --- INÍCIO DA CORREÇÃO ---
-    // Corrigido o warning de "MediaTypeOptions"
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaType.Images,
       allowsEditing: true,
       aspect: [1, 1],
       quality: 1,
     });
-    // --- FIM DA CORREÇÃO ---
 
     if (!result.canceled) {
       setPhotoUrl(result.assets[0].uri);
