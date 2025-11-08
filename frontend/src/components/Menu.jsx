@@ -166,45 +166,47 @@ export default function Menu({ visible, closeMenu }) {
           </View>
 
           {/* Itens */}
-          <View>
-            <Text className="text-light-text-inverted dark:text-dark-text-primary font-bold text-xl mb-0">
-              Itens
-            </Text>
+          {!isAdmin && (
+            <View>
+              <Text className="text-light-text-inverted dark:text-dark-text-primary font-bold text-xl mb-0">
+                Itens
+              </Text>
 
-            <View className="h-px bg-light-text-inverted dark:bg-dark-text-secondary my-4" />
+              <View className="h-px bg-light-text-inverted dark:bg-dark-text-secondary my-4" />
 
-            <View className="mb-6">
-              <TouchableOpacity
-                onPress={() => goTo("/products")}
-                className="flex-row items-center bg-light-card dark:bg-dark-card rounded-full p-3 mb-3"
-              >
-                <Icon
-                  name="shopping-outline"
-                  size={24}
-                  color={themeColors.primary}
-                />
+              <View className="mb-6">
+                <TouchableOpacity
+                  onPress={() => goTo("/products")}
+                  className="flex-row items-center bg-light-card dark:bg-dark-card rounded-full p-3 mb-3"
+                >
+                  <Icon
+                    name="shopping-outline"
+                    size={24}
+                    color={themeColors.primary}
+                  />
 
-                <Text className="ml-2 text-light-primary dark:text-dark-text-primary font-semibold text-base">
-                  Produtos
-                </Text>
-              </TouchableOpacity>
+                  <Text className="ml-2 text-light-primary dark:text-dark-text-primary font-semibold text-base">
+                    Produtos
+                  </Text>
+                </TouchableOpacity>
 
-              <TouchableOpacity
-                onPress={() => goTo("/wishlist")}
-                className="flex-row items-center bg-light-card dark:bg-dark-card rounded-full p-3"
-              >
-                <Icon
-                  name="bookmark-outline"
-                  size={24}
-                  color={themeColors.primary}
-                />
+                <TouchableOpacity
+                  onPress={() => goTo("/wishlist")}
+                  className="flex-row items-center bg-light-card dark:bg-dark-card rounded-full p-3"
+                >
+                  <Icon
+                    name="bookmark-outline"
+                    size={24}
+                    color={themeColors.primary}
+                  />
 
-                <Text className="ml-2 text-light-primary dark:text-dark-text-primary font-semibold text-base">
-                  Lista de Desejos
-                </Text>
-              </TouchableOpacity>
+                  <Text className="ml-2 text-light-primary dark:text-dark-text-primary font-semibold text-base">
+                    Lista de Desejos
+                  </Text>
+                </TouchableOpacity>
+              </View>
             </View>
-          </View>
+          )}
 
           {/* Admin */}
           {isAdmin && (
