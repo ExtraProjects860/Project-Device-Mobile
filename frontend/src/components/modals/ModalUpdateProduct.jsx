@@ -122,10 +122,6 @@ export default function ModalUpdateProduct({
     }
 
     try {
-      console.log("Enviando para updateProductRequest:");
-      console.log("ID do Produto:", product.id);
-      console.log("Dados (JSON):", dataToSend);
-      console.log("Novo Asset da Foto:", imageAssetToSend);
 
       await updateProductRequest(
         product.id,
@@ -361,7 +357,6 @@ export default function ModalUpdateProduct({
                   onPress={pickImage}
                   className="bg-gray-soft h-32 rounded-lg items-center justify-center"
                 >
-                  {/* --- Renderização corrigida --- */}
                   {photoAsset ? (
                     <Image
                       source={{
