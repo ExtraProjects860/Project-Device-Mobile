@@ -1,12 +1,6 @@
 import React, { useState } from "react";
 import { useLocation } from "react-router-native";
-import {
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  StatusBar,
-} from "react-native";
+import { View, Text, TextInput, TouchableOpacity } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import Background from "../../components/ui/Background";
 import Logo from "../../components/ui/Logo";
@@ -17,12 +11,11 @@ import { useNavigateTo } from "../../hooks/useNavigateTo";
 import { useThemeColors } from "../../hooks/useThemeColors";
 
 export default function NewPasswordScreen() {
-  
   const goTo = useNavigateTo();
   const themeColors = useThemeColors();
   const location = useLocation();
-  const {email} = location.state;
-  const {showErrorModal} = useError();
+  const { email } = location.state;
+  const { showErrorModal } = useError();
 
   const [token, setToken] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -42,12 +35,12 @@ export default function NewPasswordScreen() {
         setSuccessVisible(true);
       }
     } catch (error) {
+      console.error(error);
       showErrorModal(
         "Ocorreu um erro ao tentar alterar a senha. Por favor, tente novamente."
       );
     }
   };
-
 
   const handleCloseSuccessModal = () => {
     setSuccessVisible(false);
@@ -55,16 +48,16 @@ export default function NewPasswordScreen() {
     goTo("/login");
   };
 
-    const verifyMatchPasswords = () => {
-      if (newPassword !== confirmPassword) {
-        showErrorModal("As senhas não coincidem. Por favor, tente novamente.");
-        return;
-      }
-      handleChangePassword();
+  const verifyMatchPasswords = () => {
+    if (newPassword !== confirmPassword) {
+      showErrorModal("As senhas não coincidem. Por favor, tente novamente.");
+      return;
     }
+    handleChangePassword();
+  };
+  
   return (
     <Background>
-
       <ModalCheck
         visible={isSuccessVisible}
         message={successMessage}
@@ -100,9 +93,10 @@ export default function NewPasswordScreen() {
               className="-py-1 ml-2 flex-1 text-light-text-secondary font-semibold text-2xl"
               placeholder="Código"
               placeholderTextColor={
-                themeColors.primary === "#FFFFFF" ? "#A0A0A0" : "#6B7280"}
-              value ={token}
-              onChangeText ={setToken}
+                themeColors.primary === "#FFFFFF" ? "#A0A0A0" : "#6B7280"
+              }
+              value={token}
+              onChangeText={setToken}
             />
           </View>
         </View>
@@ -125,9 +119,10 @@ export default function NewPasswordScreen() {
               secureTextEntry={!showPassword}
               placeholder="*********"
               placeholderTextColor={
-                themeColors.primary === "#FFFFFF" ? "#A0A0A0" : "#6B7280"}
-              value ={newPassword}
-              onChangeText ={setNewPassword}
+                themeColors.primary === "#FFFFFF" ? "#A0A0A0" : "#6B7280"
+              }
+              value={newPassword}
+              onChangeText={setNewPassword}
             />
             <TouchableOpacity onPress={() => setShowPassword()}>
               <Icon
@@ -159,8 +154,8 @@ export default function NewPasswordScreen() {
               placeholderTextColor={
                 themeColors.primary === "#FFFFFF" ? "#A0A0A0" : "#6B7280"
               }
-              value ={confirmPassword}
-              onChangeText ={setConfirmPassword}
+              value={confirmPassword}
+              onChangeText={setConfirmPassword}
             />
             <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
               <Icon

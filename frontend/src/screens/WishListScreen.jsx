@@ -10,7 +10,6 @@ import { useThemeColors } from "../hooks/useThemeColors.js";
 import { useHandleRefresh } from "../hooks/useHandleRefresh.js";
 import { getItemsWishListRequest } from "../lib/wishListRequests.js";
 import { useAppContext } from "../context/AppContext.js";
-import { Alert } from "react-native";
 import { deleteWishListRequest } from "../lib/wishListRequests.js";
 import { useError } from "../context/ErrorContext.js";
 import ModalWarning from "../components/modals/ModalWarning.jsx";

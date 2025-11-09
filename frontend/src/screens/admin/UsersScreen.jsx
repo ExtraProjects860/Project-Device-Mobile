@@ -20,7 +20,7 @@ export default function UsersScreen() {
   const { listKey, handleRefresh } = useHandleRefresh();
   const { accessToken } = useAppContext();
 
-  const { roles, enterprises, isLoading: isLoadingOptions } = useFormOptions();
+  const { roles, enterprises } = useFormOptions();
 
   const [isCreateModalVisible, setCreateModalVisible] = useState(false);
   const [isUpdateModalVisible, setUpdateModalVisible] = useState(false);

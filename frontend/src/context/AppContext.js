@@ -19,7 +19,6 @@ export function AppProvider({ children }) {
   const [userData, setUserData] = useState({});
   const [isLoading, setIsLoading] = useState(true);
   const [isConnected, setIsConnected] = useState(true);
-  const [_, setTheme] = useState("");
 
   const { showErrorModal } = useError();
 
@@ -38,7 +37,6 @@ export function AppProvider({ children }) {
         setUserData(storedUserData);
       }
       if (storedTheme) {
-        setTheme(storedTheme);
         setColorScheme(storedTheme);
       }
 
@@ -54,7 +52,7 @@ export function AppProvider({ children }) {
     };
 
     loadingStorageData();
-  }, []);
+  }, [setColorScheme]);
 
   const updateToken = async (newToken) => {
     setAccessToken(newToken);
@@ -67,7 +65,6 @@ export function AppProvider({ children }) {
   };
 
   const updateTheme = async (newTheme) => {
-    setTheme(newTheme);
     setColorScheme(newTheme);
     await Storage.setItem("theme", newTheme);
   };

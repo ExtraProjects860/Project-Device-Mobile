@@ -17,14 +17,6 @@ export function formatDate(date) {
 }
 
 /**
- * @param {string} cnpj
- * @returns {string}
- */
-export function formatCNPJ(cnpj) {
-  return;
-}
-
-/**
  * @param {number} value 
  * @param {number} percentage 
  * @returns {number}

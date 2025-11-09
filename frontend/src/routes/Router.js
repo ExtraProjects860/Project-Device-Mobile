@@ -1,5 +1,5 @@
-import React, { useEffect } from "react";
-import { NativeRouter, Routes, Route, useLocation } from "react-router-native";
+import React from "react";
+import { NativeRouter, Routes, Route } from "react-router-native";
 import HomeScreen from "../screens/HomeScreen";
 import ProductsScreen from "../screens/admin/ProductsScreen";
 import NotFoundScreen from "../screens/404";
@@ -10,7 +10,6 @@ import ForgotPasswordScreen from "../screens/autentication/ForgotPasswordScreen"
 import LoginScreen from "../screens/autentication/LoginScreen";
 import Loading from "../components/ui/Loading";
 import { useAppContext } from "../context/AppContext";
-import { useNavigateTo } from "../hooks/useNavigateTo";
 import ProtectedRoutes from "./ProtectedRoutes";
 import OnlineRoutes from "./OnlineRoutes";
 

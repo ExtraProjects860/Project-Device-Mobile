@@ -11,5 +11,5 @@ export default function PageLoader({ fetchData, children }) {
 
   if (isLoading) return <Loading />;
 
-  return <>{children}</>
+  return <>{children}</>;
 }

@@ -2,10 +2,9 @@ import React from "react";
 import { Navigate, Outlet } from "react-router-native";
 
 /**
- *
  * @param  {object} props
- * @param  {} props.accessToken
- * @param  {} props.checkInternetConection
+ * @param  {string} props.accessToken
+ * @param  {boolean} props.checkInternetConection
  */
 export default function OnlineRoutes({ accessToken, checkInternetConection }) {
   if (checkInternetConection) {

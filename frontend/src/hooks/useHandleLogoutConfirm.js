@@ -1,7 +1,7 @@
 import { useAppContext } from "../context/AppContext";
 import { useNavigateTo } from "./useNavigateTo";
 
-export function useHandleLogoutConfirm () {
+export function useHandleLogoutConfirm() {
   const goTo = useNavigateTo();
   const { manuallyLogout } = useAppContext();
 
@@ -9,7 +9,6 @@ export function useHandleLogoutConfirm () {
     await manuallyLogout();
     goTo("/login");
   };
-  
+
   return handleLogout;
 }
- 
