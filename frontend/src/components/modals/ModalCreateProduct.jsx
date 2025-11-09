@@ -37,7 +37,7 @@ export default function ModalCreateProduct({
   const [quantity, setQuantity] = useState("");
   const [isAvailable, setIsAvailable] = useState(true);
   const [isPromotionAvailable, setIsPromotionAvailable] = useState(false);
-  const [photoUrl, setPhotoUrl] = useState(null);
+  const [photoAsset, setPhotoAsset] = useState(null);
 
   const [successMessage, setSuccessMessage] = useState("");
   const [isSuccessVisible, setSuccessVisible] = useState(false);
@@ -62,7 +62,7 @@ export default function ModalCreateProduct({
     const validationErrors = Product.validateAll(formData);
 
     const hasErrors = Object.values(validationErrors).some(
-      (error) => error !== null,
+      (error) => error !== null
     );
 
     if (hasErrors) {
@@ -79,21 +79,25 @@ export default function ModalCreateProduct({
         quantity,
         isAvailable,
         isPromotionAvailable,
-        null, 
+        photoAsset
       );
 
-      await createProductRequest(productData.toJSON(), photoUrl, accessToken);
+      await createProductRequest(
+        productData.toJSON(),
+        productData.photoAsset,
+        accessToken
+      );
 
       setSuccessMessage("Produto cadastrado com sucesso!");
       setSuccessVisible(true);
     } catch (error) {
       showErrorModal(
-        "Não foi possível cadastrar o produto. Verifique os dados e tente novamente.",
+        "Não foi possível cadastrar o produto. Verifique os dados e tente novamente."
       );
       if (error.response) {
         console.error(
           "Erro 422 - Detalhes da Validação da API:",
-          JSON.stringify(error.response.data, null, 2),
+          JSON.stringify(error.response.data, null, 2)
         );
       } else {
         console.error("Erro ao criar produto:", error);
@@ -106,20 +110,20 @@ export default function ModalCreateProduct({
     if (status !== "granted") {
       Alert.alert(
         "Permissão necessária",
-        "Desculpe, precisamos da permissão para acessar suas fotos!",
+        "Desculpe, precisamos da permissão para acessar suas fotos!"
       );
       return;
     }
 
     const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaType.Images,
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       aspect: [1, 1],
       quality: 1,
     });
 
     if (!result.canceled) {
-      setPhotoUrl(result.assets[0].uri);
+      setPhotoAsset(result.assets[0]);
     }
   };
 
@@ -312,9 +316,9 @@ export default function ModalCreateProduct({
                   onPress={pickImage}
                   className="bg-gray-soft h-32 rounded-lg items-center justify-center"
                 >
-                  {photoUrl ? (
+                  {photoAsset ? (
                     <Image
-                      source={{ uri: photoUrl }}
+                      source={{ uri: photoAsset.uri }}
                       className="w-full h-full rounded-lg"
                     />
                   ) : (

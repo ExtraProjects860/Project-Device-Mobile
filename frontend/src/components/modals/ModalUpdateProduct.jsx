@@ -38,11 +38,13 @@ export default function ModalUpdateProduct({
   const [quantity, setQuantity] = useState("");
   const [isAvailable, setIsAvailable] = useState(true);
   const [isPromotionAvailable, setIsPromotionAvailable] = useState(false);
-  const [photoUrl, setPhotoUrl] = useState(null);
+
+  const [photoAsset, setPhotoAsset] = useState(null);
 
   const [errors, setErrors] = useState({});
   const [isSuccessVisible, setSuccessVisible] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
+
   useEffect(() => {
     if (product) {
       setName(product.name || "");
@@ -52,7 +54,8 @@ export default function ModalUpdateProduct({
       setQuantity(product.quantity?.toString() || "0");
       setIsAvailable(product.is_avaible || false);
       setIsPromotionAvailable(product.is_promotion_avaible || false);
-      setPhotoUrl(product.photo_url || null); 
+
+      setPhotoAsset(product.photo_url || null);
     }
   }, [product]);
 
@@ -71,37 +74,49 @@ export default function ModalUpdateProduct({
   };
 
   const handleUpdateProduct = async () => {
-    const newFormData = {
+    const formData = {
       name,
       description,
       value,
       discount,
       quantity,
-      isAvailable,
-      isPromotionAvailable,
-      photoUrl, 
     };
 
-    const validationErrors = Product.validateAll(newFormData);
+    const validationErrors = Product.validateAll(formData);
     const hasErrors = Object.values(validationErrors).some(
-      (error) => error !== null,
+      (error) => error !== null
     );
 
     if (hasErrors) {
       setErrors(validationErrors);
       return;
     }
+
+    const newFormData = {
+      ...formData,
+      isAvailable,
+      isPromotionAvailable,
+      photoAsset: photoAsset,
+    };
+
     const updatedData = Product.getChangedFields(product, newFormData);
-    let newPhotoUri = null;
-    if (photoUrl !== product.photo_url) {
-      newPhotoUri = photoUrl;
+
+    let imageAssetToSend = null;
+
+    if (
+      photoAsset !== product.photo_url &&
+      typeof photoAsset === "object" &&
+      photoAsset !== null
+    ) {
+      imageAssetToSend = photoAsset;
     }
 
     let dataToSend = updatedData;
-    if (Object.keys(updatedData).length === 0 && newPhotoUri) {
+    if (Object.keys(updatedData).length === 0 && imageAssetToSend) {
       dataToSend = { name: product.name };
     }
-    if (Object.keys(dataToSend).length === 0 && !newPhotoUri) {
+
+    if (Object.keys(dataToSend).length === 0 && !imageAssetToSend) {
       onClose();
       return;
     }
@@ -110,26 +125,24 @@ export default function ModalUpdateProduct({
       console.log("Enviando para updateProductRequest:");
       console.log("ID do Produto:", product.id);
       console.log("Dados (JSON):", dataToSend);
-      console.log("Nova URI da Foto:", newPhotoUri);
+      console.log("Novo Asset da Foto:", imageAssetToSend);
 
       await updateProductRequest(
         product.id,
-        dataToSend, 
-        newPhotoUri,
-        accessToken,
+        dataToSend,
+        imageAssetToSend,
+        accessToken
       );
 
       setSuccessMessage("Produto atualizado com sucesso!");
       setSuccessVisible(true);
     } catch (error) {
-      showErrorModal(
-        "Não foi possível atualizar o produto. Tente novamente.",
-      );
+      showErrorModal("Não foi possível atualizar o produto. Tente novamente.");
 
       if (error.response) {
         console.error(
           `Erro ${error.response.status} - Detalhes da Validação da API:`,
-          JSON.stringify(error.response.data, null, 2),
+          JSON.stringify(error.response.data, null, 2)
         );
       } else {
         console.error("Erro ao atualizar produto:", error);
@@ -142,20 +155,20 @@ export default function ModalUpdateProduct({
     if (status !== "granted") {
       Alert.alert(
         "Permissão necessária",
-        "Desculpe, precisamos da permissão para acessar suas fotos!",
+        "Desculpe, precisamos da permissão para acessar suas fotos!"
       );
       return;
     }
 
     const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaType.Images, 
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       aspect: [1, 1],
       quality: 1,
     });
 
     if (!result.canceled) {
-      setPhotoUrl(result.assets[0].uri); 
+      setPhotoAsset(result.assets[0]);
     }
   };
 
@@ -348,9 +361,15 @@ export default function ModalUpdateProduct({
                   onPress={pickImage}
                   className="bg-gray-soft h-32 rounded-lg items-center justify-center"
                 >
-                  {photoUrl ? (
+                  {/* --- Renderização corrigida --- */}
+                  {photoAsset ? (
                     <Image
-                      source={{ uri: photoUrl }}
+                      source={{
+                        uri:
+                          typeof photoAsset === "string"
+                            ? photoAsset
+                            : photoAsset.uri,
+                      }}
                       className="w-full h-full rounded-lg"
                     />
                   ) : (

@@ -137,6 +137,7 @@ export default function ProductsScreen() {
       <ModalCreate
         visible={isCreateProductModalVisible}
         onClose={() => setCreateProductVisible(false)}
+        onProductCreated={handleRefresh}
       />
       <ModalUpdateProduct
         visible={isUpdateProductModalVisible}
