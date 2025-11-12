@@ -29,9 +29,8 @@ export default function ForgotPasswordScreen() {
         setSuccessVisible(true);
       }
     } catch (error) {
-      /* mensagem de erro não bem detalhada para o usuario*/
       showErrorModal(
-        `Ocorreu um erro ao tentar enviar o e-mail. Por favor, tente novamente. ${error}`
+        `Ocorreu um erro ao tentar enviar o e-mail. Por favor, tente novamente.`
       );
     }
   };
