@@ -10,7 +10,7 @@ import Icon from "react-native-vector-icons/MaterialCommunityIcons";
  * @param {object} props.item
  * @param {function} props.onRemove
  */
-export default function CardWishListItem({ item, onRemove }) {
+const CardWishListItem = ({ item, onRemove }) => {
   const themeColors = useThemeColors();
 
   return (
@@ -85,3 +85,5 @@ export default function CardWishListItem({ item, onRemove }) {
     </View>
   );
 }
+
+export default React.memo(CardWishListItem);

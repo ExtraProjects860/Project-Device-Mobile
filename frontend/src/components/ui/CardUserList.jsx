@@ -16,7 +16,7 @@ import Icon from "react-native-vector-icons/MaterialCommunityIcons";
  * @param {object} props.item
  * @param {function} props.onEdit
  */
-export default function CardUserList({ item, onEdit }) {
+const CardUserList = ({ item, onEdit }) => {
   const themeColors = useThemeColors();
 
   return (
@@ -71,4 +71,6 @@ export default function CardUserList({ item, onEdit }) {
       </View>
     </View>
   );
-}
+};
+
+export default React.memo(CardUserList);

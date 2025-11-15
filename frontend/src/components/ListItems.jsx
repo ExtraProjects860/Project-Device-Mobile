@@ -18,11 +18,7 @@ import { usePagination } from "../hooks/usePagination.js";
  * O primeiro chamado callbackFetch resposável por receber a função de busca de dados
  * O segundo chamado CardListRender responsável pro receber o componente de rednderização dos itens da lista
  */
-export default function ListItems({
-  callbackFetch,
-  CardListRender,
-  searchFilter = "",
-}) {
+const ListItems = ({ callbackFetch, CardListRender, searchFilter = "" }) => {
   const {
     listItems,
     isLoadingMore,
@@ -92,4 +88,6 @@ export default function ListItems({
       )}
     </PageLoader>
   );
-}
+};
+
+export default React.memo(ListItems);

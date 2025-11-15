@@ -17,7 +17,7 @@ import { useAppContext } from "../../context/AppContext.js";
  * @param {object} props.item
  * @param {function} props.onEdit
  */
-export default function CardProductList({ item, onClick, isAdded }) {
+const CardProductList = ({ item, onClick, isAdded }) => {
   const themeColors = useThemeColors();
   const { userData } = useAppContext();
   const isAdmin = userData?.role === "ADMIN" || userData?.role === "SUPERADMIN";
@@ -115,4 +115,6 @@ export default function CardProductList({ item, onClick, isAdded }) {
       </View>
     </View>
   );
-}
+};
+
+export default React.memo(CardProductList);
