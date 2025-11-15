@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/ExtraProjects860/Project-Device-Mobile/appcontext"
+	"github.com/ExtraProjects860/Project-Device-Mobile/auth"
 	"github.com/ExtraProjects860/Project-Device-Mobile/config"
 	"github.com/ExtraProjects860/Project-Device-Mobile/handler/request"
 	"github.com/ExtraProjects860/Project-Device-Mobile/repository"
@@ -209,7 +210,7 @@ func (s *AuthService) VerifyCredentials(
 		return 0, fmt.Errorf("error incorrect email or not found, try again or other")
 	}
 
-	err = utils.VerifyHashedPassword(input.Password, user.Password)
+	err = auth.VerifyHashedPassword(input.Password, user.Password)
 	if err != nil {
 		s.logger.Warning(err.Error())
 		return 0, fmt.Errorf("password incorrect, try again or other")
@@ -230,7 +231,7 @@ func (s *AuthService) ResetPassword(
 		return fmt.Errorf("error not found use by id")
 	}
 
-	hashedPassword, err := utils.GenerateHashPassword(newPassword)
+	hashedPassword, err := auth.GenerateHashPassword(newPassword)
 	if err != nil {
 		s.logger.Warning(err.Error())
 		return fmt.Errorf("error to generate password hash")

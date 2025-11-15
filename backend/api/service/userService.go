@@ -6,6 +6,7 @@ import (
 	"mime/multipart"
 
 	"github.com/ExtraProjects860/Project-Device-Mobile/appcontext"
+	"github.com/ExtraProjects860/Project-Device-Mobile/auth"
 	"github.com/ExtraProjects860/Project-Device-Mobile/config"
 	"github.com/ExtraProjects860/Project-Device-Mobile/handler/request"
 	"github.com/ExtraProjects860/Project-Device-Mobile/repository"
@@ -35,7 +36,7 @@ func (u *UserService) ValidateAndUpdateFields(user *schemas.User, input request.
 		user.Email = input.Email
 	}
 	if input.Password != "" {
-		hashed, err := utils.GenerateHashPassword(input.Password)
+		hashed, err := auth.GenerateHashPassword(input.Password)
 		if err != nil {
 			return fmt.Errorf("password hash: %v", err)
 		}
@@ -62,7 +63,7 @@ func (u *UserService) Create(
 	imageService ImageService,
 	input request.UserRequest,
 ) (*dto.UserDTO, error) {
-	hashedPassword, err := utils.GenerateHashPassword(input.Password)
+	hashedPassword, err := auth.GenerateHashPassword(input.Password)
 	if err != nil {
 		u.logger.Errorf("Failed to gerenerate HashPassword: %v", err)
 		return nil, err
