@@ -15,6 +15,10 @@ export function useThemeColors() {
       ? colors.dark["text-primary"]
       : colors.light["text-inverted"],
 
+    icon: isThemeDark
+      ? colors.dark["text-primary"]
+      : colors.light["text-primary"],
+
     switch: {
       track: {
         true: colors.dark["text-secondary"],

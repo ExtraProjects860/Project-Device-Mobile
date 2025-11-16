@@ -99,21 +99,21 @@ export default function PasswordChangeModal({ visible, onClose }) {
                   name="lock-outline"
                   size={24}
                   color={
-                    themeColors.primary === "#FFFFFF" ? "#A0A0A0" : "#6B7280"
+                    themeColors.icon
                   }
                 />
-                <Text className="text-light-text-inverted font-bold pl-2 text-2xl">
+                <Text className="text-light-text-primary dark:text-dark-text-primary font-bold pl-2 text-2xl">
                   Nova Senha:
                 </Text>
               </View>
 
-              <View className="flex-row items-center bg-white rounded-full px-4 py-1 w-full">
+              <View className="flex-row items-center bg-gray-soft rounded-full px-4 py-1 w-full">
                 <TextInput
                   className="-py-1 ml-2 flex-1 text-light-text-secondary font-semibold text-2xl"
                   secureTextEntry={!showPassword}
                   placeholder="*********"
                   placeholderTextColor={
-                    themeColors.primary === "#FFFFFF" ? "#A0A0A0" : "#6B7280"
+                    "#475569"
                   }
                   value={newPassword}
                   onChangeText={setNewPassword}
@@ -138,21 +138,21 @@ export default function PasswordChangeModal({ visible, onClose }) {
                   name="lock-outline"
                   size={24}
                   color={
-                    themeColors.primary === "#FFFFFF" ? "#A0A0A0" : "#6B7280"
+                    themeColors.icon
                   }
                 />
-                <Text className="text-light-text-inverted font-bold pl-2 text-2xl">
+                <Text className="text-light-text-primary dark:text-dark-text-primary font-bold pl-2 text-2xl">
                   Senha de Confirmação:
                 </Text>
               </View>
 
-              <View className="flex-row items-center bg-white rounded-full px-4 py-1 w-full">
+              <View className="flex-row items-center bg-gray-soft rounded-full px-4 py-1 w-full">
                 <TextInput
                   className="-py-1 ml-2 flex-1 text-light-text-secondary font-semibold text-2xl"
                   secureTextEntry={!showPassword}
                   placeholder="*********"
                   placeholderTextColor={
-                    themeColors.primary === "#FFFFFF" ? "#A0A0A0" : "#6B7280"
+                    "#475569"
                   }
                   value={confirmPassword}
                   onChangeText={setConfirmPassword}
