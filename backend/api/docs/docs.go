@@ -107,6 +107,11 @@ const docTemplate = `{
         },
         "/api/v1/auth/reset-pass-log-in": {
             "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Resets user password log in system",
                 "consumes": [
                     "application/json"

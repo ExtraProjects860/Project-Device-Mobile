@@ -241,6 +241,8 @@ paths:
           description: Change Password Successfully!
           schema:
             type: string
+      security:
+      - BearerAuth: []
       summary: Reset Password Log In
       tags:
       - auth

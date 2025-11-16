@@ -47,7 +47,7 @@ func RequestTokenHandler(appCtx *appcontext.AppContext, logger *config.Logger) g
 		if err != nil {
 			logger.Errorf("error to generate token: %v", err)
 			response.SendErr(ctx, http.StatusInternalServerError, err)
-			return 
+			return
 		}
 
 		response.SendSuccess(ctx, http.StatusOK, "Email to change Password Sent!")
@@ -124,6 +124,7 @@ func ResetPasswordHandler(appCtx *appcontext.AppContext, logger *config.Logger) 
 // @Summary      Reset Password Log In
 // @Description  Resets user password log in system
 // @Tags         auth
+// @Security     BearerAuth
 // @Param        request body request.ChangePassword true "Request body"
 // @Accept       json
 // @Produce      json
@@ -135,7 +136,7 @@ func ResetPasswordLogInHandler(appCtx *appcontext.AppContext, logger *config.Log
 		if err != nil {
 			logger.Error(err.Error())
 			response.SendErr(ctx, http.StatusUnauthorized, err)
-			return 
+			return
 		}
 
 		var input request.ChangePassword
