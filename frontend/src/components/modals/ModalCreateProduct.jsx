@@ -280,33 +280,6 @@ export default function ModalCreateProduct({
                 )}
               </View>
 
-              {/* Switches para Booleans */}
-              <View className="mb-4 flex-row justify-between items-center p-2">
-                <Text className="ml-2 text-light-text-primary dark:text-dark-text-primary text-xl font-semibold">
-                  Disponível?
-                </Text>
-                <Switch
-                  trackColor={{ false: "#767577", true: themeColors.secondary }}
-                  thumbColor={isAvailable ? themeColors.primary : "#f4f3f4"}
-                  onValueChange={setIsAvailable}
-                  value={isAvailable}
-                />
-              </View>
-
-              <View className="mb-4 flex-row justify-between items-center p-2">
-                <Text className="ml-2 text-light-text-primary dark:text-dark-text-primary text-xl font-semibold">
-                  Em promoção?
-                </Text>
-                <Switch
-                  trackColor={{ false: "#767577", true: themeColors.secondary }}
-                  thumbColor={
-                    isPromotionAvailable ? themeColors.primary : "#f4f3f4"
-                  }
-                  onValueChange={setIsPromotionAvailable}
-                  value={isPromotionAvailable}
-                />
-              </View>
-
               {/* Campo de foto */}
               <View className="mb-6">
                 <Text className="ml-2 text-light-text-primary dark:text-dark-text-primary text-xl font-semibold mb-2">
@@ -345,6 +318,33 @@ export default function ModalCreateProduct({
                     </View>
                   )}
                 </TouchableOpacity>
+              </View>
+
+                {/* Switches para Booleans */}
+              <View className="mb-4 flex-row justify-between items-center p-2">
+                <Text className="ml-2 text-light-text-primary dark:text-dark-text-primary text-xl font-semibold">
+                  Disponível?
+                </Text>
+                <Switch
+                  trackColor={{ false: "#767577", true: themeColors.secondary }}
+                  thumbColor={isAvailable ? themeColors.primary : "#f4f3f4"}
+                  onValueChange={setIsAvailable}
+                  value={isAvailable}
+                />
+              </View>
+
+              <View className="mb-4 flex-row justify-between items-center p-2">
+                <Text className="ml-2 text-light-text-primary dark:text-dark-text-primary text-xl font-semibold">
+                  Em promoção?
+                </Text>
+                <Switch
+                  trackColor={{ false: "#767577", true: themeColors.secondary }}
+                  thumbColor={
+                    isPromotionAvailable ? themeColors.primary : "#f4f3f4"
+                  }
+                  onValueChange={setIsPromotionAvailable}
+                  value={isPromotionAvailable}
+                />
               </View>
             </ScrollView>
 

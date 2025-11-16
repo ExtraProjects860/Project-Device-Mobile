@@ -52,7 +52,7 @@ export function AppProvider({ children }) {
     };
 
     loadingStorageData();
-  }, [setColorScheme]);
+  }, []);
 
   const updateToken = async (newToken) => {
     setAccessToken(newToken);
