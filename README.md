@@ -10,7 +10,7 @@ A solução desenvolvida visa oferecer uma plataforma confiável, intuitiva e se
 
 ## Tecnologias Utilizadas:
 
-Ferramentas de Desenvolvimento:
+### Ferramentas de Desenvolvimento:
 
 - **Visual Studio Code:** Utilizado como ambiente de desenvolvimento integrado (IDE) para escrever e depurar o código.
 
@@ -20,7 +20,7 @@ Ferramentas de Desenvolvimento:
 
 - **Android Studio:** Utilizado para emulação de dispositivos móveis para construção do frontend do projeto.
 
-- **PostgresSQL** 
+- **PostgresSQL** Utilizado para o uso do banco de dados.
 
 ## Softwares Organizacionais:
 
@@ -34,8 +34,8 @@ Ferramentas de Desenvolvimento:
 
 ## Linguagens de Programação e Frameworks:
 
-- **Go/Gin:**
-- **Python/FastApi:**
+- **Go/Gin:**   
+- **Python/FastApi:** 
 - **React Native, Javascript, NativeWind:**
 - **Docker:**
 - **Ngrok:**
