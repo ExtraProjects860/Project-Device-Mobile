@@ -18,6 +18,7 @@ func InitializeRouter(appCtx *appcontext.AppContext) *gin.Engine {
 
 	middleware.SecurityHeaders(router)
 	middleware.SetCors(router)
+	middleware.SetAllowedImageSize(router)
 
 	InitHealthCheckRoutes(router, appCtx)
 	InitRoutesApiV1(router, appCtx)

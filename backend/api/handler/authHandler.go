@@ -20,11 +20,37 @@ import (
 // @Tags         auth
 // @Accept       json
 // @Produce      json
-// @Success      200 {object} map[string]string
+// @Param        email query string true "Email to search user"
+// @Success      200 {object} string "Email to change Password Sent!"
 // @Router       /api/v1/auth/request-token [post]
 func RequestTokenHandler(appCtx *appcontext.AppContext, logger *config.Logger) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		response.SendSuccess(ctx, http.StatusOK, "Require Password!")
+		email := ctx.Query("email")
+		if email == "" {
+			logger.Info("email not send")
+			response.SendErr(ctx, http.StatusBadRequest, errors.New("email not send, try again"))
+			return
+		}
+
+		userService := service.GetUserService(appCtx)
+
+		user, err := userService.GetByEmail(ctx, email)
+		if err != nil {
+			logger.Errorf("error to find user by email: %v", err)
+			response.SendErr(ctx, http.StatusInternalServerError, errors.New("error to find user by email. Try again or change email"))
+			return
+		}
+
+		authService := service.GetAuthService(appCtx)
+
+		err = authService.CreateToken(ctx, appCtx.Env.API.EmailService, user)
+		if err != nil {
+			logger.Errorf("error to generate token: %v", err)
+			response.SendErr(ctx, http.StatusInternalServerError, err)
+			return
+		}
+
+		response.SendSuccess(ctx, http.StatusOK, "Email to change Password Sent!")
 	}
 }
 
@@ -33,37 +59,88 @@ func RequestTokenHandler(appCtx *appcontext.AppContext, logger *config.Logger) g
 // @Tags         auth
 // @Accept       json
 // @Produce      json
-// @Success      200 {object} map[string]string
+// @Param        email query string true "Email to search user"
+// @Param        token query string true "Token to change user password"
+// @Param        request body request.ChangePassword true "Request body"
+// @Success      200 {object} string "Change Password Successfully!"
 // @Router       /api/v1/auth/reset-password [post]
 func ResetPasswordHandler(appCtx *appcontext.AppContext, logger *config.Logger) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		response.SendSuccess(ctx, http.StatusOK, "Change Password!")
+		email := ctx.Query("email")
+		if email == "" {
+			logger.Info("email not send")
+			response.SendErr(ctx, http.StatusBadRequest, errors.New("email not send, try again"))
+			return
+		}
+
+		token := ctx.Query("token")
+		if token == "" {
+			logger.Info("token not send")
+			response.SendErr(ctx, http.StatusBadRequest, errors.New("token not send, try again"))
+			return
+		}
+
+		var input request.ChangePassword
+		if err := request.ReadBodyJSON(ctx, &input); err != nil {
+			logger.Error(err.Error())
+			response.SendErr(ctx, http.StatusUnprocessableEntity, errors.New("invalid input"))
+			return
+		}
+
+		if input.NewPassword == "" {
+			logger.Info("new_password can't be empty")
+			response.SendErr(ctx, http.StatusBadRequest, errors.New("new_password can't be empty"))
+			return
+		}
+
+		userService := service.GetUserService(appCtx)
+
+		user, err := userService.GetByEmail(ctx, email)
+		if err != nil {
+			logger.Errorf("error to find user by email: %v", err)
+			response.SendErr(ctx, http.StatusInternalServerError, errors.New("error to find user by email. Try again or change email"))
+			return
+		}
+
+		authService := service.GetAuthService(appCtx)
+		err = authService.ChangePassword(
+			ctx,
+			appCtx.Env.API.EmailService,
+			token,
+			input.NewPassword,
+			user,
+			repository.NewPostgresUserRepository(appCtx.DB),
+		)
+		if err != nil {
+			logger.Errorf("error to change user password: %v", err)
+			response.SendErr(ctx, http.StatusInternalServerError, err)
+			return
+		}
+
+		response.SendSuccess(ctx, http.StatusOK, "Change Password Successfully!")
 	}
 }
 
 // @Summary      Reset Password Log In
 // @Description  Resets user password log in system
 // @Tags         auth
+// @Security     BearerAuth
+// @Param        request body request.ChangePassword true "Request body"
 // @Accept       json
 // @Produce      json
-// @Success      200 {object} map[string]string
+// @Success      200 {object} string "Change Password Successfully!"
 // @Router       /api/v1/auth/reset-pass-log-in [post]
 func ResetPasswordLogInHandler(appCtx *appcontext.AppContext, logger *config.Logger) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		uidRaw, exists := ctx.Get("user_id")
-		if !exists {
-			response.SendErr(ctx, http.StatusUnauthorized, errors.New("user id not found in token"))
+		uid, err := request.GetIdByToken(ctx)
+		if err != nil {
+			logger.Error(err.Error())
+			response.SendErr(ctx, http.StatusUnauthorized, err)
 			return
 		}
 
-		uid, ok := uidRaw.(uint)
-		if !ok {
-			response.SendErr(ctx, http.StatusInternalServerError, errors.New("invalid user id type"))
-			return
-		}
-
-		var input request.ChangePasswordInternal
-		if err := request.ReadBody(ctx, &input); err != nil {
+		var input request.ChangePassword
+		if err := request.ReadBodyJSON(ctx, &input); err != nil {
 			logger.Error(err.Error())
 			response.SendErr(ctx, http.StatusUnprocessableEntity, errors.New("invalid input"))
 			return
@@ -76,10 +153,10 @@ func ResetPasswordLogInHandler(appCtx *appcontext.AppContext, logger *config.Log
 		}
 
 		authService := service.GetAuthService(appCtx)
-		err := authService.ResetPasswordLogIn(
+		err = authService.ResetPassword(
 			ctx,
 			input.NewPassword,
-			uid,
+			uint(uid),
 			repository.NewPostgresUserRepository(appCtx.DB),
 		)
 		if err != nil {
@@ -88,7 +165,7 @@ func ResetPasswordLogInHandler(appCtx *appcontext.AppContext, logger *config.Log
 			return
 		}
 
-		response.SendSuccess(ctx, http.StatusOK, "Change Password!")
+		response.SendSuccess(ctx, http.StatusOK, "Change Password Successfully!")
 	}
 }
 
@@ -107,7 +184,7 @@ func ResetPasswordLogInHandler(appCtx *appcontext.AppContext, logger *config.Log
 func LoginHandler(appCtx *appcontext.AppContext, logger *config.Logger) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		var input request.LoginRequest
-		if err := request.ReadBody(ctx, &input); err != nil {
+		if err := request.ReadBodyJSON(ctx, &input); err != nil {
 			logger.Error(err.Error())
 			response.SendErr(ctx, http.StatusUnprocessableEntity, errors.New("invalid input"))
 			return
@@ -146,41 +223,5 @@ func LoginHandler(appCtx *appcontext.AppContext, logger *config.Logger) gin.Hand
 		response.SendSuccess(ctx, http.StatusCreated, response.TokenResponse{
 			Access: accessToken,
 		})
-	}
-}
-
-// @Summary      Refresh Token
-// @Description  Refreshes the authentication token
-// @Tags         auth
-// @Accept       json
-// @Produce      json
-// @Success      201 {object} response.TokenResponse
-// @Failure      422 {object} response.ErrResponse
-// @Failure      500 {object} response.ErrResponse
-// @Router       /api/v1/auth/refresh-token [post]
-// @Deprecated true
-func RefreshTokenHandler(appCtx *appcontext.AppContext, logger *config.Logger) gin.HandlerFunc {
-	return func(ctx *gin.Context) {
-		// var input auth.RequestRefresh
-		// if err := request.ReadBody(ctx, &input); err != nil {
-		// 	logger.Error(err.Error())
-		// 	response.SendErr(ctx, http.StatusUnprocessableEntity, errors.New("invalid input"))
-		// 	return
-		// }
-
-		// newAccessToken, err := auth.RefreshToken(
-		// 	input.RefreshToken,
-		// 	appCtx.Env.API.JwtKey,
-		// 	appCtx.Env.API.RefreshKey,
-		// )
-		// if err != nil {
-		// 	logger.Error(err.Error())
-		// 	response.SendErr(ctx, http.StatusInternalServerError, errors.New("error to generate new jwt token"))
-		// 	return
-		// }
-
-		// response.SendSuccess(ctx, http.StatusCreated, response.TokenResponse{
-		// 	Access: newAccessToken,
-		// })
 	}
 }

@@ -1,7 +1,9 @@
 package request
 
 import (
+	"encoding/json"
 	"fmt"
+	"mime/multipart"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
@@ -44,34 +46,51 @@ func GetIdQuery(ctx *gin.Context) (uint, error) {
 	return uint(parsedId), nil
 }
 
-func GetPaginationData(ctx *gin.Context) (uint, uint, error) {
-	itemsPerPage := ctx.Query("itemsPerPage")
-	if itemsPerPage == "" {
-		return 0, 0, ErrParamIsRequired("id", "queryParameter")
+func GetIdByToken(ctx *gin.Context) (uint, error) {
+	uidRaw, exists := ctx.Get("user_id")
+	if !exists {
+		return 0, ErrParamIsRequired("user_id", "token")
 	}
 
-	parsedItemsPerPage, err := strconv.ParseUint(itemsPerPage, 10, 64)
-	if err != nil {
-		return 0, 0, fmt.Errorf("invalid parsed itemsPerPage: %v", err)
+	uid, ok := uidRaw.(uint)
+	if !ok {
+		return 0, fmt.Errorf("invalid convert user id type")
 	}
 
-	currentPage := ctx.Query("currentPage")
-	if currentPage == "" {
-		return 0, 0, ErrParamIsRequired("id", "queryParameter")
-	}
-
-	parsedCurrentPage, err := strconv.ParseUint(currentPage, 10, 64)
-	if err != nil {
-		return 0, 0, fmt.Errorf("invalid parsed currentPage: %v", err)
-	}
-
-	return uint(parsedItemsPerPage), uint(parsedCurrentPage), nil
+	return uid, nil
 }
 
-func ReadBody[T any](ctx *gin.Context, input *T) error {
+func ReadBodyJSON[T any](ctx *gin.Context, input *T) error {
 	if err := ctx.ShouldBindJSON(&input); err != nil {
 		return fmt.Errorf("error to parsed body to json")
 	}
 
 	return nil
+}
+
+func ReadBodyFORM[T any](ctx *gin.Context, input *T) error {
+	dataString := ctx.PostForm("data")
+	if dataString == "" {
+		return fmt.Errorf("field 'data' contain JSON is required")
+	}
+
+	if err := json.Unmarshal([]byte(dataString), &input); err != nil {
+		return fmt.Errorf("JSON invalid field in 'data': %v", err)
+	}
+
+	return nil
+}
+
+func GetFileHeader(ctx *gin.Context, imageKey string) (*multipart.FileHeader, error) {
+	fileAny, exists := ctx.Get(imageKey)
+	if !exists {
+		return nil, nil
+	}
+
+	file, ok := fileAny.(*multipart.FileHeader)
+	if !ok {
+		return nil, fmt.Errorf("invalid photo type in context")
+	}
+
+	return file, nil
 }

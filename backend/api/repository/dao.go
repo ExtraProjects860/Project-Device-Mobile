@@ -2,9 +2,12 @@ package repository
 
 import (
 	"context"
+	"sync"
 
 	"gorm.io/gorm"
 )
+
+var searchableFieldsCache sync.Map
 
 func firstWhere[T any](db *gorm.DB, query string, args ...any) (T, error) {
 	var model T
@@ -46,17 +49,4 @@ func delete[T any](ctx context.Context, db *gorm.DB, entity *T, queryWhere strin
 	return db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
 		return tx.Model(new(T)).Where(queryWhere, args...).Delete(entity).Error
 	})
-}
-
-func getByPagination[T any](db *gorm.DB, itemsPerPage, currentPage uint) ([]T, uint, uint, error) {
-	var models []T
-
-	offset, totalPages, totalItems := pagination(db, itemsPerPage, currentPage)
-
-	err := db.
-		Limit(int(itemsPerPage)).
-		Offset(int(offset)).
-		Find(&models).Error
-
-	return models, totalPages, totalItems, err
 }

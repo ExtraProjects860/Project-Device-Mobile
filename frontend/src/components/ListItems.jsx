@@ -10,7 +10,6 @@ import PageLoader from "../context/PageLoader.js";
 import Loading from "./ui/Loading.jsx";
 import WarningNotFound from "./ui/WarningNotFound.jsx";
 import { usePagination } from "../hooks/usePagination.js";
-import ModalErrors from "./modals/ModalErrors";
 
 /**
  * Componente responsável pela renderização em lista dos itens
@@ -19,7 +18,7 @@ import ModalErrors from "./modals/ModalErrors";
  * O primeiro chamado callbackFetch resposável por receber a função de busca de dados
  * O segundo chamado CardListRender responsável pro receber o componente de rednderização dos itens da lista
  */
-export default function ListItems({ callbackFetch, CardListRender }) {
+const ListItems = ({ callbackFetch, CardListRender, searchFilter = "" }) => {
   const {
     listItems,
     isLoadingMore,
@@ -27,15 +26,12 @@ export default function ListItems({ callbackFetch, CardListRender }) {
     flatListRef,
     totalResult,
     allItemsLoaded,
-    error,
     initialLoad,
     loadMore,
     handleRefresh,
     scrollToTop,
-    clearError,
-  } = usePagination(callbackFetch);
+  } = usePagination(callbackFetch, searchFilter);
 
-  // Função responsável renderizar o botão de Voltar ao Topo ao final da lista
   const renderInFooter = () => {
     if (isLoadingMore) {
       return <Loading />;
@@ -61,13 +57,6 @@ export default function ListItems({ callbackFetch, CardListRender }) {
 
   return (
     <PageLoader fetchData={initialLoad}>
-      <ModalErrors
-        visible={!!error}
-        message={error}
-        onClose={clearError}
-        onRetry={handleRefresh}
-      />
-
       {isRefreshing && listItems.length > 0 ? (
         <Loading />
       ) : (
@@ -82,7 +71,6 @@ export default function ListItems({ callbackFetch, CardListRender }) {
             contentContainerStyle={{ paddingBottom: 40 }}
             ref={flatListRef}
             data={listItems}
-            numColumns={2}
             keyExtractor={(item) => item.id.toString()}
             onEndReached={loadMore}
             onEndReachedThreshold={0.5}
@@ -94,10 +82,12 @@ export default function ListItems({ callbackFetch, CardListRender }) {
                 onRefresh={handleRefresh}
               />
             }
-            ListEmptyComponent={!error && <WarningNotFound />}
+            ListEmptyComponent={<WarningNotFound />}
           />
         </View>
       )}
     </PageLoader>
   );
-}
+};
+
+export default React.memo(ListItems);

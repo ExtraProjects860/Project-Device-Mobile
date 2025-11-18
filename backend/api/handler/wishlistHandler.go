@@ -18,7 +18,6 @@ import (
 // @Security     BearerAuth
 // @Accept       json
 // @Produce      json
-// @Param 		 user_id query string true "User ID"
 // @Param 		 product_id query string true "Product ID"
 // @Success      201 {object} dto.WishListMinimalDTO
 // @Failure      400 {object} response.ErrResponse
@@ -51,7 +50,6 @@ func AddInWishListHandler(appCtx *appcontext.AppContext, logger *config.Logger) 
 // @Tags         wishlist
 // @Security     BearerAuth
 // @Produce      json
-// @Param 		 user_id query string true "User ID"
 // @Param 		 product_id query string true "Product ID"
 // @Success      200 {object} dto.WishListMinimalDTO
 // @Failure      400 {object} response.ErrResponse
@@ -77,7 +75,6 @@ func DeleteInWishListHandler(appCtx *appcontext.AppContext, logger *config.Logge
 
 		response.SendSuccess(ctx, http.StatusOK, wishlistEntrie)
 	}
-
 }
 
 // @Summary      Get Wish List Items
@@ -85,23 +82,24 @@ func DeleteInWishListHandler(appCtx *appcontext.AppContext, logger *config.Logge
 // @Tags         wishlist
 // @Security     BearerAuth
 // @Produce      json
-// @Param 		 id query string true "User ID"
 // @Param        itemsPerPage query string true "Pagination Items"
 // @Param        currentPage query string true "Pagination Current Page"
-// @Success      200 {array}  dto.WishListDTO
+// @Param        searchFilter query string false "Search item by filter"
+// @Param        itemsOrder   query string false "Order direction" Enums(ASC, DESC)
+// @Success      200 {array}  dto.ProductDTO
 // @Failure      400 {object} response.ErrResponse
 // @Failure      500 {object} response.ErrResponse
 // @Router       /api/v1/wishlist [get]
 func GetWishListByUserIDHandler(appCtx *appcontext.AppContext, logger *config.Logger) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		userId, err := request.GetIdQuery(ctx)
+		uid, err := request.GetIdByToken(ctx)
 		if err != nil {
 			logger.Error(err.Error())
-			response.SendErr(ctx, http.StatusBadRequest, err)
-			return
+			response.SendErr(ctx, http.StatusUnauthorized, err)
+			return 
 		}
 
-		itemsPerPage, currentPage, err := request.GetPaginationData(ctx)
+		paginationSearch, err := request.GetPaginationData(ctx)
 		if err != nil {
 			logger.Error(err.Error())
 			response.SendErr(ctx, http.StatusBadRequest, err)
@@ -110,7 +108,7 @@ func GetWishListByUserIDHandler(appCtx *appcontext.AppContext, logger *config.Lo
 
 		wishlistService := service.GetWishListService(appCtx)
 
-		wishlistEntries, err := wishlistService.GetAll(ctx, userId, itemsPerPage, currentPage)
+		wishlistEntries, err := wishlistService.GetAll(ctx, uid, paginationSearch)
 		if err != nil {
 			logger.Error(err.Error())
 			response.SendErr(ctx, http.StatusInternalServerError, errors.New("error to get wishlist in database"))
@@ -119,5 +117,4 @@ func GetWishListByUserIDHandler(appCtx *appcontext.AppContext, logger *config.Lo
 
 		response.SendSuccess(ctx, http.StatusOK, wishlistEntries)
 	}
-
 }

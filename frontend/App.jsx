@@ -16,10 +16,10 @@ function AppLayout() {
 
 export default function App() {
   return (
-    <AppProvider>
-      <ErrorProvider>
-        <AppLayout/>
-      </ErrorProvider>
-    </AppProvider>
+    <ErrorProvider>
+      <AppProvider>
+        <AppLayout />
+      </AppProvider>
+    </ErrorProvider>
   );
 }

@@ -11,7 +11,7 @@ import (
 func registerAuthRoutes(rg *gin.RouterGroup, appCtx *appcontext.AppContext) {
 	authGroup := rg.Group("/auth")
 	{
-		authGroup.POST("/request", handler.RequestTokenHandler(
+		authGroup.POST("/request-token", handler.RequestTokenHandler(
 			appCtx,
 			config.NewLogger("POST - AUTH-REQUEST"),
 		))
@@ -31,11 +31,6 @@ func registerAuthRoutes(rg *gin.RouterGroup, appCtx *appcontext.AppContext) {
 		authGroup.POST("/login", handler.LoginHandler(
 			appCtx,
 			config.NewLogger("POST - AUTH-LOGIN"),
-		))
-
-		authGroup.POST("/refresh-token", handler.RefreshTokenHandler(
-			appCtx,
-			config.NewLogger("POST - AUTH-REFRESH-TOKEN"),
 		))
 	}
 }

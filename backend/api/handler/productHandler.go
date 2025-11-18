@@ -2,6 +2,7 @@ package handler
 
 import (
 	"errors"
+	"fmt"
 	"net/http"
 
 	"github.com/ExtraProjects860/Project-Device-Mobile/appcontext"
@@ -17,9 +18,10 @@ import (
 // @Description  Creates a new product
 // @Tags         products
 // @Security     BearerAuth
-// @Accept       json
+// @Accept       multipart/form-data
 // @Produce      json
-// @Param        product body request.ProductRequest true "Product info"
+// @Param        image formData file false "Optional product profile image"
+// @Param        data formData string true "JSON string contain product data for create (request.ProductRequest)"
 // @Success      201 {object} dto.ProductDTO
 // @Failure      400 {object} response.ErrResponse
 // @Failure      422 {object} response.ErrResponse
@@ -29,7 +31,7 @@ func CreateProductHandler(appCtx *appcontext.AppContext, logger *config.Logger) 
 	return func(ctx *gin.Context) {
 		var input request.ProductRequest
 
-		if err := request.ReadBody(ctx, &input); err != nil {
+		if err := request.ReadBodyFORM(ctx, &input); err != nil {
 			logger.Error(err.Error())
 			response.SendErr(ctx, http.StatusUnprocessableEntity, err)
 			return
@@ -42,8 +44,9 @@ func CreateProductHandler(appCtx *appcontext.AppContext, logger *config.Logger) 
 		}
 
 		productService := service.GetProductService(appCtx)
+		imageService := service.GetImageService(appCtx)
 
-		product, err := productService.Create(ctx, input)
+		product, err := productService.Create(ctx, imageService, input)
 		if err != nil {
 			logger.Error(err.Error())
 			response.SendErr(ctx, http.StatusInternalServerError, err)
@@ -58,10 +61,11 @@ func CreateProductHandler(appCtx *appcontext.AppContext, logger *config.Logger) 
 // @Description  Updates an existing product
 // @Tags         products
 // @Security     BearerAuth
-// @Accept       json
+// @Accept       multipart/form-data
 // @Produce      json
 // @Param 		 id query string true "Product ID"
-// @Param        product body request.ProductRequest true "Product info to update"
+// @Param        image formData file false "Optional product profile image"
+// @Param        data formData string true "JSON string contain product data for update (request.ProductRequest)"
 // @Success      200 {object} dto.ProductDTO
 // @Failure      400 {object} response.ErrResponse
 // @Failure      422 {object} response.ErrResponse
@@ -77,11 +81,13 @@ func UpdateProductHandler(appCtx *appcontext.AppContext, logger *config.Logger) 
 		}
 
 		var input request.ProductRequest
-		if err := request.ReadBody(ctx, &input); err != nil {
+		if err := request.ReadBodyFORM(ctx, &input); err != nil {
 			logger.Error(err.Error())
 			response.SendErr(ctx, http.StatusUnprocessableEntity, err)
 			return
 		}
+
+		fmt.Println(input)
 
 		if err := request.ValidateUpdateBodyReq(&input); err != nil {
 			logger.Error(err.Error())
@@ -90,8 +96,9 @@ func UpdateProductHandler(appCtx *appcontext.AppContext, logger *config.Logger) 
 		}
 
 		productService := service.GetProductService(appCtx)
+		imageService := service.GetImageService(appCtx)
 
-		product, err := productService.Update(ctx, id, input)
+		product, err := productService.Update(ctx, imageService, id, input)
 		if err != nil {
 			logger.Error(err.Error())
 			response.SendErr(ctx, http.StatusInternalServerError, errors.New("error to update product"))
@@ -109,13 +116,15 @@ func UpdateProductHandler(appCtx *appcontext.AppContext, logger *config.Logger) 
 // @Produce      json
 // @Param        itemsPerPage query string true "Pagination Items"
 // @Param        currentPage query string true "Pagination Current Page"
+// @Param        searchFilter query string false "Search item by filter"
+// @Param        itemsOrder   query string false "Order direction" Enums(ASC, DESC)
 // @Success      200 {array}  dto.ProductDTO
 // @Failure      400 {object} response.ErrResponse
 // @Failure      500 {object} response.ErrResponse
 // @Router       /api/v1/products [get]
 func GetProductsHandler(appCtx *appcontext.AppContext, logger *config.Logger) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		itemsPerPage, currentPage, err := request.GetPaginationData(ctx)
+		paginationSearch, err := request.GetPaginationData(ctx)
 		if err != nil {
 			logger.Error(err.Error())
 			response.SendErr(ctx, http.StatusBadRequest, err)
@@ -124,7 +133,7 @@ func GetProductsHandler(appCtx *appcontext.AppContext, logger *config.Logger) gi
 
 		productService := service.GetProductService(appCtx)
 
-		products, err := productService.GetAll(ctx, itemsPerPage, currentPage)
+		products, err := productService.GetAll(ctx, paginationSearch)
 		if err != nil {
 			logger.Error(err.Error())
 			response.SendErr(ctx, http.StatusInternalServerError, errors.New("error to get products in database"))

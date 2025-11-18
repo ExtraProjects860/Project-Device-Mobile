@@ -17,9 +17,10 @@ import (
 // @Description  Creates a new user
 // @Tags         users
 // @Security     BearerAuth
-// @Accept       json
+// @Accept       multipart/form-data
 // @Produce      json
-// @Param        user body request.UserRequest false "User info"
+// @Param        image formData file false "Optional user profile image"
+// @Param        data formData string true "JSON string contain user data for create (request.UserRequest)"
 // @Success      201 {object} dto.UserDTO
 // @Failure      400 {object} response.ErrResponse
 // @Failure      422 {object} response.ErrResponse
@@ -29,7 +30,7 @@ func CreateUserHandler(appCtx *appcontext.AppContext, logger *config.Logger) gin
 	return func(ctx *gin.Context) {
 		var input request.UserRequest
 
-		if err := request.ReadBody(ctx, &input); err != nil {
+		if err := request.ReadBodyFORM(ctx, &input); err != nil {
 			logger.Error(err.Error())
 			response.SendErr(ctx, http.StatusBadRequest, err)
 			return
@@ -43,7 +44,8 @@ func CreateUserHandler(appCtx *appcontext.AppContext, logger *config.Logger) gin
 
 		userService := service.GetUserService(appCtx)
 
-		user, err := userService.Create(ctx, input)
+		user, err := userService.Create(
+			ctx, service.GetImageService(appCtx), input)
 		if err != nil {
 			logger.Error(err.Error())
 			response.SendErr(ctx, http.StatusInternalServerError, err)
@@ -65,16 +67,11 @@ func CreateUserHandler(appCtx *appcontext.AppContext, logger *config.Logger) gin
 // @Router       /api/v1/user [get]
 func GetInfoUserHandler(appCtx *appcontext.AppContext, logger *config.Logger) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		uidRaw, exists := ctx.Get("user_id")
-		if !exists {
-			response.SendErr(ctx, http.StatusUnauthorized, errors.New("user id not found in token"))
-			return
-		}
-
-		uid, ok := uidRaw.(uint)
-		if !ok {
-			response.SendErr(ctx, http.StatusInternalServerError, errors.New("invalid user id type"))
-			return
+		uid, err := request.GetIdByToken(ctx)
+		if err != nil {
+			logger.Error(err.Error())
+			response.SendErr(ctx, http.StatusUnauthorized, err)
+			return 
 		}
 
 		userService := service.GetUserService(appCtx)
@@ -97,13 +94,15 @@ func GetInfoUserHandler(appCtx *appcontext.AppContext, logger *config.Logger) gi
 // @Produce      json
 // @Param        itemsPerPage query string true "Pagination Items"
 // @Param        currentPage query string true "Pagination Current Page"
+// @Param        searchFilter query string false "Search item by filter"
+// @Param        itemsOrder   query string false "Order direction" Enums(ASC, DESC)
 // @Success      200 {array}  dto.UserDTO
 // @Failure      400 {object} response.ErrResponse
 // @Failure      500 {object} response.ErrResponse
 // @Router       /api/v1/users [get]
 func GetUsersHandler(appCtx *appcontext.AppContext, logger *config.Logger) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		itemsPerPage, currentPage, err := request.GetPaginationData(ctx)
+		paginationSearch, err := request.GetPaginationData(ctx)
 		if err != nil {
 			logger.Error(err.Error())
 			response.SendErr(ctx, http.StatusBadRequest, err)
@@ -112,7 +111,7 @@ func GetUsersHandler(appCtx *appcontext.AppContext, logger *config.Logger) gin.H
 
 		userService := service.GetUserService(appCtx)
 
-		users, err := userService.GetAll(ctx, itemsPerPage, currentPage)
+		users, err := userService.GetAll(ctx, paginationSearch)
 		if err != nil {
 			logger.Error(err.Error())
 			response.SendErr(ctx, http.StatusInternalServerError, errors.New("error to process get users"))
@@ -127,10 +126,11 @@ func GetUsersHandler(appCtx *appcontext.AppContext, logger *config.Logger) gin.H
 // @Description  Updates an existing user
 // @Tags         users
 // @Security     BearerAuth
-// @Accept       json
+// @Accept       multipart/form-data
 // @Produce      json
 // @Param 		 id query string true "User ID"
-// @Param        user body request.UserRequest false "User info to update"
+// @Param        image formData file false "Optional user profile image"
+// @Param        data formData string true "JSON string contain user data for update (request.UserRequest)"
 // @Success      200 {object} dto.UserDTO
 // @Failure      400 {object} response.ErrResponse
 // @Failure      422 {object} response.ErrResponse
@@ -146,7 +146,7 @@ func UpdateUserHandler(appCtx *appcontext.AppContext, logger *config.Logger) gin
 		}
 
 		var input request.UserRequest
-		if err := request.ReadBody(ctx, &input); err != nil {
+		if err := request.ReadBodyFORM(ctx, &input); err != nil {
 			logger.Error(err.Error())
 			response.SendErr(ctx, http.StatusUnprocessableEntity, err)
 			return
@@ -159,8 +159,9 @@ func UpdateUserHandler(appCtx *appcontext.AppContext, logger *config.Logger) gin
 		}
 
 		userService := service.GetUserService(appCtx)
+		imageService := service.GetImageService(appCtx)
 
-		user, err := userService.Update(ctx, id, input)
+		user, err := userService.Update(ctx, imageService, id, input)
 		if err != nil {
 			logger.Error(err.Error())
 			response.SendErr(ctx, http.StatusInternalServerError, errors.New("error to update user"))

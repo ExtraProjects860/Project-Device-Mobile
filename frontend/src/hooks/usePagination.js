@@ -11,7 +11,7 @@ const initialData = {
   totalResult: 0,
 };
 
-export function usePagination(callbackFetch) {
+export function usePagination(callbackFetch, searchFilter) {
   const { accessToken } = useAppContext();
 
   const [listItems, setListItems] = useState(initialData.data);
@@ -31,24 +31,34 @@ export function usePagination(callbackFetch) {
   const initialLoad = useCallback(async () => {
     try {
       if (typeof callbackFetch === "function") {
-        const result = await callbackFetch(itemsPerPage, 1, accessToken);
+        const result = await callbackFetch(
+          itemsPerPage,
+          1,
+          accessToken,
+          searchFilter,
+        );
         if (result?.data) {
           setListItems(result.data);
           setCurrentPage(result.current_page);
           setTotalPages(result.total_pages);
           setTotalResult(result.total_items);
+        } else {
+          setListItems(initialData.data);
+          setCurrentPage(initialData.currentPage);
+          setTotalPages(initialData.totalPages);
+          setTotalResult(initialData.totalResult);
         }
       } else {
         console.error("callbackFetch is not a function");
       }
     } catch (err) {
       console.error("Erro ao buscar dados iniciais:", err);
-      const message =
-        err.message ||
-        "Não foi possível carregar os itens. Verifique sua conexão.";
-      showErrorModal(message, initialLoad);
+      showErrorModal(
+        "Não foi possível carregar os itens. Verifique sua conexão.",
+        initialLoad,
+      );
     }
-  }, [callbackFetch, showErrorModal, accessToken]);
+  }, [callbackFetch, showErrorModal, accessToken, searchFilter]);
 
   const loadMore = useCallback(async () => {
     if (isLoadingMore || currentPage >= totalPages) return;
@@ -61,12 +71,16 @@ export function usePagination(callbackFetch) {
         itemsPerPage,
         currentPage + 1,
         accessToken,
+        searchFilter,
       );
       if (result.data && result.data.length > 0) {
         setListItems((prevItems) => [...prevItems, ...result.data]);
         setCurrentPage(result.current_page);
+      } else {
+        setTotalPages(currentPage);
       }
     } catch (err) {
+      setTotalPages(currentPage);
       console.error("Erro ao buscar a próxima página:", err);
       showErrorModal("Não foi possível carregar mais itens.", loadMore);
     } finally {
@@ -80,6 +94,7 @@ export function usePagination(callbackFetch) {
     callbackFetch,
     showErrorModal,
     accessToken,
+    searchFilter,
   ]);
 
   const handleRefresh = useCallback(async () => {

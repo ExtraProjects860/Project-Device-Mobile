@@ -1,25 +1,29 @@
-import { instanceMainApi } from "./axios.js";
-
-export async function getUsersRequest(itemsPerPage = 20, currentPage = 1, accessToken) {
-  const response = await instanceMainApi.get(
-    `/users?itemsPerPage=${itemsPerPage}&currentPage=${currentPage}`,{
-      headers: {
-        Authorization: `Bearer ${accessToken}`
-      }
-    }
-  );
-
-  return response.data || [];
-}
+import {
+  configsToPagination,
+  requestGet,
+  requestPatch,
+  requestPost,
+} from "./axios.js";
 
 /**
  * @param {object} userData
+ * @param {object} image
  * @param {string} accessToken
  */
-export async function createUserRequest(userData, accessToken) {
-  const response = await instanceMainApi.post("/user", userData, {
-    Authorization: `Bearer ${accessToken}`,
-  });
+export async function createUserRequest(userData, image = null, accessToken) {
+  const formData = new FormData();
+
+  formData.append("data", JSON.stringify(userData));
+
+  if (image) {
+    formData.append("image", {
+      uri: image.uri,
+      name: image.fileName || image.uri.split("/").pop(),
+      type: image.mimeType || "image/jpeg",
+    });
+  }
+
+  const response = await requestPost("/user", formData, accessToken);
   return response.data;
 }
 
@@ -27,25 +31,58 @@ export async function createUserRequest(userData, accessToken) {
  * @param {string} accessToken
  */
 export async function getInfoUserRequest(accessToken) {
-  const response = await instanceMainApi.get(`/user`, {
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-    },
-  });
+  const response = await requestGet(`/user`, accessToken);
   return response.data;
 }
 
 /**
  * @param {string} userId
  * @param {object} updatedUserData
+ * @param {object} image
  * @param {string} accessToken
  */
-export async function updateUserRequest(userId, updatedUserData, accessToken) {
-  const response = await instanceMainApi.patch("/user", updatedUserData, {
+export async function updateUserRequest(
+  userId,
+  updatedUserData,
+  image,
+  accessToken,
+) {
+  const formData = new FormData();
+
+  formData.append("data", JSON.stringify(updatedUserData));
+
+  if (image) {
+    formData.append("image", {
+      uri: image.uri,
+      name: image.fileName || image.uri.split("/").pop(),
+      type: image.mimeType || "image/jpeg",
+    });
+  }
+
+  const response = await requestPatch("/user", formData, accessToken, {
     params: { id: userId },
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-    },
   });
   return response.data;
+}
+
+/**
+ * @param {number} itemsPerPage
+ * @param {number} currentPage
+ * @param {string} accessToken
+ * @param {string} searchFilter
+ */
+export async function getUsersRequest(
+  itemsPerPage = configsToPagination.itemsPerPage,
+  currentPage = configsToPagination.currentPage,
+  accessToken,
+  searchFilter = "",
+  itemsOrder = "DESC",
+) {
+  let url = `/users?itemsPerPage=${itemsPerPage}&currentPage=${currentPage}&itemsOrder=${itemsOrder}`;
+
+  if (searchFilter && searchFilter.trim() !== "") {
+    url += `&searchFilter=${encodeURIComponent(searchFilter)}`;
+  }
+  const response = await requestGet(url, accessToken);
+  return response.data || [];
 }

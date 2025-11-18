@@ -12,21 +12,17 @@ export function formatCPF(cpf) {
  * @returns {string}
  */
 export function formatDate(date) {
-  return;
+  const dateConvert = new Date(date);
+  return dateConvert.toLocaleDateString("pt-BR");
 }
 
 /**
- * @param {string} datetime
- * @returns {string}
+ * @param {number} value 
+ * @param {number} percentage 
+ * @returns {number}
  */
-export function formatDateTime(datetime) {
-  return;
-}
-
-/**
- * @param {string} cnpj
- * @returns {string}
- */
-export function formatCNPJ(cnpj) {
-  return;
+export function formatPromotion(value, percentage) {
+  const each = (value * percentage);
+  const result = value - each;
+  return result.toFixed(2);
 }

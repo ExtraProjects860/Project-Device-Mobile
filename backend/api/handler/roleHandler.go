@@ -29,7 +29,7 @@ func CreateRole(appCtx *appcontext.AppContext, logger *config.Logger) gin.Handle
 	return func(ctx *gin.Context) {
 		var input request.RoleRequest
 
-		if err := request.ReadBody(ctx, &input); err != nil {
+		if err := request.ReadBodyJSON(ctx, &input); err != nil {
 			logger.Error(err.Error())
 			response.SendErr(ctx, http.StatusUnprocessableEntity, err)
 			return
@@ -77,7 +77,7 @@ func UpdateRole(appCtx *appcontext.AppContext, logger *config.Logger) gin.Handle
 		}
 
 		var input request.RoleRequest
-		if err := request.ReadBody(ctx, &input); err != nil {
+		if err := request.ReadBodyJSON(ctx, &input); err != nil {
 			logger.Error(err.Error())
 			response.SendErr(ctx, http.StatusUnprocessableEntity, err)
 			return
@@ -110,13 +110,15 @@ func UpdateRole(appCtx *appcontext.AppContext, logger *config.Logger) gin.Handle
 // @Produce      json
 // @Param        itemsPerPage query int true "Items per page"
 // @Param        currentPage  query int true "Current page number"
+// @Param        searchFilter query string false "Search item by filter"
+// @Param        itemsOrder   query string false "Order direction" Enums(ASC, DESC)
 // @Success      200 {array}  dto.RoleDTO
 // @Failure      400 {object} response.ErrResponse
 // @Failure      500 {object} response.ErrResponse
 // @Router       /api/v1/roles [get]
 func GetRoles(appCtx *appcontext.AppContext, logger *config.Logger) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		itemsPerPage, currentPage, err := request.GetPaginationData(ctx)
+		paginationSearch, err := request.GetPaginationData(ctx)
 		if err != nil {
 			logger.Error(err.Error())
 			response.SendErr(ctx, http.StatusBadRequest, err)
@@ -125,7 +127,7 @@ func GetRoles(appCtx *appcontext.AppContext, logger *config.Logger) gin.HandlerF
 
 		roleService := service.GetRoleService(appCtx)
 
-		roles, err := roleService.GetAll(ctx, itemsPerPage, currentPage)
+		roles, err := roleService.GetAll(ctx, paginationSearch)
 		if err != nil {
 			logger.Error(err.Error())
 			response.SendErr(ctx, http.StatusInternalServerError, errors.New("error to process get roles"))

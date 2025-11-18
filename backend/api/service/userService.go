@@ -1,9 +1,12 @@
 package service
 
 import (
+	"context"
 	"fmt"
+	"mime/multipart"
 
 	"github.com/ExtraProjects860/Project-Device-Mobile/appcontext"
+	"github.com/ExtraProjects860/Project-Device-Mobile/auth"
 	"github.com/ExtraProjects860/Project-Device-Mobile/config"
 	"github.com/ExtraProjects860/Project-Device-Mobile/handler/request"
 	"github.com/ExtraProjects860/Project-Device-Mobile/repository"
@@ -33,7 +36,7 @@ func (u *UserService) ValidateAndUpdateFields(user *schemas.User, input request.
 		user.Email = input.Email
 	}
 	if input.Password != "" {
-		hashed, err := utils.GenerateHashPassword(input.Password)
+		hashed, err := auth.GenerateHashPassword(input.Password)
 		if err != nil {
 			return fmt.Errorf("password hash: %v", err)
 		}
@@ -52,15 +55,17 @@ func (u *UserService) ValidateAndUpdateFields(user *schemas.User, input request.
 
 		user.EnterpriseID = input.EnterpriseID
 	}
-	if input.PhotoUrl != nil && *input.PhotoUrl != "" {
-		user.PhotoUrl = input.PhotoUrl
-	}
 	return nil
 }
 
-func (u *UserService) Create(ctx *gin.Context, input request.UserRequest) (*dto.UserDTO, error) {
-	hashedPassword, err := utils.GenerateHashPassword(input.Password)
+func (u *UserService) Create(
+	ctx *gin.Context,
+	imageService ImageService,
+	input request.UserRequest,
+) (*dto.UserDTO, error) {
+	hashedPassword, err := auth.GenerateHashPassword(input.Password)
 	if err != nil {
+		u.logger.Errorf("Failed to gerenerate HashPassword: %v", err)
 		return nil, err
 	}
 
@@ -72,17 +77,48 @@ func (u *UserService) Create(ctx *gin.Context, input request.UserRequest) (*dto.
 		Password:       hashedPassword,
 		Cpf:            input.Cpf,
 		RegisterNumber: input.RegisterNumber,
-		PhotoUrl:       input.PhotoUrl,
 	}
 
 	if err = u.repo.CreateUser(ctx, &user); err != nil {
+		u.logger.Errorf("Failed to create user in database: %v", err)
 		return nil, err
 	}
+
+	file, err := request.GetFileHeader(ctx, "image")
+	if err != nil {
+		u.logger.Error(err.Error())
+		return nil, err
+	}
+
+	go func(user *schemas.User, file *multipart.FileHeader) {
+		secureURL, _, err := imageService.UploadImage(file, FolderUser)
+		if err != nil {
+			u.logger.Errorf("Failed during image upload process: %v", err)
+			return
+		}
+
+		if secureURL != nil {
+			user.PhotoUrl = secureURL
+			if err := u.repo.UpdateUser(
+				context.Background(),
+				user.ID,
+				user,
+			); err != nil {
+				u.logger.Errorf("Failed to create photo for user %d: %v", user.ID, err)
+				return
+			}
+		}
+	}(&user, file)
 
 	return dto.MakeUserOutput(user), nil
 }
 
-func (u *UserService) Update(ctx *gin.Context, id uint, input request.UserRequest) (*dto.UserDTO, error) {
+func (u *UserService) Update(
+	ctx *gin.Context,
+	imageService ImageService,
+	id uint,
+	input request.UserRequest,
+) (*dto.UserDTO, error) {
 	user, err := u.repo.GetInfoUser(ctx, id)
 	if err != nil {
 		return nil, err
@@ -93,8 +129,35 @@ func (u *UserService) Update(ctx *gin.Context, id uint, input request.UserReques
 	}
 
 	if err = u.repo.UpdateUser(ctx, id, &user); err != nil {
+		u.logger.Errorf("Failed to update user in database: %v", err)
 		return nil, err
 	}
+
+	file, err := request.GetFileHeader(ctx, "image")
+	if err != nil {
+		u.logger.Error(err.Error())
+		return nil, err
+	}
+
+	go func(user *schemas.User, file *multipart.FileHeader) {
+		secureURL, _, err := imageService.UploadImage(file, FolderUser)
+		if err != nil {
+			u.logger.Errorf("Failed during image upload process: %v", err)
+			return
+		}
+
+		if secureURL != nil {
+			user.PhotoUrl = secureURL
+			if err := u.repo.UpdateUser(
+				context.Background(),
+				user.ID,
+				user,
+			); err != nil {
+				u.logger.Errorf("Failed to update photo for user %d: %v", user.ID, err)
+				return
+			}
+		}
+	}(&user, file)
 
 	return dto.MakeUserOutput(user), nil
 }
@@ -108,8 +171,20 @@ func (u *UserService) Get(ctx *gin.Context, id uint) (*dto.UserDTO, error) {
 	return dto.MakeUserOutput(user), nil
 }
 
-func (u *UserService) GetAll(ctx *gin.Context, itemsPerPage, currentPage uint) (*dto.PaginationDTO, error) {
-	users, totalPages, totalItems, err := u.repo.GetUsers(ctx, itemsPerPage, currentPage)
+func (u *UserService) GetByEmail(ctx *gin.Context, email string) (*dto.UserDTO, error) {
+	user, err := u.repo.GetUserByEmail(ctx, email)
+	if err != nil {
+		return nil, err
+	}
+
+	return dto.MakeUserOutput(user), nil
+}
+
+func (u *UserService) GetAll(ctx *gin.Context, paginationSearch request.PaginationSearch) (*dto.PaginationDTO, error) {
+	users, totalPages, totalItems, err := u.repo.GetUsers(
+		ctx,
+		paginationSearch,
+	)
 	if err != nil {
 		u.logger.Error(err.Error())
 		return nil, err
@@ -121,7 +196,7 @@ func (u *UserService) GetAll(ctx *gin.Context, itemsPerPage, currentPage uint) (
 
 	return dto.MakePaginationDTO(
 		users,
-		currentPage,
+		paginationSearch.CurrentPage,
 		totalPages,
 		totalItems,
 		toDTO,

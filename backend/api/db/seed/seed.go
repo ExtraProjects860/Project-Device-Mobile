@@ -7,6 +7,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/ExtraProjects860/Project-Device-Mobile/auth"
 	"github.com/ExtraProjects860/Project-Device-Mobile/config"
 	"github.com/ExtraProjects860/Project-Device-Mobile/enum"
 	"github.com/ExtraProjects860/Project-Device-Mobile/schemas"
@@ -28,7 +29,7 @@ func verifyStartSeed(db *gorm.DB, m any) bool {
 }
 
 func seedAdmin(db *gorm.DB, logger *config.Logger, enterprises []schemas.Enterprise) {
-	hashedPassword, err := utils.GenerateHashPassword("admin")
+	hashedPassword, err := auth.GenerateHashPassword("admin")
 	if err != nil {
 		panic(fmt.Sprintf("failed to hash password: %v", err))
 	}
@@ -72,7 +73,7 @@ func seedUser(db *gorm.DB, logger *config.Logger, quantity int) {
 	seedAdmin(db, logger, enterprises)
 
 	logger.Infof("Seeding table '%s' with %d records...", userModelName, quantity)
-	hashedPassword, err := utils.GenerateHashPassword("123456")
+	hashedPassword, err := auth.GenerateHashPassword("123456")
 	if err != nil {
 		panic(fmt.Sprintf("failed to hash password: %v", err))
 	}
@@ -82,7 +83,7 @@ func seedUser(db *gorm.DB, logger *config.Logger, quantity int) {
 	for range quantity {
 		re := roles[rng.IntN(len(roles))]
 		en := enterprises[rng.IntN(len(enterprises))]
-		url := utils.GenerateRandomPhoto(faker.Username(), 300, 300)
+		url := utils.GenerateRandomImage(faker.Username(), 300, 300)
 
 		user := schemas.User{
 			Name:           strings.ToUpper(faker.Name()),
@@ -206,7 +207,7 @@ func seedProduct(db *gorm.DB, logger *config.Logger, quantity int) {
 
 	logger.Infof("Seeding table '%s' with %d records...", modelName, quantity)
 	for range quantity {
-		url := utils.GenerateRandomPhoto(faker.Username(), 300, 300)
+		url := utils.GenerateRandomImage(faker.Username(), 300, 300)
 		discount := faker.Price(5, 50) / 100
 		randAvaiable := rng.IntN(2) == 1
 

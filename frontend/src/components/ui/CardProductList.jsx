@@ -1,5 +1,10 @@
 import React from "react";
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, Text, Image, TouchableOpacity } from "react-native";
+import { formatPromotion } from "../../lib/utils.js";
+import { useThemeColors } from "../../hooks/useThemeColors.js";
+import DefaultProduct from "../../assets/images/shopping-bag.png";
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import { useAppContext } from "../../context/AppContext.js";
 
 /**
  * Componente responsável pelo card de Produto
@@ -12,32 +17,104 @@ import { View, Text, TouchableOpacity } from "react-native";
  * @param {object} props.item
  * @param {function} props.onEdit
  */
-export default function CardProductList({ item, onEdit }) {
+const CardProductList = ({ item, onClick, isAdded }) => {
+  const themeColors = useThemeColors();
+  const { userData } = useAppContext();
+  const isAdmin = userData?.role === "ADMIN" || userData?.role === "SUPERADMIN";
+
   return (
-    <View className="flex-1 flex-col bg-light-card dark:bg-dark-card rounded-xl m-2 overflow-hidden">
-      <View className="flex-1 p-3">
-        <Text
-          className="text-light-text-primary dark:text-dark-text-primary font-bold text-lg"
-          numberOfLines={1}
-        >
-          {item.name}
-        </Text>
+    <View className="bg-light-card dark:bg-dark-card rounded-xl m-2 overflow-hidden">
+      {item.is_promotion_avaible && (
+        <View className="bg-light-secondary dark:bg-dark-secondary p-1 items-center justify-center">
+          <Text className="font-bold text-white text-sm">% Promoção</Text>
+        </View>
+      )}
 
-        <Text className="text-light-text-secondary dark:text-dark-text-secondary text-sm">
-          ID: {item.id}
-        </Text>
+      <View className="flex-row">
+        <View className="w-1/3 items-center justify-center">
+          <Image
+            className="h-32 bg-white aspect-square rounded-full"
+            source={item?.photo_url ? { uri: item.photo_url } : DefaultProduct}
+            resizeMode="contain"
+          />
+        </View>
 
-        <Text className="text-light-text-secondary dark:text-dark-text-secondary text-sm">
-          Valor: {item.value}
-        </Text>
+        <View className="flex-1 p-3 justify-between">
+          <View>
+            <Text
+              className="text-light-text-primary dark:text-dark-text-primary font-bold text-base"
+              numberOfLines={2}
+            >
+              {item?.name || "Nome não disponível"}
+            </Text>
+
+            <View className="flex-row flex-wrap items-center">
+              {item.is_promotion_avaible ? (
+                <>
+                  <Text className="line-through font-semibold text-light-text-secondary dark:text-dark-text-secondary">
+                    R$ {item.value}
+                  </Text>
+                  <Text className="text-light-secondary dark:text-dark-secondary font-bold ml-1">
+                    | Por: R$ {formatPromotion(item.value, item.discount)}
+                  </Text>
+                </>
+              ) : (
+                <Text className="text-light-text-secondary font-semibold dark:text-dark-text-secondary">
+                  R$ {item.value}
+                </Text>
+              )}
+            </View>
+
+            <Text
+              className="text-light-text-secondary dark:text-dark-text-secondary text-sm"
+              numberOfLines={1}
+              ellipsizeMode="tail"
+            >
+              Descrição: {item.description || "Sem descrição no momento"}
+            </Text>
+          </View>
+
+          <View className="m-2">
+            {!isAdmin && (
+              <TouchableOpacity
+                onPress={() => onClick(item)}
+                disabled={isAdded}
+                className={`flex-row gap-1 items-center justify-center py-2 px-5 rounded-full 
+                  ${
+                    isAdded
+                      ? "bg-gray-400 dark:bg-gray-600"
+                      : "bg-light-secondary dark:bg-dark-secondary"
+                  }
+                `}
+              >
+                <Icon
+                  name={isAdded ? "check" : "basket-plus-outline"}
+                  size={20}
+                  color={themeColors.header}
+                />
+                <Text className="text-white font-bold text-center">
+                  {isAdded ? "Adicionado" : "Add WishList"}
+                </Text>
+              </TouchableOpacity>
+            )}
+            {isAdmin && (
+              <TouchableOpacity
+                onPress={() => onClick(item)}
+                className="flex-row gap-1 items-center justify-center py-2 px-5 rounded-full bg-light-secondary dark:bg-dark-secondary"
+              >
+                <Icon
+                  name="square-edit-outline"
+                  size={20}
+                  color={themeColors.header}
+                />
+                <Text className="text-white font-bold text-center">Editar</Text>
+              </TouchableOpacity>
+            )}
+          </View>
+        </View>
       </View>
-
-      <TouchableOpacity
-        onPress={() => onEdit(item)}
-        className="py-2 px-5 m-3 rounded-full bg-light-secondary dark:bg-dark-secondary"
-      >
-        <Text className="text-white font-bold text-center">Editar</Text>
-      </TouchableOpacity>
     </View>
   );
-}
+};
+
+export default React.memo(CardProductList);

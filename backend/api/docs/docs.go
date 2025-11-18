@@ -73,42 +73,6 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/v1/auth/refresh-token": {
-            "post": {
-                "description": "Refreshes the authentication token",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "auth"
-                ],
-                "summary": "Refresh Token",
-                "deprecated": true,
-                "responses": {
-                    "201": {
-                        "description": "Created",
-                        "schema": {
-                            "$ref": "#/definitions/response.TokenResponse"
-                        }
-                    },
-                    "422": {
-                        "description": "Unprocessable Entity",
-                        "schema": {
-                            "$ref": "#/definitions/response.ErrResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/response.ErrResponse"
-                        }
-                    }
-                }
-            }
-        },
         "/api/v1/auth/request-token": {
             "post": {
                 "description": "Requests a reset token for user password",
@@ -122,14 +86,20 @@ const docTemplate = `{
                     "auth"
                 ],
                 "summary": "Request Password Token",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Email to search user",
+                        "name": "email",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
-                        "description": "OK",
+                        "description": "Email to change Password Sent!",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "type": "string"
                         }
                     }
                 }
@@ -137,6 +107,11 @@ const docTemplate = `{
         },
         "/api/v1/auth/reset-pass-log-in": {
             "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Resets user password log in system",
                 "consumes": [
                     "application/json"
@@ -148,14 +123,22 @@ const docTemplate = `{
                     "auth"
                 ],
                 "summary": "Reset Password Log In",
+                "parameters": [
+                    {
+                        "description": "Request body",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request.ChangePassword"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
-                        "description": "OK",
+                        "description": "Change Password Successfully!",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "type": "string"
                         }
                     }
                 }
@@ -174,14 +157,36 @@ const docTemplate = `{
                     "auth"
                 ],
                 "summary": "Reset Password",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Email to search user",
+                        "name": "email",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Token to change user password",
+                        "name": "token",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "description": "Request body",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request.ChangePassword"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
-                        "description": "OK",
+                        "description": "Change Password Successfully!",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "type": "string"
                         }
                     }
                 }
@@ -338,6 +343,22 @@ const docTemplate = `{
                         "name": "currentPage",
                         "in": "query",
                         "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Search item by filter",
+                        "name": "searchFilter",
+                        "in": "query"
+                    },
+                    {
+                        "enum": [
+                            "ASC",
+                            "DESC"
+                        ],
+                        "type": "string",
+                        "description": "Order direction",
+                        "name": "itemsOrder",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -374,7 +395,7 @@ const docTemplate = `{
                 ],
                 "description": "Creates a new product",
                 "consumes": [
-                    "application/json"
+                    "multipart/form-data"
                 ],
                 "produces": [
                     "application/json"
@@ -385,13 +406,17 @@ const docTemplate = `{
                 "summary": "Create Product",
                 "parameters": [
                     {
-                        "description": "Product info",
-                        "name": "product",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/request.ProductRequest"
-                        }
+                        "type": "file",
+                        "description": "Optional product profile image",
+                        "name": "image",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "JSON string contain product data for create (request.ProductRequest)",
+                        "name": "data",
+                        "in": "formData",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -429,7 +454,7 @@ const docTemplate = `{
                 ],
                 "description": "Updates an existing product",
                 "consumes": [
-                    "application/json"
+                    "multipart/form-data"
                 ],
                 "produces": [
                     "application/json"
@@ -447,13 +472,17 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "description": "Product info to update",
-                        "name": "product",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/request.ProductRequest"
-                        }
+                        "type": "file",
+                        "description": "Optional product profile image",
+                        "name": "image",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "JSON string contain product data for update (request.ProductRequest)",
+                        "name": "data",
+                        "in": "formData",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -513,6 +542,22 @@ const docTemplate = `{
                         "name": "currentPage",
                         "in": "query",
                         "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Search item by filter",
+                        "name": "searchFilter",
+                        "in": "query"
+                    },
+                    {
+                        "enum": [
+                            "ASC",
+                            "DESC"
+                        ],
+                        "type": "string",
+                        "description": "Order direction",
+                        "name": "itemsOrder",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -691,6 +736,22 @@ const docTemplate = `{
                         "name": "currentPage",
                         "in": "query",
                         "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Search item by filter",
+                        "name": "searchFilter",
+                        "in": "query"
+                    },
+                    {
+                        "enum": [
+                            "ASC",
+                            "DESC"
+                        ],
+                        "type": "string",
+                        "description": "Order direction",
+                        "name": "itemsOrder",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -762,7 +823,7 @@ const docTemplate = `{
                 ],
                 "description": "Creates a new user",
                 "consumes": [
-                    "application/json"
+                    "multipart/form-data"
                 ],
                 "produces": [
                     "application/json"
@@ -773,12 +834,17 @@ const docTemplate = `{
                 "summary": "Create User",
                 "parameters": [
                     {
-                        "description": "User info",
-                        "name": "user",
-                        "in": "body",
-                        "schema": {
-                            "$ref": "#/definitions/request.UserRequest"
-                        }
+                        "type": "file",
+                        "description": "Optional user profile image",
+                        "name": "image",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "JSON string contain user data for create (request.UserRequest)",
+                        "name": "data",
+                        "in": "formData",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -816,7 +882,7 @@ const docTemplate = `{
                 ],
                 "description": "Updates an existing user",
                 "consumes": [
-                    "application/json"
+                    "multipart/form-data"
                 ],
                 "produces": [
                     "application/json"
@@ -834,12 +900,17 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "description": "User info to update",
-                        "name": "user",
-                        "in": "body",
-                        "schema": {
-                            "$ref": "#/definitions/request.UserRequest"
-                        }
+                        "type": "file",
+                        "description": "Optional user profile image",
+                        "name": "image",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "JSON string contain user data for update (request.UserRequest)",
+                        "name": "data",
+                        "in": "formData",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -899,6 +970,22 @@ const docTemplate = `{
                         "name": "currentPage",
                         "in": "query",
                         "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Search item by filter",
+                        "name": "searchFilter",
+                        "in": "query"
+                    },
+                    {
+                        "enum": [
+                            "ASC",
+                            "DESC"
+                        ],
+                        "type": "string",
+                        "description": "Order direction",
+                        "name": "itemsOrder",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -944,13 +1031,6 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "User ID",
-                        "name": "id",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
                         "description": "Pagination Items",
                         "name": "itemsPerPage",
                         "in": "query",
@@ -962,6 +1042,22 @@ const docTemplate = `{
                         "name": "currentPage",
                         "in": "query",
                         "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Search item by filter",
+                        "name": "searchFilter",
+                        "in": "query"
+                    },
+                    {
+                        "enum": [
+                            "ASC",
+                            "DESC"
+                        ],
+                        "type": "string",
+                        "description": "Order direction",
+                        "name": "itemsOrder",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -970,7 +1066,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/dto.WishListDTO"
+                                "$ref": "#/definitions/dto.ProductDTO"
                             }
                         }
                     },
@@ -1006,13 +1102,6 @@ const docTemplate = `{
                 ],
                 "summary": "Add Product to Wish List",
                 "parameters": [
-                    {
-                        "type": "string",
-                        "description": "User ID",
-                        "name": "user_id",
-                        "in": "query",
-                        "required": true
-                    },
                     {
                         "type": "string",
                         "description": "Product ID",
@@ -1057,13 +1146,6 @@ const docTemplate = `{
                 ],
                 "summary": "Delete Product from Wish List",
                 "parameters": [
-                    {
-                        "type": "string",
-                        "description": "User ID",
-                        "name": "user_id",
-                        "in": "query",
-                        "required": true
-                    },
                     {
                         "type": "string",
                         "description": "Product ID",
@@ -1669,25 +1751,6 @@ const docTemplate = `{
                 }
             }
         },
-        "dto.WishListDTO": {
-            "type": "object",
-            "properties": {
-                "id": {
-                    "type": "integer",
-                    "example": 1
-                },
-                "item_count": {
-                    "type": "integer",
-                    "example": 1
-                },
-                "products": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/dto.ProductDTO"
-                    }
-                }
-            }
-        },
         "dto.WishListMinimalDTO": {
             "type": "object",
             "properties": {
@@ -1698,6 +1761,17 @@ const docTemplate = `{
                 "user_id": {
                     "type": "integer",
                     "example": 1
+                }
+            }
+        },
+        "request.ChangePassword": {
+            "type": "object",
+            "required": [
+                "new_password"
+            ],
+            "properties": {
+                "new_password": {
+                    "type": "string"
                 }
             }
         },
@@ -1731,46 +1805,6 @@ const docTemplate = `{
                 }
             }
         },
-        "request.ProductRequest": {
-            "type": "object",
-            "required": [
-                "description",
-                "name",
-                "quantity",
-                "value"
-            ],
-            "properties": {
-                "description": {
-                    "type": "string",
-                    "maxLength": 255,
-                    "minLength": 3
-                },
-                "discount": {
-                    "type": "number",
-                    "minimum": 0
-                },
-                "is_avaible": {
-                    "type": "boolean"
-                },
-                "is_promotion_avaible": {
-                    "type": "boolean"
-                },
-                "name": {
-                    "type": "string",
-                    "minLength": 3
-                },
-                "photo_url": {
-                    "type": "string"
-                },
-                "quantity": {
-                    "type": "integer",
-                    "minimum": 0
-                },
-                "value": {
-                    "type": "number"
-                }
-            }
-        },
         "request.RoleRequest": {
             "type": "object",
             "required": [
@@ -1780,47 +1814,6 @@ const docTemplate = `{
                 "name": {
                     "type": "string",
                     "minLength": 3
-                }
-            }
-        },
-        "request.UserRequest": {
-            "type": "object",
-            "required": [
-                "cpf",
-                "email",
-                "name",
-                "password",
-                "register_number",
-                "role_id"
-            ],
-            "properties": {
-                "cpf": {
-                    "type": "string"
-                },
-                "email": {
-                    "type": "string"
-                },
-                "enterprise_id": {
-                    "type": "integer"
-                },
-                "name": {
-                    "type": "string",
-                    "minLength": 3
-                },
-                "password": {
-                    "type": "string",
-                    "minLength": 6
-                },
-                "photo_url": {
-                    "type": "string"
-                },
-                "register_number": {
-                    "type": "string",
-                    "maxLength": 8,
-                    "minLength": 8
-                },
-                "role_id": {
-                    "type": "integer"
                 }
             }
         },

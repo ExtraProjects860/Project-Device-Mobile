@@ -5,6 +5,7 @@ import (
 	"errors"
 	"strings"
 
+	"github.com/ExtraProjects860/Project-Device-Mobile/handler/request"
 	"github.com/ExtraProjects860/Project-Device-Mobile/schemas"
 	"github.com/jackc/pgx/v5/pgconn"
 )
@@ -75,13 +76,12 @@ func (r *PostgresProductRepository) CreateProduct(ctx context.Context, product *
 	return nil
 }
 
-func (r *PostgresProductRepository) GetProducts(ctx context.Context, itemsPerPage uint, currentPage uint) ([]schemas.Product, uint, uint, error) {
+func (r *PostgresProductRepository) GetProducts(ctx context.Context, paginationSearch request.PaginationSearch) ([]schemas.Product, uint, uint, error) {
 	query := r.db.WithContext(ctx).Model(&schemas.Product{})
 
 	products, totalPages, totalItems, err := getByPagination[schemas.Product](
-		query, 
-		itemsPerPage, 
-		currentPage,
+		query,
+		paginationSearch,
 	)
 	if err != nil {
 		return nil, 0, 0, err
@@ -90,7 +90,7 @@ func (r *PostgresProductRepository) GetProducts(ctx context.Context, itemsPerPag
 	return products, totalPages, totalItems, err
 }
 
-func (r *PostgresProductRepository) UpdateProducts(ctx context.Context, id uint, product *schemas.Product) error {
+func (r *PostgresProductRepository) UpdateProduct(ctx context.Context, id uint, product *schemas.Product) error {
 	if err := updateByID(ctx, r.db, product, id); err != nil {
 		return verifyProductDuplicated(err)
 	}

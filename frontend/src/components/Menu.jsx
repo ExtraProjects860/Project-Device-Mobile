@@ -1,101 +1,108 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
   View,
   Text,
   TouchableOpacity,
   Switch,
-  Dimensions,
   Pressable,
   ScrollView,
+  Animated,
 } from "react-native";
-import Animated, {
-  useSharedValue,
-  useAnimatedStyle,
-  withTiming,
-  Easing,
-} from "react-native-reanimated";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import PasswordChange from "../components/PasswordChange";
+import PasswordChange from "./modals/PasswordChange.jsx";
+import ModalWarning from "./modals/ModalWarning";
 import { useNavigateTo } from "../hooks/useNavigateTo";
 import { useAppContext } from "../context/AppContext.js";
 import { useThemeColors } from "../hooks/useThemeColors.js";
+import { useHandleLogoutConfirm } from "../hooks/useHandleLogoutConfirm.js";
 
 /**
  * Componente responsável pelo Menu do app
  *
  * Recebe 2 atributos
  * O primeiro chamado visible responsável por receber o estado de visibilidade do menu
- * O segundo chamado onClose responsável por receber a função que fecha o menu
+ * O segundo chamado closeMenu responsável por receber a função que fecha o menu
  *
  * @param {object} props
  * @param {boolean} props.visible
- * @param {function} props.onClose
+ * @param {function} props.closeMenu
  */
-export default function Menu({ visible, onClose }) {
+export default function Menu({ visible, closeMenu }) {
   const goTo = useNavigateTo();
-  const { isThemeDark, toggleTheme, logout, userData } = useAppContext();
+  const { isThemeDark, toggleTheme, userData } = useAppContext();
   const themeColors = useThemeColors();
+  const handleLogoutConfirm = useHandleLogoutConfirm();
 
   const [isPasswordModalVisible, setPasswordModalVisible] = useState(false);
+  const [isLogoutModalVisible, setLogoutModalVisible] = useState(false);
 
-  const translateX = useSharedValue(screenWidth);
-  const { width: screenWidth } = Dimensions.get("window");
+  const handleConfirmLogout = () => {
+    handleLogoutConfirm();
+    setLogoutModalVisible(false);
+  };
 
-  const isAdmin = userData?.role === "ADMIN" || "SUPERADMIN";
+  const slideAnim = useRef(new Animated.Value(400)).current;
+  const fadeAnim = useRef(new Animated.Value(0)).current;
 
-  const animatedMenuStyle = useAnimatedStyle(() => {
-    return {
-      transform: [{ translateX: translateX.value }],
-    };
-  });
+  const isAdmin = userData?.role === "ADMIN" || userData?.role === "SUPERADMIN";
 
-  // Função para animação do menu aparecendo na tela
   useEffect(() => {
-    if (!visible) {
-      translateX.value = withTiming(screenWidth, {
-        duration: 200,
-        easing: Easing.in(Easing.ease),
-      });
-      return;
-    }
-    translateX.value = withTiming(0, {
-      duration: 200,
-      easing: Easing.out(Easing.ease),
-    });
-  }, [visible, translateX, screenWidth]);
+    Animated.parallel([
+      Animated.timing(slideAnim, {
+        toValue: visible ? 0 : 400,
+        duration: 250,
+        useNativeDriver: true,
+      }),
+      Animated.timing(fadeAnim, {
+        toValue: visible ? 1 : 0,
+        duration: 250,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  }, [visible, slideAnim, fadeAnim]);
 
   return (
     <>
-      {/* Modal de Alteração de Senha */}
       <PasswordChange
         visible={isPasswordModalVisible}
         onClose={() => setPasswordModalVisible(false)}
       />
 
-      {visible && (
-        <Pressable
-          onPress={onClose}
-          className="absolute inset-0 bg-black/40 z-50"
-        />
-      )}
+      <ModalWarning
+        visible={isLogoutModalVisible}
+        message={"Você tem certeza que deseja sair da sua conta?"}
+        onClose={() => setLogoutModalVisible(false)}
+        onConfirm={handleConfirmLogout}
+      />
+
+      <Animated.View
+        style={{ opacity: fadeAnim }}
+        pointerEvents={visible ? "auto" : "none"}
+        className="absolute inset-0 bg-black/40 z-50"
+      >
+        <Pressable onPress={closeMenu} className="w-full h-full" />
+      </Animated.View>
 
       {/* Sidebar */}
       <Animated.View
-        style={animatedMenuStyle}
+        style={{
+          transform: [{ translateX: slideAnim }],
+        }}
+        pointerEvents={visible ? "auto" : "none"}
         className="absolute top-0 bottom-0 right-0 h-full w-5/6 bg-light-secondary dark:bg-dark-primary p-6 z-50 pt-10 flex flex-col"
       >
-        <ScrollView>
+        <ScrollView showsVerticalScrollIndicator={false}>
           {/* Header */}
           <View className="flex-row items-center justify-between mb-10 rounded-xl">
             <TouchableOpacity
               onPress={() => goTo("/home")}
               className="p-2 border-2 border-light-text-inverted dark:border-dark-text-primary rounded-xl"
             >
-              <Icon name="home" size={30} color={themeColors.header} />
+              <Icon name="home-outline" size={30} color={themeColors.header} />
             </TouchableOpacity>
 
             <TouchableOpacity
-              onPress={onClose}
+              onPress={closeMenu}
               className="p-2 border-2 border-light-text-inverted dark:border-dark-text-primary rounded-xl"
             >
               <Icon name="arrow-left" size={30} color={themeColors.header} />
@@ -118,7 +125,7 @@ export default function Menu({ visible, onClose }) {
                     size={24}
                     color={themeColors.primary}
                   />
-                  <Text className="ml-2 text-light-text-primary dark:text-dark-text-primary font-semibold text-base">
+                  <Text className="ml-2 text-light-primary dark:text-dark-text-primary font-semibold text-base">
                     Tema
                   </Text>
                 </View>
@@ -135,17 +142,18 @@ export default function Menu({ visible, onClose }) {
                 onPress={() => setPasswordModalVisible(true)}
                 className="flex-row items-center bg-light-card dark:bg-dark-card rounded-full p-3"
               >
-                <Icon name="lock" size={24} color={themeColors.primary} />
+                <Icon
+                  name="lock-outline"
+                  size={24}
+                  color={themeColors.primary}
+                />
                 <Text className="ml-2 text-light-primary dark:text-dark-text-primary font-semibold text-base">
                   Senha
                 </Text>
               </TouchableOpacity>
 
               <TouchableOpacity
-                onPress={async () => {
-                  await logout();
-                  goTo("/login");
-                }}
+                onPress={() => setLogoutModalVisible(true)}
                 className="flex-row items-center bg-light-card dark:bg-dark-card rounded-full p-3"
               >
                 <Icon name="logout" size={24} color={themeColors.primary} />
@@ -158,39 +166,49 @@ export default function Menu({ visible, onClose }) {
           </View>
 
           {/* Itens */}
-          <View>
-            <Text className="text-light-text-inverted dark:text-dark-text-primary font-bold text-xl mb-0">
-              Itens
-            </Text>
+          {!isAdmin && (
+            <View>
+              <Text className="text-light-text-inverted dark:text-dark-text-primary font-bold text-xl mb-0">
+                Itens
+              </Text>
 
-            <View className="h-px bg-light-text-inverted dark:bg-dark-text-secondary my-4" />
+              <View className="h-px bg-light-text-inverted dark:bg-dark-text-secondary my-4" />
 
-            <View className="mb-6">
-              <TouchableOpacity
-                onPress={() => goTo("/products")}
-                className="flex-row items-center bg-light-card dark:bg-dark-card rounded-full p-3 mb-3"
-              >
-                <Icon name="shopping" size={24} color={themeColors.primary} />
+              <View className="mb-6">
+                <TouchableOpacity
+                  onPress={() => goTo("/products")}
+                  className="flex-row items-center bg-light-card dark:bg-dark-card rounded-full p-3 mb-3"
+                >
+                  <Icon
+                    name="shopping-outline"
+                    size={24}
+                    color={themeColors.primary}
+                  />
 
-                <Text className="ml-2 text-light-primary dark:text-dark-text-primary font-semibold text-base">
-                  Produtos
-                </Text>
-              </TouchableOpacity>
+                  <Text className="ml-2 text-light-primary dark:text-dark-text-primary font-semibold text-base">
+                    Produtos
+                  </Text>
+                </TouchableOpacity>
 
-              <TouchableOpacity
-                onPress={() => goTo("/wishlist")}
-                className="flex-row items-center bg-light-card dark:bg-dark-card rounded-full p-3"
-              >
-                <Icon name="bookmark" size={24} color={themeColors.primary} />
+                <TouchableOpacity
+                  onPress={() => goTo("/wishlist")}
+                  className="flex-row items-center bg-light-card dark:bg-dark-card rounded-full p-3"
+                >
+                  <Icon
+                    name="bookmark-outline"
+                    size={24}
+                    color={themeColors.primary}
+                  />
 
-                <Text className="ml-2 text-light-primary dark:text-dark-text-primary font-semibold text-base">
-                  Lista de Desejos
-                </Text>
-              </TouchableOpacity>
+                  <Text className="ml-2 text-light-primary dark:text-dark-text-primary font-semibold text-base">
+                    Lista de Desejos
+                  </Text>
+                </TouchableOpacity>
+              </View>
             </View>
-          </View>
+          )}
 
-          {/* Seção do Administrador */}
+          {/* Admin */}
           {isAdmin && (
             <View>
               <Text className="text-light-text-inverted dark:text-dark-text-primary font-bold text-xl mb-0 mt-2">
@@ -205,7 +223,7 @@ export default function Menu({ visible, onClose }) {
                   className="flex-row items-center bg-light-card dark:bg-dark-card rounded-full p-3 mb-3"
                 >
                   <Icon
-                    name="account-group"
+                    name="account-group-outline"
                     size={24}
                     color={themeColors.primary}
                   />

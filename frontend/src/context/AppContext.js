@@ -1,6 +1,15 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  useCallback,
+} from "react";
 import { useColorScheme } from "nativewind";
-import { Storage } from "../lib/Storage.js";
+import { Storage } from "../lib/storage.js";
+import { setupAxiosInterceptors } from "../lib/axios.js";
+import { useError } from "./ErrorContext.js";
+import NetInfo from "@react-native-community/netinfo";
 
 const AppContext = createContext();
 
@@ -9,7 +18,9 @@ export function AppProvider({ children }) {
   const [accessToken, setAccessToken] = useState(null);
   const [userData, setUserData] = useState({});
   const [isLoading, setIsLoading] = useState(true);
-  const [_, setTheme] = useState("");
+  const [isConnected, setIsConnected] = useState(true);
+
+  const { showErrorModal } = useError();
 
   const isThemeDark = colorScheme === "dark";
 
@@ -26,11 +37,18 @@ export function AppProvider({ children }) {
         setUserData(storedUserData);
       }
       if (storedTheme) {
-        setTheme(storedTheme);
         setColorScheme(storedTheme);
       }
 
       setIsLoading(false);
+
+      const unsubscribe = NetInfo.addEventListener((state) => {
+        setIsConnected(state.isConnected);
+      });
+
+      return () => {
+        unsubscribe();
+      };
     };
 
     loadingStorageData();
@@ -47,7 +65,6 @@ export function AppProvider({ children }) {
   };
 
   const updateTheme = async (newTheme) => {
-    setTheme(newTheme);
     setColorScheme(newTheme);
     await Storage.setItem("theme", newTheme);
   };
@@ -57,12 +74,22 @@ export function AppProvider({ children }) {
     await updateTheme(newTheme);
   };
 
-  const logout = async () => {
+  const manuallyLogout = async () => {
     setAccessToken(null);
     setUserData(null);
     await Storage.removeItem("token");
     await Storage.removeItem("user");
   };
+
+  const logout = useCallback(async () => {
+    showErrorModal("Sua sessão expirou. Por favor, faça login novamente.");
+
+    manuallyLogout();
+  }, [showErrorModal]);
+
+  useEffect(() => {
+    setupAxiosInterceptors(logout);
+  }, [logout]);
 
   const contexValues = {
     accessToken,
@@ -75,6 +102,8 @@ export function AppProvider({ children }) {
     updateTheme,
     toggleTheme,
     logout,
+    manuallyLogout,
+    checkInternetConection: isConnected,
   };
 
   return (

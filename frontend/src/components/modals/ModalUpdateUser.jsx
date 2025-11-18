@@ -17,27 +17,34 @@ import { useError } from "../../context/ErrorContext.js";
 import { useThemeColors } from "../../hooks/useThemeColors.js";
 import ModalCheck from "./ModalCheck";
 import { useAppContext } from "../../context/AppContext.js";
+import User from "../../lib/class/User.js";
+
+import { Picker } from "@react-native-picker/picker";
 
 export default function ModalUpdateUser({
   visible,
   onClose,
   user,
   onUserUpdated,
+  roles,
+  enterprises,
 }) {
   const { accessToken } = useAppContext();
-
   const { showErrorModal } = useError();
   const themeColors = useThemeColors();
+
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [cpf, setCpf] = useState("");
   const [registerNumber, setRegisterNumber] = useState("");
   const [roleId, setRoleId] = useState("");
   const [enterpriseId, setEnterpriseId] = useState("");
-  const [photoUri, setPhotoUri] = useState(null);
+  const [photoAsset, setPhotoAsset] = useState(null);
 
   const [isSuccessVisible, setSuccessVisible] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
+
+  const [errors, setErrors] = useState({});
 
   useEffect(() => {
     if (user) {
@@ -47,7 +54,8 @@ export default function ModalUpdateUser({
       setRegisterNumber(user.register_number?.toString() || "");
       setRoleId(user.role_id?.toString() || "");
       setEnterpriseId(user.enterprise_id?.toString() || "");
-      setPhotoUri(user.photo_url || null);
+      setPhotoAsset(user.photo_url || null);
+      setErrors({});
     }
   }, [user]);
 
@@ -57,54 +65,60 @@ export default function ModalUpdateUser({
     onClose();
   };
 
+  const handleBlur = (fieldName, value) => {
+    const error = User.validateField(fieldName, value);
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      [fieldName]: error,
+    }));
+  };
+
   const handleUpdateUser = async () => {
-    if (
-      !name &&
-      !email &&
-      !cpf &&
-      !registerNumber &&
-      !roleId &&
-      !enterpriseId &&
-      !photoUri
-    ) {
-      showErrorModal("Nenhum campo Vazio para atualizar.");
+    const formData = { name, cpf, email, registerNumber, roleId };
+    const validationErrors = User.validateAll(formData);
+    const hasErrors = Object.values(validationErrors).some(
+      (error) => error !== null
+    );
+
+    if (hasErrors) {
+      setErrors(validationErrors);
       return;
     }
 
-    const updatedUserData = {};
-    if (name !== user.name && name !== "") updatedUserData.name = name;
-    if (email !== user.email && email !== "") updatedUserData.email = email;
-    if (cpf !== user.cpf && cpf !== "") updatedUserData.cpf = cpf;
-    if (registerNumber !== user.register_number && registerNumber !== "")
-      updatedUserData.register_number = registerNumber;
-    if (parseInt(roleId, 10) !== user.role_id && roleId !== "")
-      updatedUserData.role_id = parseInt(roleId, 10);
+    const newFormData = { ...formData, enterpriseId, photoAsset: photoAsset };
+    const updatedUserData = User.getChangedFields(user, newFormData);
+
+    let imageAssetToSend = null;
     if (
-      parseInt(enterpriseId, 10) !== user.enterprise_id &&
-      enterpriseId !== ""
-    )
-      updatedUserData.enterprise_id = enterpriseId
-        ? parseInt(enterpriseId, 10)
-        : null;
-    if (photoUri !== user.photo_url) {
-      updatedUserData.photo_url = photoUri || "";
+      photoAsset !== user.photo_url &&
+      typeof photoAsset === "object" &&
+      photoAsset !== null
+    ) {
+      imageAssetToSend = photoAsset;
     }
 
-    if (Object.keys(updatedUserData).length === 0) {
+    if (
+      Object.keys(updatedUserData).length === 0 &&
+      imageAssetToSend === null
+    ) {
       setSuccessMessage("Nenhum campo foi modificado.");
       setSuccessVisible(true);
       return;
     }
 
     try {
-      await updateUserRequest(user.id, updatedUserData, accessToken);
+      await updateUserRequest(
+        user.id,
+        updatedUserData,
+        imageAssetToSend,
+        accessToken
+      );
       setSuccessMessage("Usuário atualizado com sucesso!");
       setSuccessVisible(true);
     } catch (error) {
-      const errorMessage =
-        error.response?.data?.error ||
-        "Não foi possível atualizar o usuário. Verifique os dados e tente novamente.";
-      showErrorModal(errorMessage);
+      showErrorModal(
+        "Não foi possível atualizar o usuário. Verifique os dados e tente novamente."
+      );
       console.error("Erro ao atualizar usuário:", error);
     }
   };
@@ -127,7 +141,7 @@ export default function ModalUpdateUser({
     });
 
     if (!result.canceled) {
-      setPhotoUri(result.assets[0].uri);
+      setPhotoAsset(result.assets[0]);
     }
   };
 
@@ -165,14 +179,22 @@ export default function ModalUpdateUser({
                   Nome:
                 </Text>
                 <TextInput
-                  className="bg-gray-soft rounded-lg p-4 text-base text-light-text-primary "
+                  className={`bg-gray-soft rounded-lg p-4 text-base text-light-text-primary 
+                    ${errors.name ? "border border-red-500" : ""}
+                  `}
                   placeholder="Nome Completo"
                   placeholderTextColor={
                     themeColors.primary === "#FFFFFF" ? "#A0A0A0" : "#6B7280"
                   }
                   value={name}
                   onChangeText={setName}
+                  onBlur={() => handleBlur("name", name)}
                 />
+                {errors.name && (
+                  <Text className="text-red-500 text-sm ml-2 mt-1">
+                    {errors.name}
+                  </Text>
+                )}
               </View>
 
               {/* E-mail */}
@@ -181,7 +203,9 @@ export default function ModalUpdateUser({
                   E-mail:
                 </Text>
                 <TextInput
-                  className="bg-gray-soft rounded-lg p-4 text-base text-light-text-primary"
+                  className={`bg-gray-soft rounded-lg p-4 text-base text-light-text-primary
+                    ${errors.email ? "border border-red-500" : ""}
+                  `}
                   placeholder="exemplo@email.com"
                   placeholderTextColor={
                     themeColors.primary === "#FFFFFF" ? "#A0A0A0" : "#6B7280"
@@ -190,7 +214,13 @@ export default function ModalUpdateUser({
                   autoCapitalize="none"
                   value={email}
                   onChangeText={setEmail}
+                  onBlur={() => handleBlur("email", email)}
                 />
+                {errors.email && (
+                  <Text className="text-red-500 text-sm ml-2 mt-1">
+                    {errors.email}
+                  </Text>
+                )}
               </View>
 
               {/* CPF */}
@@ -199,7 +229,9 @@ export default function ModalUpdateUser({
                   CPF:
                 </Text>
                 <TextInput
-                  className="bg-gray-soft rounded-lg p-4 text-base text-light-text-primary"
+                  className={`bg-gray-soft rounded-lg p-4 text-base text-light-text-primary
+                    ${errors.cpf ? "border border-red-500" : ""}
+                  `}
                   placeholder="000.000.000-00"
                   placeholderTextColor={
                     themeColors.primary === "#FFFFFF" ? "#A0A0A0" : "#6B7280"
@@ -207,7 +239,13 @@ export default function ModalUpdateUser({
                   keyboardType="numeric"
                   value={cpf}
                   onChangeText={setCpf}
+                  onBlur={() => handleBlur("cpf", cpf)}
                 />
+                {errors.cpf && (
+                  <Text className="text-red-500 text-sm ml-2 mt-1">
+                    {errors.cpf}
+                  </Text>
+                )}
               </View>
 
               {/* Número de Registro */}
@@ -216,49 +254,94 @@ export default function ModalUpdateUser({
                   Nº de Registro:
                 </Text>
                 <TextInput
-                  className="bg-gray-soft rounded-lg p-4 text-base text-light-text-primary"
-                  placeholder="Apenas números"
+                  className={`bg-gray-soft rounded-lg p-4 text-base text-light-text-primary
+                    ${errors.registerNumber ? "border border-red-500" : ""}
+                  `}
+                  placeholder="7 dígitos"
                   placeholderTextColor={
                     themeColors.primary === "#FFFFFF" ? "#A0A0A0" : "#6B7280"
                   }
                   keyboardType="numeric"
                   value={registerNumber}
                   onChangeText={setRegisterNumber}
+                  maxLength={7}
+                  onBlur={() => handleBlur("registerNumber", registerNumber)}
                 />
+                {errors.registerNumber && (
+                  <Text className="text-red-500 text-sm ml-2 mt-1">
+                    {errors.registerNumber}
+                  </Text>
+                )}
               </View>
 
-              {/* Role ID */}
               <View className="mb-4">
                 <Text className="ml-2 text-light-text-primary dark:text-dark-text-primary text-xl font-semibold mb-2">
-                  ID da Função:
+                  Função:
                 </Text>
-                <TextInput
-                  className="bg-gray-soft rounded-lg p-4 text-base text-light-text-primary"
-                  placeholder="Ex: 1 para Admin, 2 para Usuário"
-                  placeholderTextColor={
-                    themeColors.primary === "#FFFFFF" ? "#A0A0A0" : "#6B7280"
-                  }
-                  keyboardType="numeric"
-                  value={roleId}
-                  onChangeText={setRoleId}
-                />
+                <View
+                  className={`bg-gray-soft rounded-lg text-base 
+                    ${errors.roleId ? "border border-red-500" : ""}
+                  `}
+                >
+                  <Picker
+                    selectedValue={roleId}
+                    onValueChange={(itemValue) => setRoleId(itemValue)}
+                    onBlur={() => handleBlur("roleId", roleId)}
+                    dropdownIconColor={
+                      themeColors.primary === "#FFFFFF" ? "#A0A0A0" : "#6B7280"
+                    }
+                    style={{
+                      color:
+                        themeColors.primary === "#FFFFFF"
+                          ? "#000000"
+                          : "#000000",
+                    }}
+                  >
+                    <Picker.Item label="Selecione uma função..." value="" />
+                    {roles.map((role) => (
+                      <Picker.Item
+                        key={role.id}
+                        label={role.name}
+                        value={role.id.toString()}
+                      />
+                    ))}
+                  </Picker>
+                </View>
+                {errors.roleId && (
+                  <Text className="text-red-500 text-sm ml-2 mt-1">
+                    {errors.roleId}
+                  </Text>
+                )}
               </View>
 
-              {/* Enterprise ID (Opcional) */}
               <View className="mb-4">
                 <Text className="ml-2 text-light-text-primary dark:text-dark-text-primary text-xl font-semibold mb-2">
-                  ID da Empresa (Opcional):
+                  Empresa (Opcional):
                 </Text>
-                <TextInput
-                  className="bg-gray-soft rounded-lg p-4 text-base text-light-text-primary"
-                  placeholder="Deixe em branco se não aplicável"
-                  placeholderTextColor={
-                    themeColors.primary === "#FFFFFF" ? "#A0A0A0" : "#6B7280"
-                  }
-                  keyboardType="numeric"
-                  value={enterpriseId}
-                  onChangeText={setEnterpriseId}
-                />
+                <View className="bg-gray-soft rounded-lg text-base">
+                  <Picker
+                    selectedValue={enterpriseId}
+                    onValueChange={(itemValue) => setEnterpriseId(itemValue)}
+                    dropdownIconColor={
+                      themeColors.primary === "#FFFFFF" ? "#A0A0A0" : "#6B7280"
+                    }
+                    style={{
+                      color:
+                        themeColors.primary === "#FFFFFF"
+                          ? "#000000"
+                          : "#000000",
+                    }}
+                  >
+                    <Picker.Item label="Nenhuma (opcional)" value="" />
+                    {enterprises.map((enterprise) => (
+                      <Picker.Item
+                        key={enterprise.id}
+                        label={enterprise.name}
+                        value={enterprise.id.toString()}
+                      />
+                    ))}
+                  </Picker>
+                </View>
               </View>
 
               {/* Campo de foto */}
@@ -270,9 +353,14 @@ export default function ModalUpdateUser({
                   onPress={pickImage}
                   className="bg-gray-soft h-32 rounded-lg items-center justify-center"
                 >
-                  {photoUri ? (
+                  {photoAsset ? (
                     <Image
-                      source={{ uri: photoUri }}
+                      source={{
+                        uri:
+                          typeof photoAsset === "string"
+                            ? photoAsset
+                            : photoAsset.uri,
+                      }}
                       className="w-full h-full rounded-lg"
                     />
                   ) : (

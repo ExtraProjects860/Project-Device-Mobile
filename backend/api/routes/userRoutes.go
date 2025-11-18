@@ -28,6 +28,7 @@ func registerUserRoutes(rg *gin.RouterGroup, appCtx *appcontext.AppContext) {
 		rg.POST("/user",
 			middleware.JWTMiddleware(appCtx, logger),
 			middleware.AdminPermission(appCtx, logger),
+			middleware.ImageOptional(appCtx, logger),
 			handler.CreateUserHandler(
 				appCtx, config.NewLogger("POST - USERS"),
 			))
@@ -38,6 +39,7 @@ func registerUserRoutes(rg *gin.RouterGroup, appCtx *appcontext.AppContext) {
 		rg.PATCH("/user",
 			middleware.JWTMiddleware(appCtx, logger),
 			middleware.AdminPermission(appCtx, logger),
+			middleware.ImageOptional(appCtx, logger),
 			handler.UpdateUserHandler(
 				appCtx, config.NewLogger("PATCH - USERS"),
 			))
